@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import java.lang.ref.ReferenceQueue
-import java.lang.ref.WeakReference
 
 class PageTwoFragment : Fragment() {
     private var backPressedCallback: OnBackPressedCallback? = null
@@ -23,6 +21,9 @@ class PageTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<View>(R.id.button_next).setOnClickListener {
+            navigateToLevelTwoContainer()
+        }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navigateToHome()
@@ -44,12 +45,6 @@ class PageTwoFragment : Fragment() {
         super.onDestroy()
     }
 
-    protected fun finalize() {
-        Log.d("PageTwoFragment", "finalize called - fragment GC'd")
-    }
-
-
-
     private fun navigateToHome() {
         requireParentFragment().childFragmentManager.beginTransaction()
             .setCustomAnimations(
@@ -57,6 +52,22 @@ class PageTwoFragment : Fragment() {
                 R.anim.fragment_slide_out_right
             )
             .replace(R.id.child_fragment_container, HomeFragment())
+            .commit()
+    }
+
+    private fun navigateToLevelTwoContainer() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.fragment_slide_in_right,
+                R.anim.fragment_slide_out_left,
+                R.anim.fragment_slide_in_left,
+                R.anim.fragment_slide_out_right
+            )
+            .replace(
+                R.id.main,
+                ContainerFragment.newInstance(InitialScreen.LEVEL_TWO_PAGE_ONE)
+            )
+            .addToBackStack(null)
             .commit()
     }
 
