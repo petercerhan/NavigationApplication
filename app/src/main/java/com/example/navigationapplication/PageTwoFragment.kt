@@ -51,12 +51,12 @@ class PageTwoFragment : Fragment() {
 
 
     private fun navigateToHome() {
-        parentFragmentManager.beginTransaction()
+        requireParentFragment().childFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fragment_slide_in_left,
                 R.anim.fragment_slide_out_right
             )
-            .replace(R.id.main, HomeFragment())
+            .replace(R.id.child_fragment_container, HomeFragment())
             .commit()
     }
 

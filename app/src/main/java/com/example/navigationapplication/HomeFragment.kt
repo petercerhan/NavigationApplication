@@ -1,16 +1,12 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import java.lang.ref.Reference
 
 class HomeFragment : Fragment() {
-    private val tagName = "HomeFragment"
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,12 +23,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToPageTwo() {
-        parentFragmentManager.beginTransaction()
+        requireParentFragment().childFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fragment_slide_in_right,
                 R.anim.fragment_slide_out_left
             )
-            .replace(R.id.main, PageTwoFragment())
+            .replace(R.id.child_fragment_container, PageTwoFragment())
             .commit()
     }
 
