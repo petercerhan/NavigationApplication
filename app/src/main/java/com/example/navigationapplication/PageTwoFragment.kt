@@ -33,18 +33,6 @@ class PageTwoFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
-    override fun onDestroyView() {
-        Log.d("PageTwoFragment", "onDestroyView() for instance=${System.identityHashCode(this)}")
-        backPressedCallback?.remove()
-        backPressedCallback = null
-        super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        Log.d("PageTwoFragment", "onDestroy() for instance=${System.identityHashCode(this)}")
-        super.onDestroy()
-    }
-
     private fun navigateToHome() {
         requireParentFragment().childFragmentManager.beginTransaction()
             .setCustomAnimations(
@@ -58,16 +46,15 @@ class PageTwoFragment : Fragment() {
     private fun navigateToLevelTwoContainer() {
         requireActivity().supportFragmentManager.beginTransaction()
             .setCustomAnimations(
-                R.anim.fragment_slide_in_right,
-                R.anim.fragment_slide_out_left,
-                R.anim.fragment_slide_in_left,
-                R.anim.fragment_slide_out_right
+                R.anim.fragment_slide_in_bottom,
+                0,
+                0,
+                R.anim.fragment_slide_out_bottom
             )
-            .replace(
+            .add(
                 R.id.main,
                 ContainerFragment.newInstance(InitialScreen.LEVEL_TWO_PAGE_ONE)
             )
-            .addToBackStack(null)
             .commit()
     }
 
