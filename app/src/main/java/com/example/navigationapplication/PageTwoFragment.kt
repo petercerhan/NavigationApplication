@@ -1,14 +1,19 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 
-class PageTwoFragment : Fragment() {
+class PageTwoFragment() : Fragment() {
+
+    private val viewModel: PageTwoViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
+
     private var backPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(
@@ -44,6 +49,7 @@ class PageTwoFragment : Fragment() {
     }
 
     private fun navigateToLevelTwoContainer() {
+        viewModel.onLevelTwoNavigationRequested()
         requireActivity().supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fragment_slide_in_bottom,
@@ -53,7 +59,10 @@ class PageTwoFragment : Fragment() {
             )
             .add(
                 R.id.main,
-                ContainerFragment.newInstance(InitialScreen.LEVEL_TWO_PAGE_ONE)
+                ContainerFragment.newInstance(
+                    InitialScreen.LEVEL_TWO_PAGE_ONE,
+                    mainActivityViewModel.coordinator.id
+                )
             )
             .commit()
     }

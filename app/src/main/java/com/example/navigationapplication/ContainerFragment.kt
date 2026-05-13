@@ -1,12 +1,26 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import java.util.UUID
+import kotlin.getValue
 
 class ContainerFragment : Fragment() {
+
+    val activityViewModel: MainActivityViewModel by activityViewModels()
+
+    val rootCoordinatorId: UUID by lazy {
+        UUID.fromString(
+            requireArguments().getString(ARG_ROOT_COORDINATOR_ID)
+                ?: error("Missing $ARG_ROOT_COORDINATOR_ID")
+        )
+    }
+
     private val initialScreen: InitialScreen by lazy {
         val value = arguments?.getString(ARG_INITIAL_SCREEN) ?: InitialScreen.HOME.name
         InitialScreen.valueOf(value)
@@ -21,6 +35,8 @@ class ContainerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (activityViewModel.serviceLocator[rootCoordinatorId] as? RootCoordinator)?.ping()
+
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) return
         if (childFragmentManager.findFragmentById(R.id.child_fragment_container) != null) return
@@ -37,11 +53,13 @@ class ContainerFragment : Fragment() {
 
     companion object {
         private const val ARG_INITIAL_SCREEN = "arg_initial_screen"
+        private const val ARG_ROOT_COORDINATOR_ID = "arg_root_coordinator_id"
 
-        fun newInstance(initialScreen: InitialScreen): ContainerFragment {
+        fun newInstance(initialScreen: InitialScreen, rootCoordinatorId: UUID): ContainerFragment {
             return ContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_INITIAL_SCREEN, initialScreen.name)
+                    putString(ARG_ROOT_COORDINATOR_ID, rootCoordinatorId.toString())
                 }
             }
         }

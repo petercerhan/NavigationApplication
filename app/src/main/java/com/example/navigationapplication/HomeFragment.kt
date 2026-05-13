@@ -5,13 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 
 class HomeFragment : Fragment() {
+
+    val delegatingViewModel: MainActivityDelegatingViewModel by activityViewModels()
+
+    val viewModel: HomeViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.ping()
+        delegatingViewModel.ping()
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -23,12 +32,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToPageTwo() {
+        val newFragment = PageTwoFragment()
+
         requireParentFragment().childFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fragment_slide_in_right,
                 R.anim.fragment_slide_out_left
             )
-            .replace(R.id.child_fragment_container, PageTwoFragment())
+            .replace(R.id.child_fragment_container, newFragment)
             .commit()
     }
 
