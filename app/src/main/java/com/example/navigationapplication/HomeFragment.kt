@@ -19,8 +19,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel.ping()
-        delegatingViewModel.ping()
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 

@@ -28,14 +28,12 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.commit {
                 replace(
                     R.id.main,
-                    ContainerFragment.newInstance(
-                        InitialScreen.HOME,
-                        viewModel.coordinator.id
+                    RootContainerFragment.newInstance(
+                        RootInitialScreen.HOME,
+                        viewModel.coordinator.rootContainer.id
                     )
                 )
             }
         }
-
-        viewModel.coordinator.ping()
     }
 }

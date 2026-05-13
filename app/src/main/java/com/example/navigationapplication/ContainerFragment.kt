@@ -1,7 +1,6 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ class ContainerFragment : Fragment() {
     }
 
     private val initialScreen: InitialScreen by lazy {
-        val value = arguments?.getString(ARG_INITIAL_SCREEN) ?: InitialScreen.HOME.name
+        val value = arguments?.getString(ARG_INITIAL_SCREEN) ?: InitialScreen.LEVEL_TWO_PAGE_ONE.name
         InitialScreen.valueOf(value)
     }
 
@@ -35,14 +34,11 @@ class ContainerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activityViewModel.serviceLocator[rootCoordinatorId] as? RootCoordinator)?.ping()
-
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) return
         if (childFragmentManager.findFragmentById(R.id.child_fragment_container) != null) return
 
         val initialFragment: Fragment = when (initialScreen) {
-            InitialScreen.HOME -> HomeFragment()
             InitialScreen.LEVEL_TWO_PAGE_ONE -> LevelTwoPageOneFragment()
         }
 
@@ -67,6 +63,5 @@ class ContainerFragment : Fragment() {
 }
 
 enum class InitialScreen {
-    HOME,
     LEVEL_TWO_PAGE_ONE
 }
