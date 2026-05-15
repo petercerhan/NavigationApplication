@@ -1,18 +1,39 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import java.util.UUID
 
 class HomeFragment : Fragment() {
 
-    val delegatingViewModel: MainActivityDelegatingViewModel by activityViewModels()
+    val activityViewModel: MainActivityViewModel by activityViewModels()
 
-    val viewModel: HomeViewModel by viewModels()
+    val systemViewModel: HomeSystemViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val viewModelId = UUID.fromString(
+                    requireArguments().getString(ARG_HOME_VIEW_MODEL_ID)
+                        ?: error("Missing $ARG_HOME_VIEW_MODEL_ID")
+                )
+                return HomeSystemViewModel(
+                    viewModelId,
+                    activityViewModel.serviceLocator,
+                ) as T
+            }
+        }
+    }
+
+    private val viewModel: HomeViewModel
+        get() = systemViewModel.viewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,15 +51,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToPageTwo() {
-        val newFragment = PageTwoFragment()
+        val homeId =  arguments?.getString(ARG_HOME_VIEW_MODEL_ID)
+        viewModel.ping()
 
-        requireParentFragment().childFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.fragment_slide_in_right,
-                R.anim.fragment_slide_out_left
-            )
-            .replace(R.id.child_fragment_container, newFragment)
-            .commit()
+//        val newFragment = PageTwoFragment()
+//
+//        requireParentFragment().childFragmentManager.beginTransaction()
+//            .setCustomAnimations(
+//                R.anim.fragment_slide_in_right,
+//                R.anim.fragment_slide_out_left
+//            )
+//            .replace(R.id.child_fragment_container, newFragment)
+//            .commit()
+    }
+
+    companion object {
+        const val ARG_HOME_VIEW_MODEL_ID = "home_view_model_id"
+
+        fun newInstance(homeViewModelId: String): HomeFragment {
+            return HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_HOME_VIEW_MODEL_ID, homeViewModelId)
+                }
+            }
+        }
     }
 
 }

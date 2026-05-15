@@ -1,14 +1,14 @@
 package com.example.navigationapplication
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import java.util.UUID
 
-class HomeViewModel: ViewModel() {
-
-    //inner view model
+class HomeViewModel(
+    val id: UUID,
+) {
 
     fun ping() {
-        Log.d("PeterCerhan", "Ping HomeViewModel")
+        Log.d("PeterCerhan", "Ping HomeViewModel $id")
     }
 
 }

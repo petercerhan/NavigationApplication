@@ -31,8 +31,6 @@ class RootContainerFragment : Fragment() {
         }
     }
 
-    val rootContainerId: UUID get() = rootContainerViewModel.rootContainerId
-
     private val initialScreen: RootInitialScreen by lazy {
         val value = arguments?.getString(ARG_INITIAL_SCREEN) ?: RootInitialScreen.HOME.name
         RootInitialScreen.valueOf(value)
@@ -52,9 +50,9 @@ class RootContainerFragment : Fragment() {
         if (savedInstanceState != null) return
         if (childFragmentManager.findFragmentById(R.id.child_fragment_container) != null) return
 
-        val initialFragment: Fragment = when (initialScreen) {
-            RootInitialScreen.HOME -> HomeFragment()
-        }
+        val initialFragment = HomeFragment.newInstance(
+            homeViewModelId=(arguments?.getString(ARG_HOME_VIEW_MODEL_ID) ?: "")
+        )
 
         childFragmentManager.beginTransaction()
             .replace(R.id.child_fragment_container, initialFragment)
@@ -64,12 +62,14 @@ class RootContainerFragment : Fragment() {
     companion object {
         private const val ARG_INITIAL_SCREEN = "arg_initial_screen"
         const val ARG_ROOT_CONTAINER_ID = "arg_root_container_id"
+        const val ARG_HOME_VIEW_MODEL_ID = "home_view_model_id"
 
-        fun newInstance(initialScreen: RootInitialScreen, rootContainerId: UUID): RootContainerFragment {
+        fun newInstance(initialScreen: RootInitialScreen, rootContainerId: UUID, homeViewModelId: UUID): RootContainerFragment {
             return RootContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_INITIAL_SCREEN, initialScreen.name)
                     putString(ARG_ROOT_CONTAINER_ID, rootContainerId.toString())
+                    putString(ARG_HOME_VIEW_MODEL_ID, homeViewModelId.toString())
                 }
             }
         }
