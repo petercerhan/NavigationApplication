@@ -8,6 +8,14 @@ class RootCoordinator(
     val rootContainer: RootContainer
 ) {
 
+    fun next() {
+        Log.d("PeterCerhan", "RootCoordinator Next")
+        //create PageTwoFragment
+        val pageTwoFragment = PageTwoFragment()
+        //rootcontainer.showFragment(pageTwoFragment)
+        rootContainer.showScene(pageTwoFragment)
+    }
+
     fun ping() {
         Log.d("PeterCerhan", "Ping RootCoordinator")
     }

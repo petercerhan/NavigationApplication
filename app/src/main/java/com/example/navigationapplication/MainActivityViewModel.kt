@@ -19,6 +19,11 @@ class MainActivityViewModel : ViewModel() {
         val coordinatorId = UUID.randomUUID()
         coordinator = RootCoordinator(id=coordinatorId, rootContainer=rootContainer)
 
+        //HERE//
+        rootContainer.delegate = coordinator
+        homeViewModel.delegate = rootContainer
+        //
+
         serviceLocator[homeViewModelId] = homeViewModel
         serviceLocator[rootContainerId] = rootContainer
         serviceLocator[coordinatorId] = coordinator

@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
     private fun navigateToPageTwo() {
         val homeId =  arguments?.getString(ARG_HOME_VIEW_MODEL_ID)
-        viewModel.ping()
+        viewModel.next()
 
 //        val newFragment = PageTwoFragment()
 //

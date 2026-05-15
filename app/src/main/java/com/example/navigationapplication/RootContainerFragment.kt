@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 class RootContainerFragment : Fragment() {
 
@@ -46,6 +50,21 @@ class RootContainerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                rootContainerViewModel.fragmentFlow.collect { fragment ->
+                    childFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.fragment_slide_in_right,
+                            R.anim.fragment_slide_out_left
+                        )
+                        .setReorderingAllowed(true)
+                        .replace(R.id.child_fragment_container, fragment)
+                        .commit()
+                }
+            }
+        }
 
         if (savedInstanceState != null) return
         if (childFragmentManager.findFragmentById(R.id.child_fragment_container) != null) return

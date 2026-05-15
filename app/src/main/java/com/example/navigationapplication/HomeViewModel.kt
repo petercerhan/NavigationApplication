@@ -7,6 +7,12 @@ class HomeViewModel(
     val id: UUID,
 ) {
 
+    lateinit var delegate: RootContainer
+
+    fun next() {
+        delegate.next()
+    }
+
     fun ping() {
         Log.d("PeterCerhan", "Ping HomeViewModel $id")
     }
