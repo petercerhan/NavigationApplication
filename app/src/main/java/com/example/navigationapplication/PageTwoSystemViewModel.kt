@@ -4,16 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import java.util.UUID
 
-class HomeSystemViewModel(
+class PageTwoSystemViewModel(
     val viewModelId: UUID,
     val serviceLocator: MutableMap<UUID, Any>,
-): ViewModel() {
+) : ViewModel() {
 
-    val viewModel: HomeViewModel
-        get() = serviceLocator[viewModelId] as HomeViewModel
+    val viewModel: PageTwoViewModel
+        get() = serviceLocator[viewModelId] as PageTwoViewModel
 
     fun ping() {
-        Log.d("PeterCerhan", "Ping HomeSystemViewModel $viewModelId")
+        Log.d("PeterCerhan", "Ping PageTwoSystemViewModel $viewModelId")
     }
-
 }

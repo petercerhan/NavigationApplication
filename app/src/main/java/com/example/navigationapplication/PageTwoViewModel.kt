@@ -1,26 +1,15 @@
 package com.example.navigationapplication
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import android.util.Log
+import java.util.UUID
 
-class PageTwoViewModel() : ViewModel() {
-    fun onLevelTwoNavigationRequested() {
+class PageTwoViewModel(
+    val id: UUID,
+)  {
 
+    lateinit var delegate: RootCoordinator
+
+    fun ping() {
+        Log.d("PeterCerhan", "Ping PageTwoViewModel $id")
     }
-
-//    companion object {
-//        val PAGE_TWO_INNER_VIEW_MODEL_KEY =
-//            object : CreationExtras.Key<PageTwoInnerViewModel> {}
-//
-//        val Factory: ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val inner = this[PAGE_TWO_INNER_VIEW_MODEL_KEY]
-//                    ?: error("PageTwoInnerViewModel missing from CreationExtras")
-//                PageTwoViewModel(inner)
-//            }
-//        }
-//    }
 }
