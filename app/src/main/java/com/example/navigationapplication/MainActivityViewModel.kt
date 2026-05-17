@@ -14,18 +14,17 @@ class MainActivityViewModel : ViewModel() {
         val homeViewModel = HomeViewModel(homeViewModelId)
 
         val rootContainerId = UUID.randomUUID()
-        val rootContainer = RootContainer(id=rootContainerId, homeViewModel=homeViewModel)
+        val rootContainerViewModel = RootContainerViewModel(id=rootContainerId, homeViewModel=homeViewModel)
 
         val coordinatorId = UUID.randomUUID()
-        coordinator = RootCoordinator(id=coordinatorId, rootContainer=rootContainer, serviceLocator=serviceLocator)
+        coordinator = RootCoordinator(id=coordinatorId, rootContainerViewModel=rootContainerViewModel, serviceLocator=serviceLocator)
 
-        //HERE//
-        rootContainer.delegate = coordinator
-        homeViewModel.delegate = rootContainer
+        //Lateinit Delegate - remove when possible//
+        homeViewModel.delegate = coordinator
         //
 
         serviceLocator[homeViewModelId] = homeViewModel
-        serviceLocator[rootContainerId] = rootContainer
+        serviceLocator[rootContainerId] = rootContainerViewModel
         serviceLocator[coordinatorId] = coordinator
     }
 

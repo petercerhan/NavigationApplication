@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
                     R.id.main,
                     RootContainerFragment.newInstance(
                         RootInitialScreen.HOME,
-                        viewModel.coordinator.rootContainer.id,
-                        viewModel.coordinator.rootContainer.homeViewModel.id
+                        viewModel.coordinator.rootContainerViewModel.id,
+                        viewModel.coordinator.rootContainerViewModel.homeViewModel.id
                     )
                 )
             }

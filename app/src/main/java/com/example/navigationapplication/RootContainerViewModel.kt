@@ -2,22 +2,24 @@ package com.example.navigationapplication
 
 import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.SharedFlow
 import java.util.UUID
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class RootContainerViewModel(
-    val rootContainerId: UUID,
-    val serviceLocator: MutableMap<UUID, Any>,
-) : ViewModel() {
+    val id: UUID,
+    val homeViewModel: HomeViewModel,
+) {
+    private val _fragmentFlow = MutableSharedFlow<Fragment>(extraBufferCapacity = 64)
+    val fragmentFlow: SharedFlow<Fragment> = _fragmentFlow.asSharedFlow()
 
-    val rootContainer: RootContainer
-        get() = serviceLocator[rootContainerId] as RootContainer
-
-    val fragmentFlow: SharedFlow<Fragment>
-        get() = rootContainer.fragmentFlow
+    fun showScene(fragment: Fragment) {
+        _fragmentFlow.tryEmit(fragment)
+    }
 
     fun ping() {
-        Log.d("PeterCerhan", "Ping RootContainerViewModel $rootContainerId")
+        Log.d("PeterCerhan", "Ping RootContainer $id")
     }
+
 }

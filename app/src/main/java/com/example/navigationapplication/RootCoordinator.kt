@@ -5,29 +5,35 @@ import java.util.UUID
 
 class RootCoordinator(
     val id: UUID,
-    val rootContainer: RootContainer,
+    val rootContainerViewModel: RootContainerViewModel,
     val serviceLocator: MutableMap<UUID, Any>,
-): PageTwoViewModelDelegate {
+): PageTwoViewModelDelegate, HomeViewModelDelegate {
 
     fun next() {
-        val pageTwoViewModelId = UUID.randomUUID()
-        val pageTwoViewModel = PageTwoViewModel(id=pageTwoViewModelId, delegate=this)
-        serviceLocator[pageTwoViewModelId] = pageTwoViewModel
-
-
-        //pageTwoViewModelId needs to be sent to PageTwoFragment on creation
-        val pageTwoFragment = PageTwoFragment.newInstance(pageTwoViewModelId.toString())
-        rootContainer.showScene(pageTwoFragment)
     }
 
     fun ping() {
         Log.d("PeterCerhan", "Ping RootCoordinator")
     }
 
+
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         Log.d("PeterCerhan", "pageTwoViewModel-next on RootCoordinator")
+    }
+
+    //HomeViewModelDelegate
+
+    override fun next(homeViewModel: HomeViewModel) {
+        val pageTwoViewModelId = UUID.randomUUID()
+        val pageTwoViewModel = PageTwoViewModel(pageTwoViewModelId, this)
+        serviceLocator[pageTwoViewModelId] = pageTwoViewModel
+
+
+        //pageTwoViewModelId needs to be sent to PageTwoFragment on creation
+        val pageTwoFragment = PageTwoFragment.newInstance(pageTwoViewModelId.toString())
+        rootContainerViewModel.showScene(pageTwoFragment)
     }
 
 }

@@ -19,7 +19,7 @@ class RootContainerFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
 
-    val rootContainerViewModel: RootContainerViewModel by viewModels {
+    val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -27,7 +27,7 @@ class RootContainerFragment : Fragment() {
                     requireArguments().getString(ARG_ROOT_CONTAINER_ID)
                         ?: error("Missing $ARG_ROOT_CONTAINER_ID")
                 )
-                return RootContainerViewModel(
+                return RootContainerSystemViewModel(
                     rootContainerId = id,
                     serviceLocator = activityViewModel.serviceLocator,
                 ) as T
@@ -53,7 +53,7 @@ class RootContainerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                rootContainerViewModel.fragmentFlow.collect { fragment ->
+                rootContainerSystemViewModel.fragmentFlow.collect { fragment ->
                     childFragmentManager.beginTransaction()
                         .setCustomAnimations(
                             R.anim.fragment_slide_in_right,
