@@ -47,7 +47,7 @@ class PageTwoFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.button_next).setOnClickListener {
-            viewModel.ping()
+            viewModel.next()
         }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

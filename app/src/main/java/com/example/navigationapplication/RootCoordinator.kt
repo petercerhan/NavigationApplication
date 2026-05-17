@@ -7,13 +7,11 @@ class RootCoordinator(
     val id: UUID,
     val rootContainer: RootContainer,
     val serviceLocator: MutableMap<UUID, Any>,
-) {
+): PageTwoViewModelDelegate {
 
     fun next() {
-        Log.d("PeterCerhan", "RootCoordinator Next")
-
         val pageTwoViewModelId = UUID.randomUUID()
-        val pageTwoViewModel = PageTwoViewModel(id=pageTwoViewModelId)
+        val pageTwoViewModel = PageTwoViewModel(id=pageTwoViewModelId, delegate=this)
         serviceLocator[pageTwoViewModelId] = pageTwoViewModel
 
 
@@ -24,6 +22,12 @@ class RootCoordinator(
 
     fun ping() {
         Log.d("PeterCerhan", "Ping RootCoordinator")
+    }
+
+    //PageTwoViewModelDelegate
+
+    override fun next(pageTwoViewModel: PageTwoViewModel) {
+        Log.d("PeterCerhan", "pageTwoViewModel-next on RootCoordinator")
     }
 
 }

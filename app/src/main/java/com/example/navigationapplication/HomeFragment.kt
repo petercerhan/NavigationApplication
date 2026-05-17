@@ -14,7 +14,6 @@ import java.util.UUID
 class HomeFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
-
     val systemViewModel: HomeSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
