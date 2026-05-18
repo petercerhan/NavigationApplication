@@ -5,6 +5,7 @@ import java.util.UUID
 
 interface PageTwoViewModelDelegate {
     fun next(pageTwoViewModel: PageTwoViewModel)
+    fun back(pageTwoViewModel: PageTwoViewModel)
 }
 
 class PageTwoViewModel(
@@ -14,6 +15,10 @@ class PageTwoViewModel(
 
     fun next() {
         delegate.next(this)
+    }
+
+    fun back() {
+        delegate.back(this)
     }
 
     fun ping() {

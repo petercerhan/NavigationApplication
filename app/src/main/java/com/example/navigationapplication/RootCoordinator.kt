@@ -23,6 +23,16 @@ class RootCoordinator(
         Log.d("PeterCerhan", "pageTwoViewModel-next on RootCoordinator")
     }
 
+    override fun back(pageTwoViewModel: PageTwoViewModel) {
+        val homeViewModelId = UUID.randomUUID()
+        val homeViewModel = HomeViewModel(homeViewModelId)
+        homeViewModel.delegate = this
+        serviceLocator[homeViewModelId] = homeViewModel
+
+        val homeFragment = HomeFragment.newInstance(homeViewModelId.toString())
+        rootContainerViewModel.showScene(homeFragment)
+    }
+
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {

@@ -51,7 +51,7 @@ class PageTwoFragment() : Fragment() {
         }
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                navigateToHome()
+                viewModel.back()
             }
         }
         backPressedCallback = callback
