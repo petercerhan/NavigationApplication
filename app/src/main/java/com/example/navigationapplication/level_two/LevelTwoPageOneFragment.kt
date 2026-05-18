@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.level_two
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.example.navigationapplication.R
 
 class LevelTwoPageOneFragment : Fragment() {
     private var backPressedCallback: OnBackPressedCallback? = null

@@ -1,7 +1,8 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.library
 
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.example.navigationapplication.R
 
 private const val TAG = "FragmentBackStack"
 
