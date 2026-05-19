@@ -27,9 +27,7 @@ class MainActivity : AppCompatActivity() {
                 replace(
                     R.id.main,
                     RootContainerFragment.newInstance(
-                        RootInitialScreen.HOME,
-                        viewModel.coordinator.rootContainerViewModel.id,
-                        viewModel.coordinator.rootContainerViewModel.homeViewModel.id
+                        viewModel.coordinator.rootContainerViewModel.id
                     )
                 )
             }

@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class RootContainerViewModel(
     val id: UUID,
-    val homeViewModel: HomeViewModel,
 ) {
-    private val _fragmentFlow = MutableSharedFlow<Fragment>(extraBufferCapacity = 64)
+    private val _fragmentFlow = MutableSharedFlow<Fragment>(replay = 1)
     val fragmentFlow: SharedFlow<Fragment> = _fragmentFlow.asSharedFlow()
 
     fun showScene(fragment: Fragment) {

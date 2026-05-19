@@ -9,6 +9,15 @@ class RootCoordinator(
     val serviceLocator: MutableMap<UUID, Any>,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate {
 
+    fun start() {
+        val homeViewModelId = UUID.randomUUID()
+        val homeViewModel = HomeViewModel(homeViewModelId, this)
+        serviceLocator[homeViewModelId] = homeViewModel
+
+        val homeFragment = HomeFragment.newInstance(homeViewModelId.toString())
+        rootContainerViewModel.showScene(homeFragment)
+    }
+
     fun next() {
     }
 
@@ -25,8 +34,7 @@ class RootCoordinator(
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val homeViewModelId = UUID.randomUUID()
-        val homeViewModel = HomeViewModel(homeViewModelId)
-        homeViewModel.delegate = this
+        val homeViewModel = HomeViewModel(homeViewModelId, this)
         serviceLocator[homeViewModelId] = homeViewModel
 
         val homeFragment = HomeFragment.newInstance(homeViewModelId.toString())
@@ -40,8 +48,6 @@ class RootCoordinator(
         val pageTwoViewModel = PageTwoViewModel(pageTwoViewModelId, this)
         serviceLocator[pageTwoViewModelId] = pageTwoViewModel
 
-
-        //pageTwoViewModelId needs to be sent to PageTwoFragment on creation
         val pageTwoFragment = PageTwoFragment.newInstance(pageTwoViewModelId.toString())
         rootContainerViewModel.showScene(pageTwoFragment)
     }

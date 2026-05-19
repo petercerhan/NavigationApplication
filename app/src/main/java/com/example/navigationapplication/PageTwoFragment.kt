@@ -74,23 +74,7 @@ class PageTwoFragment() : Fragment() {
 
 
 
-
-
     //Legacy Navigation Functions//
-
-    private fun navigateToHome() {
-        val root = requireParentFragment() as RootContainerFragment
-        val homeViewModelId = root.requireArguments().getString(RootContainerFragment.ARG_HOME_VIEW_MODEL_ID)
-            ?: error("Missing ${RootContainerFragment.ARG_HOME_VIEW_MODEL_ID}")
-
-        root.childFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.fragment_slide_in_left,
-                R.anim.fragment_slide_out_right
-            )
-            .replace(R.id.child_fragment_container, HomeFragment.newInstance(homeViewModelId))
-            .commit()
-    }
 
     private fun navigateToLevelTwoContainer() {
         requireActivity().supportFragmentManager.beginTransaction()

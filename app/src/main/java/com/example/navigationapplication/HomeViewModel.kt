@@ -9,9 +9,8 @@ interface HomeViewModelDelegate {
 
 class HomeViewModel(
     val id: UUID,
+    val delegate: HomeViewModelDelegate,
 ) {
-
-    lateinit var delegate: HomeViewModelDelegate
 
     fun next() {
         delegate.next(this)
