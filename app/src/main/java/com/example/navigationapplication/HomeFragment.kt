@@ -19,8 +19,8 @@ class HomeFragment : Fragment() {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val viewModelId = UUID.fromString(
-                    requireArguments().getString(ARG_HOME_VIEW_MODEL_ID)
-                        ?: error("Missing $ARG_HOME_VIEW_MODEL_ID")
+                    requireArguments().getString(VIEW_MODEL_ID)
+                        ?: error("Missing $VIEW_MODEL_ID")
                 )
                 return HomeSystemViewModel(
                     viewModelId,
@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToPageTwo() {
-        val homeId =  arguments?.getString(ARG_HOME_VIEW_MODEL_ID)
+        val homeId =  arguments?.getString(VIEW_MODEL_ID)
         viewModel.next()
 
 //        val newFragment = PageTwoFragment()
@@ -64,12 +64,12 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        const val ARG_HOME_VIEW_MODEL_ID = "home_view_model_id"
+        const val VIEW_MODEL_ID = "view_model_id"
 
-        fun newInstance(homeViewModelId: String): HomeFragment {
+        fun newInstance(viewModelId: String): HomeFragment {
             return HomeFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_HOME_VIEW_MODEL_ID, homeViewModelId)
+                    putString(VIEW_MODEL_ID, viewModelId)
                 }
             }
         }

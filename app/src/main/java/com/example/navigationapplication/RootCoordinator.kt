@@ -10,11 +10,11 @@ class RootCoordinator(
 ): PageTwoViewModelDelegate, HomeViewModelDelegate {
 
     fun start() {
-        val homeViewModelId = UUID.randomUUID()
-        val homeViewModel = HomeViewModel(homeViewModelId, this)
-        serviceLocator[homeViewModelId] = homeViewModel
+        val viewModelId = UUID.randomUUID()
+        val homeViewModel = HomeViewModel(viewModelId, this)
+        serviceLocator[viewModelId] = homeViewModel
 
-        val homeFragment = HomeFragment.newInstance(homeViewModelId.toString())
+        val homeFragment = HomeFragment.newInstance(viewModelId.toString())
         rootContainerViewModel.showScene(homeFragment)
     }
 
@@ -33,22 +33,22 @@ class RootCoordinator(
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
-        val homeViewModelId = UUID.randomUUID()
-        val homeViewModel = HomeViewModel(homeViewModelId, this)
-        serviceLocator[homeViewModelId] = homeViewModel
+        val viewModelId = UUID.randomUUID()
+        val homeViewModel = HomeViewModel(viewModelId, this)
+        serviceLocator[viewModelId] = homeViewModel
 
-        val homeFragment = HomeFragment.newInstance(homeViewModelId.toString())
+        val homeFragment = HomeFragment.newInstance(viewModelId.toString())
         rootContainerViewModel.showScene(homeFragment)
     }
 
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val pageTwoViewModelId = UUID.randomUUID()
-        val pageTwoViewModel = PageTwoViewModel(pageTwoViewModelId, this)
-        serviceLocator[pageTwoViewModelId] = pageTwoViewModel
+        val viewModelId = UUID.randomUUID()
+        val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
+        serviceLocator[viewModelId] = pageTwoViewModel
 
-        val pageTwoFragment = PageTwoFragment.newInstance(pageTwoViewModelId.toString())
+        val pageTwoFragment = PageTwoFragment.newInstance(viewModelId.toString())
         rootContainerViewModel.showScene(pageTwoFragment)
     }
 

@@ -22,8 +22,8 @@ class PageTwoFragment() : Fragment() {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val viewModelId = UUID.fromString(
-                    requireArguments().getString(ARG_PAGE_TWO_VIEW_MODEL_ID)
-                        ?: error("Missing $ARG_PAGE_TWO_VIEW_MODEL_ID")
+                    requireArguments().getString(VIEW_MODEL_ID)
+                        ?: error("Missing $VIEW_MODEL_ID")
                 )
                 return PageTwoSystemViewModel(
                     viewModelId=viewModelId,
@@ -61,12 +61,12 @@ class PageTwoFragment() : Fragment() {
     }
 
     companion object {
-        const val ARG_PAGE_TWO_VIEW_MODEL_ID = "page_two_view_model_id"
+        const val VIEW_MODEL_ID = "view_model_id"
 
-        fun newInstance(pageTwoViewModelId: String): PageTwoFragment {
+        fun newInstance(viewModelId: String): PageTwoFragment {
             return PageTwoFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PAGE_TWO_VIEW_MODEL_ID, pageTwoViewModelId)
+                    putString(VIEW_MODEL_ID, viewModelId)
                 }
             }
         }
