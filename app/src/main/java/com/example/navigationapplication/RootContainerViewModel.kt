@@ -1,6 +1,5 @@
 package com.example.navigationapplication
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,10 +14,6 @@ class RootContainerViewModel(
 
     fun showScene(fragment: Fragment) {
         _fragmentFlow.tryEmit(fragment)
-    }
-
-    fun ping() {
-        Log.d("PeterCerhan", "Ping RootContainer $id")
     }
 
 }

@@ -4,7 +4,6 @@ import android.util.Log
 import java.util.UUID
 
 class RootCoordinator(
-    val id: UUID,
     val rootContainerViewModel: RootContainerViewModel,
     val serviceLocator: MutableMap<UUID, Any>,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate {
@@ -19,10 +18,7 @@ class RootCoordinator(
     }
 
     fun next() {
-    }
 
-    fun ping() {
-        Log.d("PeterCerhan", "Ping RootCoordinator")
     }
 
 

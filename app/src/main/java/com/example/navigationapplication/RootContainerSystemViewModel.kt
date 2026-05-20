@@ -16,8 +16,4 @@ class RootContainerSystemViewModel(
 
     val fragmentFlow: SharedFlow<Fragment>
         get() = rootContainerViewModel.fragmentFlow
-
-    fun ping() {
-        Log.d("PeterCerhan", "Ping RootContainerViewModel $rootContainerId")
-    }
 }

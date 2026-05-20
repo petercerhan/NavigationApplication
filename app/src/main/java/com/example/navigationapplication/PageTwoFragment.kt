@@ -88,7 +88,7 @@ class PageTwoFragment() : Fragment() {
                 R.id.main,
                 ContainerFragment.newInstance(
                     InitialScreen.LEVEL_TWO_PAGE_ONE,
-                    activityViewModel.coordinator.id
+                    UUID.randomUUID() //placeholder to compile; shouldn't need to pass a coordinator ID
                 )
             )
             .commit()
