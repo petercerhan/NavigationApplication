@@ -17,7 +17,7 @@ import java.util.UUID
 class PageTwoFragment() : Fragment() {
 
     private val activityViewModel: MainActivityViewModel by activityViewModels()
-    private val systemViewModel: PageTwoSystemViewModel by viewModels {
+    private val systemViewModel: SystemViewModel<PageTwoViewModel> by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -25,7 +25,7 @@ class PageTwoFragment() : Fragment() {
                     requireArguments().getString(VIEW_MODEL_ID)
                         ?: error("Missing $VIEW_MODEL_ID")
                 )
-                return PageTwoSystemViewModel(
+                return SystemViewModel<PageTwoViewModel>(
                     viewModelId=viewModelId,
                     serviceLocator=activityViewModel.serviceLocator
                 ) as T

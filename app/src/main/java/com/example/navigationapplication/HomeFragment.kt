@@ -14,7 +14,7 @@ import java.util.UUID
 class HomeFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
-    val systemViewModel: HomeSystemViewModel by viewModels {
+    val systemViewModel: SystemViewModel<HomeViewModel> by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
                     requireArguments().getString(VIEW_MODEL_ID)
                         ?: error("Missing $VIEW_MODEL_ID")
                 )
-                return HomeSystemViewModel(
+                return SystemViewModel<HomeViewModel>(
                     viewModelId,
                     activityViewModel.serviceLocator,
                 ) as T
