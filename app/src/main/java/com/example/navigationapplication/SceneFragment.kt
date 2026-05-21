@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.util.UUID
+import kotlin.reflect.KClass
 
 abstract class SceneFragment<VM : Any> : Fragment() {
 
@@ -39,8 +40,11 @@ abstract class SceneFragment<VM : Any> : Fragment() {
         fun sceneArguments(viewModelId: String): Bundle =
             Bundle().apply { putString(VIEW_MODEL_ID, viewModelId) }
 
-        inline fun <reified F : SceneFragment<*>> newInstance(viewModelId: String): F =
-            F::class.java.getDeclaredConstructor().newInstance().apply {
+        fun newInstance(
+            type: KClass<out SceneFragment<*>>,
+            viewModelId: String,
+        ): SceneFragment<*> =
+            type.java.getDeclaredConstructor().newInstance().apply {
                 arguments = sceneArguments(viewModelId)
             }
     }

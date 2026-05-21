@@ -13,8 +13,12 @@ class RootCoordinator(
         val homeViewModel = HomeViewModel(viewModelId, this)
         serviceLocator[viewModelId] = homeViewModel
 
-        val homeFragment = HomeFragment.newInstance(viewModelId.toString())
-        rootContainerViewModel.showScene(homeFragment)
+        rootContainerViewModel.showScene(
+            Scene(
+                viewModelId = viewModelId.toString(),
+                fragmentType = HomeFragment::class,
+            ),
+        )
     }
 
     fun next() {
@@ -33,8 +37,12 @@ class RootCoordinator(
         val homeViewModel = HomeViewModel(viewModelId, this)
         serviceLocator[viewModelId] = homeViewModel
 
-        val homeFragment = HomeFragment.newInstance(viewModelId.toString())
-        rootContainerViewModel.showScene(homeFragment)
+        rootContainerViewModel.showScene(
+            Scene(
+                viewModelId = viewModelId.toString(),
+                fragmentType = HomeFragment::class,
+            ),
+        )
     }
 
     //HomeViewModelDelegate
@@ -44,8 +52,12 @@ class RootCoordinator(
         val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
         serviceLocator[viewModelId] = pageTwoViewModel
 
-        val pageTwoFragment = PageTwoFragment.newInstance(viewModelId.toString())
-        rootContainerViewModel.showScene(pageTwoFragment)
+        rootContainerViewModel.showScene(
+            Scene(
+                viewModelId = viewModelId.toString(),
+                fragmentType = PageTwoFragment::class,
+            ),
+        )
     }
 
 }

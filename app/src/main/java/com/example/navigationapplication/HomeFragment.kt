@@ -35,9 +35,4 @@ class HomeFragment : SceneFragment<HomeViewModel>() {
 //            .replace(R.id.child_fragment_container, newFragment)
 //            .commit()
     }
-
-    companion object {
-        fun newInstance(viewModelId: String): HomeFragment =
-            SceneFragment.newInstance(viewModelId)
-    }
 }

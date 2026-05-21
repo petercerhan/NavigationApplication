@@ -35,11 +35,6 @@ class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
-    companion object {
-        fun newInstance(viewModelId: String): PageTwoFragment =
-            SceneFragment.newInstance(viewModelId)
-    }
-
     //Legacy Navigation Functions//
 
     private fun navigateToLevelTwoContainer() {

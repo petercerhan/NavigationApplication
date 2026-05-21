@@ -48,7 +48,11 @@ class RootContainerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                rootContainerSystemViewModel.fragmentFlow.collect { fragment ->
+                rootContainerSystemViewModel.sceneFlow.collect { scene ->
+                    val fragment = SceneFragment.newInstance(
+                        scene.fragmentType,
+                        scene.viewModelId,
+                    )
                     childFragmentManager.beginTransaction()
                         .setCustomAnimations(
                             R.anim.fragment_slide_in_right,
