@@ -5,36 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.navigationapplication.level_two.ContainerFragment
 import com.example.navigationapplication.level_two.InitialScreen
 import java.util.UUID
 
-class PageTwoFragment() : Fragment() {
-
-    private val activityViewModel: MainActivityViewModel by activityViewModels()
-    private val systemViewModel: SystemViewModel<PageTwoViewModel> by viewModels {
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val viewModelId = UUID.fromString(
-                    requireArguments().getString(VIEW_MODEL_ID)
-                        ?: error("Missing $VIEW_MODEL_ID")
-                )
-                return SystemViewModel<PageTwoViewModel>(
-                    viewModelId=viewModelId,
-                    serviceLocator=activityViewModel.serviceLocator
-                ) as T
-            }
-        }
-    }
-
-    private val viewModel: PageTwoViewModel
-        get() = systemViewModel.viewModel
+class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
 
     private var backPressedCallback: OnBackPressedCallback? = null
 
@@ -61,18 +36,9 @@ class PageTwoFragment() : Fragment() {
     }
 
     companion object {
-        const val VIEW_MODEL_ID = "view_model_id"
-
-        fun newInstance(viewModelId: String): PageTwoFragment {
-            return PageTwoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(VIEW_MODEL_ID, viewModelId)
-                }
-            }
-        }
+        fun newInstance(viewModelId: String): PageTwoFragment =
+            SceneFragment.newInstance(viewModelId)
     }
-
-
 
     //Legacy Navigation Functions//
 
@@ -93,5 +59,4 @@ class PageTwoFragment() : Fragment() {
             )
             .commit()
     }
-
 }
