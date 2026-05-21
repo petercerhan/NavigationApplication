@@ -12,7 +12,7 @@ class MainActivityViewModel : ViewModel() {
         val rootContainerId = UUID.randomUUID()
         val rootContainerViewModel = RootContainerViewModel(id=rootContainerId)
 
-        coordinator = RootCoordinator(rootContainerViewModel=rootContainerViewModel, serviceLocator=serviceLocator)
+        coordinator = RootCoordinator(rootContainerViewModel)
 
         serviceLocator[rootContainerId] = rootContainerViewModel
 

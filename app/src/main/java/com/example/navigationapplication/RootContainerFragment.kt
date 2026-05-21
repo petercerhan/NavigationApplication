@@ -19,6 +19,9 @@ class RootContainerFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
 
+    private val serviceLocator: MutableMap<UUID, Any>
+        get() = activityViewModel.serviceLocator
+
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -49,9 +52,12 @@ class RootContainerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 rootContainerSystemViewModel.sceneFlow.collect { scene ->
+
+                    serviceLocator[scene.viewModel.id] = scene.viewModel
+
                     val fragment = SceneFragment.newInstance(
                         scene.fragmentType,
-                        scene.viewModelId,
+                        scene.viewModel.id.toString(),
                     )
                     childFragmentManager.beginTransaction()
                         .setCustomAnimations(
