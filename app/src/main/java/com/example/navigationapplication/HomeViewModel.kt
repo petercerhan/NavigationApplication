@@ -10,6 +10,7 @@ interface HomeViewModelDelegate {
 class HomeViewModel(
     override val id: UUID,
     val delegate: HomeViewModelDelegate,
+    val homeSceneNumber: Int,
 ): PlainViewModel {
 
     fun next() {

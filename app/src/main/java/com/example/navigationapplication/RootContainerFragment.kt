@@ -22,6 +22,9 @@ class RootContainerFragment : Fragment() {
     private val serviceLocator: MutableMap<UUID, Any>
         get() = activityViewModel.serviceLocator
 
+    private val rootContainerServiceLocator: MutableMap<UUID, Any>
+        get() = activityViewModel.rootContainerServiceLocator
+
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -32,7 +35,7 @@ class RootContainerFragment : Fragment() {
                 )
                 return RootContainerSystemViewModel(
                     rootContainerId = id,
-                    serviceLocator = activityViewModel.serviceLocator,
+                    serviceLocator = activityViewModel.rootContainerServiceLocator,
                 ) as T
             }
         }
@@ -52,24 +55,28 @@ class RootContainerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 rootContainerSystemViewModel.sceneFlow.collect { scene ->
-
-                    serviceLocator[scene.viewModel.id] = scene.viewModel
-
-                    val fragment = SceneFragment.newInstance(
-                        scene.fragmentType,
-                        scene.viewModel.id.toString(),
-                    )
-                    childFragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                            R.anim.fragment_slide_in_right,
-                            R.anim.fragment_slide_out_left
-                        )
-                        .setReorderingAllowed(true)
-                        .replace(R.id.child_fragment_container, fragment)
-                        .commit()
+                    showScene(scene)
                 }
             }
         }
+    }
+
+    private fun showScene(scene: Scene) {
+        serviceLocator.clear()
+        serviceLocator[scene.viewModel.id] = scene.viewModel
+
+        val fragment = SceneFragment.newInstance(
+            scene.fragmentType,
+            scene.viewModel.id.toString(),
+        )
+        childFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.fragment_slide_in_right,
+                R.anim.fragment_slide_out_left
+            )
+            .setReorderingAllowed(true)
+            .replace(R.id.child_fragment_container, fragment)
+            .commit()
     }
 
     companion object {

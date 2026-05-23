@@ -6,6 +6,7 @@ import java.util.UUID
 
 class MainActivityViewModel : ViewModel() {
     val serviceLocator: MutableMap<UUID, Any> = mutableMapOf()
+    val rootContainerServiceLocator: MutableMap<UUID, Any> = mutableMapOf()
     val coordinator: RootCoordinator
 
     init {
@@ -14,7 +15,7 @@ class MainActivityViewModel : ViewModel() {
 
         coordinator = RootCoordinator(rootContainerViewModel)
 
-        serviceLocator[rootContainerId] = rootContainerViewModel
+        rootContainerServiceLocator[rootContainerId] = rootContainerViewModel
 
         coordinator.start()
     }

@@ -7,12 +7,26 @@ class RootCoordinator(
     val rootContainerViewModel: RootContainerViewModel,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate {
 
-    fun start() {
-        val viewModelId = UUID.randomUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this)
+    private var homeSceneCount = 0
 
-        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
+    private var homeSceneCache: Scene? = null
+
+    fun start() {
+        val scene = getHomeScene()
         rootContainerViewModel.showScene(scene)
+    }
+
+    //Routing
+
+    private fun getHomeScene(): Scene {
+        homeSceneCache?.let { return it }
+
+        homeSceneCount++
+        val viewModelId = UUID.randomUUID()
+        val homeViewModel = HomeViewModel(viewModelId, this, homeSceneCount)
+        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
+        homeSceneCache = scene
+        return scene
     }
 
     //PageTwoViewModelDelegate
@@ -22,10 +36,7 @@ class RootCoordinator(
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
-        val viewModelId = UUID.randomUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this)
-
-        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
+        val scene = getHomeScene()
         rootContainerViewModel.showScene(scene)
     }
 
