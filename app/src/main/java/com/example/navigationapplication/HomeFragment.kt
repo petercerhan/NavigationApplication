@@ -27,15 +27,5 @@ class HomeFragment : SceneFragment<HomeViewModel>() {
 
     private fun navigateToPageTwo() {
         viewModel.next()
-
-//        val newFragment = PageTwoFragment()
-//
-//        requireParentFragment().childFragmentManager.beginTransaction()
-//            .setCustomAnimations(
-//                R.anim.fragment_slide_in_right,
-//                R.anim.fragment_slide_out_left
-//            )
-//            .replace(R.id.child_fragment_container, newFragment)
-//            .commit()
     }
 }
