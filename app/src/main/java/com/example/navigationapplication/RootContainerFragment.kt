@@ -62,6 +62,11 @@ class RootContainerFragment : Fragment() {
     }
 
     private fun showScene(scene: Scene) {
+        if (incomingSceneIsAlreadyActive(scene)) {
+            serviceLocator[scene.viewModel.id] = scene.viewModel
+            return
+        }
+
         serviceLocator.clear()
         serviceLocator[scene.viewModel.id] = scene.viewModel
 
@@ -77,6 +82,11 @@ class RootContainerFragment : Fragment() {
             .setReorderingAllowed(true)
             .replace(R.id.child_fragment_container, fragment)
             .commit()
+    }
+
+    private fun incomingSceneIsAlreadyActive(scene: Scene): Boolean {
+        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+        return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId == scene.viewModel.id)
     }
 
     companion object {

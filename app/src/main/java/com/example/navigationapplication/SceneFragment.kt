@@ -13,7 +13,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
 
     protected val activityViewModel: MainActivityViewModel by activityViewModels()
 
-    protected val sceneViewModelId: UUID
+    val sceneViewModelId: UUID
         get() = UUID.fromString(
             requireArguments().getString(VIEW_MODEL_ID)
                 ?: error("Missing $VIEW_MODEL_ID"),
