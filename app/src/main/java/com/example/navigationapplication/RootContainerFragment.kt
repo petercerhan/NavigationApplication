@@ -96,7 +96,7 @@ class RootContainerFragment : Fragment() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
             as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator[activeScene.sceneViewModelId] as? PlainViewModel ?: return
+        val viewModel = serviceLocator[activeScene.sceneViewModelId] as? ApplicationViewModel ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeScene)
     }

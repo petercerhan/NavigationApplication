@@ -19,11 +19,11 @@ abstract class SceneFragment<VM : Any> : Fragment() {
                 ?: error("Missing $VIEW_MODEL_ID"),
         )
 
-    val systemViewModel: SystemViewModel<VM> by viewModels {
+    val frameworkViewModel: FrameworkViewModel<VM> by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SystemViewModel<VM>(
+                return FrameworkViewModel<VM>(
                     sceneViewModelId,
                     activityViewModel.serviceLocator,
                 ) as T
@@ -32,7 +32,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
     }
 
     protected val viewModel: VM
-        get() = systemViewModel.viewModel
+        get() = frameworkViewModel.viewModel
 
     companion object {
         const val VIEW_MODEL_ID = "view_model_id"

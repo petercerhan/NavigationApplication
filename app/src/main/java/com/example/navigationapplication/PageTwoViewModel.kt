@@ -11,7 +11,7 @@ interface PageTwoViewModelDelegate {
 class PageTwoViewModel(
     id: UUID,
     val delegate: PageTwoViewModelDelegate,
-) : PlainViewModel(id) {
+) : ApplicationViewModel(id) {
 
     fun next() {
         delegate.next(this)

@@ -11,7 +11,7 @@ class HomeViewModel(
     id: UUID,
     val delegate: HomeViewModelDelegate,
     val homeSceneNumber: Int,
-) : PlainViewModel(id) {
+) : ApplicationViewModel(id) {
 
     fun next() {
         delegate.next(this)
