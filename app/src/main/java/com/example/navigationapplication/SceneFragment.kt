@@ -25,7 +25,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return FrameworkViewModel<VM>(
                     sceneViewModelId,
-                    activityViewModel.serviceLocator,
+                    activityViewModel.viewModelLocator,
                 ) as T
             }
         }

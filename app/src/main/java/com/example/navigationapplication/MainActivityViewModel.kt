@@ -3,9 +3,10 @@ package com.example.navigationapplication
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import java.util.UUID
+import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
 
 class MainActivityViewModel : ViewModel() {
-    val serviceLocator: MutableMap<UUID, Any> = mutableMapOf()
+    val viewModelLocator: ApplicationViewModelLocator = ApplicationViewModelLocator()
     val rootContainerServiceLocator: MutableMap<UUID, Any> = mutableMapOf()
     val coordinator: RootCoordinator
 

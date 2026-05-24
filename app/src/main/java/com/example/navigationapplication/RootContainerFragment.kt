@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
 import java.util.UUID
 import kotlinx.coroutines.launch
 
@@ -19,8 +20,8 @@ class RootContainerFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
 
-    private val serviceLocator: MutableMap<UUID, Any>
-        get() = activityViewModel.serviceLocator
+    private val viewModelLocator: ApplicationViewModelLocator
+        get() = activityViewModel.viewModelLocator
 
     private val rootContainerServiceLocator: MutableMap<UUID, Any>
         get() = activityViewModel.rootContainerServiceLocator
@@ -68,8 +69,10 @@ class RootContainerFragment : Fragment() {
 
         saveActiveSceneViewState()
 
-        serviceLocator.clear()
-        serviceLocator[scene.viewModel.id] = scene.viewModel
+        //this will be replaced with a single call eventually
+        viewModelLocator.clear()
+        viewModelLocator.cacheScene(scene)
+        //
 
         val fragment = SceneFragment.newInstance(
             scene.fragmentType,
@@ -96,7 +99,7 @@ class RootContainerFragment : Fragment() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
             as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator[activeScene.sceneViewModelId] as? ApplicationViewModel ?: return
+        val viewModel = viewModelLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeScene)
     }
