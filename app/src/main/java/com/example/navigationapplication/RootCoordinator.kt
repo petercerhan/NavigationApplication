@@ -1,10 +1,12 @@
 package com.example.navigationapplication
 
 import android.util.Log
+import com.example.navigationapplication.infrastructure_services.UUIDService
 import java.util.UUID
 
 class RootCoordinator(
     val rootContainerViewModel: RootContainerViewModel,
+    val uuidService: UUIDService,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate {
 
     private var homeSceneCount = 0
@@ -22,7 +24,7 @@ class RootCoordinator(
         homeSceneCache?.let { return it }
 
         homeSceneCount++
-        val viewModelId = UUID.randomUUID()
+        val viewModelId = uuidService.newUUID()
         val homeViewModel = HomeViewModel(viewModelId, this, homeSceneCount)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         homeSceneCache = scene
@@ -43,7 +45,7 @@ class RootCoordinator(
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val viewModelId = UUID.randomUUID()
+        val viewModelId = uuidService.newUUID()
         val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
