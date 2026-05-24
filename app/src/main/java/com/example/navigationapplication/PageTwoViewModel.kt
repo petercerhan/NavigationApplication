@@ -9,9 +9,9 @@ interface PageTwoViewModelDelegate {
 }
 
 class PageTwoViewModel(
-    override val id: UUID,
+    id: UUID,
     val delegate: PageTwoViewModelDelegate,
-): PlainViewModel {
+) : PlainViewModel(id) {
 
     fun next() {
         delegate.next(this)

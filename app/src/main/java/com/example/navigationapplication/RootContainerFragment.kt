@@ -63,9 +63,10 @@ class RootContainerFragment : Fragment() {
 
     private fun showScene(scene: Scene) {
         if (incomingSceneIsAlreadyActive(scene)) {
-            serviceLocator[scene.viewModel.id] = scene.viewModel
             return
         }
+
+        saveActiveSceneViewState()
 
         serviceLocator.clear()
         serviceLocator[scene.viewModel.id] = scene.viewModel
@@ -73,7 +74,9 @@ class RootContainerFragment : Fragment() {
         val fragment = SceneFragment.newInstance(
             scene.fragmentType,
             scene.viewModel.id.toString(),
-        )
+        ).apply {
+            setInitialSavedState(scene.viewModel.fragmentSavedState)
+        }
         childFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fragment_slide_in_right,
@@ -87,6 +90,15 @@ class RootContainerFragment : Fragment() {
     private fun incomingSceneIsAlreadyActive(scene: Scene): Boolean {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
         return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId == scene.viewModel.id)
+    }
+
+    private fun saveActiveSceneViewState() {
+        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+            as? SceneFragment<*> ?: return
+
+        val viewModel = serviceLocator[activeScene.sceneViewModelId] as? PlainViewModel ?: return
+        viewModel.fragmentSavedState =
+            childFragmentManager.saveFragmentInstanceState(activeScene)
     }
 
     companion object {
