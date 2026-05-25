@@ -13,6 +13,6 @@ class RootContainerSystemViewModel(
     val rootContainerViewModel: RootContainerViewModel
         get() = serviceLocator[rootContainerId] as RootContainerViewModel
 
-    val sceneFlow: SharedFlow<Scene>
+    val sceneFlow: SharedFlow<SceneState>
         get() = rootContainerViewModel.sceneFlow
 }

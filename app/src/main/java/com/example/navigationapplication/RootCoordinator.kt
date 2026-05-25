@@ -1,6 +1,7 @@
 package com.example.navigationapplication
 
 import android.util.Log
+import com.example.navigationapplication.controller_library.SceneAnimation
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import java.util.UUID
 
@@ -15,7 +16,7 @@ class RootCoordinator(
 
     fun start() {
         val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene)
+        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromRight)
     }
 
     //Routing
@@ -39,7 +40,7 @@ class RootCoordinator(
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene)
+        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromLeft)
     }
 
     //HomeViewModelDelegate
@@ -49,7 +50,7 @@ class RootCoordinator(
         val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
-        rootContainerViewModel.showScene(scene)
+        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromRight)
     }
 
 }

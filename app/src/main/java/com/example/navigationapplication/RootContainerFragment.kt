@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.SceneAnimation
 import java.util.UUID
 import kotlinx.coroutines.launch
 
@@ -55,14 +56,15 @@ class RootContainerFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                rootContainerSystemViewModel.sceneFlow.collect { scene ->
-                    showScene(scene)
+                rootContainerSystemViewModel.sceneFlow.collect { sceneState ->
+                    showScene(sceneState)
                 }
             }
         }
     }
 
-    private fun showScene(scene: Scene) {
+    private fun showScene(sceneState: SceneState) {
+        val scene = sceneState.scene
         if (incomingSceneIsAlreadyActive(scene)) {
             return
         }
@@ -80,15 +82,20 @@ class RootContainerFragment : Fragment() {
         ).apply {
             setInitialSavedState(scene.viewModel.fragmentSavedState)
         }
+
+        val (newScreenEntryAnimation, priorScreenExitAnimation) = animationsFor(sceneState.animation)
         childFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.fragment_slide_in_right,
-                R.anim.fragment_slide_out_left
-            )
+            .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
             .setReorderingAllowed(true)
             .replace(R.id.child_fragment_container, fragment)
             .commit()
     }
+
+    private fun animationsFor(animation: SceneAnimation): Pair<Int, Int> =
+        when (animation) {
+            SceneAnimation.SlideFromRight -> R.anim.fragment_slide_in_right to R.anim.fragment_slide_out_left
+            SceneAnimation.SlideFromLeft -> R.anim.fragment_slide_in_left to R.anim.fragment_slide_out_right
+        }
 
     private fun incomingSceneIsAlreadyActive(scene: Scene): Boolean {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
