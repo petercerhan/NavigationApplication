@@ -14,7 +14,21 @@ class RootContainerViewModel(
 
     fun showScene(scene: Scene, animation: SceneAnimation) {
         //Here we will do additional work to maintain correct SceneState
-        val sceneState = SceneState(scene, animation)
+        val sceneState = SceneState(scene, animation, null)
+        _sceneFlow.tryEmit(sceneState)
+    }
+
+    fun showModal(scene: Scene) {
+        //block if there is already a modal
+        val current = _sceneFlow.replayCache.firstOrNull() ?: return
+        val sceneState = SceneState(current.scene, current.animation, scene)
+        _sceneFlow.tryEmit(sceneState)
+    }
+
+    fun dismissModal() {
+        //block if there is no modal
+        val current = _sceneFlow.replayCache.firstOrNull() ?: return
+        val sceneState = SceneState(current.scene, current.animation, null)
         _sceneFlow.tryEmit(sceneState)
     }
 

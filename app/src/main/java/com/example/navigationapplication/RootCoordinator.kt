@@ -8,7 +8,7 @@ import java.util.UUID
 class RootCoordinator(
     val rootContainerViewModel: RootContainerViewModel,
     val uuidService: UUIDService,
-): PageTwoViewModelDelegate, HomeViewModelDelegate {
+): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate {
 
     private var homeSceneCount = 0
 
@@ -32,17 +32,6 @@ class RootCoordinator(
         return scene
     }
 
-    //PageTwoViewModelDelegate
-
-    override fun next(pageTwoViewModel: PageTwoViewModel) {
-        Log.d("PeterCerhan", "pageTwoViewModel-next on RootCoordinator")
-    }
-
-    override fun back(pageTwoViewModel: PageTwoViewModel) {
-        val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromLeft)
-    }
-
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
@@ -51,6 +40,27 @@ class RootCoordinator(
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
         rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromRight)
+    }
+
+    //PageTwoViewModelDelegate
+
+    override fun next(pageTwoViewModel: PageTwoViewModel) {
+        val viewModelId = uuidService.newUUID()
+        val simpleModalViewModel = SimpleModalViewModel(viewModelId, this)
+
+        val scene = Scene(viewModel = simpleModalViewModel, fragmentType = SimpleModalFragment::class,)
+        rootContainerViewModel.showModal(scene)
+    }
+
+    override fun back(pageTwoViewModel: PageTwoViewModel) {
+        val scene = getHomeScene()
+        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromLeft)
+    }
+
+    //SimpleModalViewModelDelegate
+
+    override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
+        rootContainerViewModel.dismissModal()
     }
 
 }
