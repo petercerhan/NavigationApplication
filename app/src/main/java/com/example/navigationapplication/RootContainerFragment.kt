@@ -73,6 +73,7 @@ class RootContainerFragment : Fragment() {
     private fun applyMainScene(sceneState: SceneState) {
         val scene = sceneState.scene
         if (incomingSceneIsAlreadyActive(scene)) {
+            viewModelLocator.cacheScene(scene)
             return
         }
 
@@ -105,6 +106,8 @@ class RootContainerFragment : Fragment() {
         }
 
         if (incomingModalIsAlreadyActive(modalScene)) {
+            viewModelLocator.cacheScene(modalScene)
+            showModalContainer()
             return
         }
 
@@ -118,12 +121,16 @@ class RootContainerFragment : Fragment() {
             setInitialSavedState(modalScene.viewModel.fragmentSavedState)
         }
 
-        requireView().findViewById<View>(R.id.modal_fragment_container).visibility = View.VISIBLE
+        showModalContainer()
         childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
             .commit()
+    }
+
+    private fun showModalContainer() {
+        requireView().findViewById<View>(R.id.modal_fragment_container).visibility = View.VISIBLE
     }
 
     private fun dismissModal() {
