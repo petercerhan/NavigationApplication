@@ -70,9 +70,12 @@ class RootContainerFragment : Fragment() {
         //update ViewModelLocator
         //save active scene view state requires a locatable view model; so must be done before resetting the VM Locator
         saveActiveSceneViewState()
-        //need to also save modal scene view state
+        saveActiveModalViewState()
         viewModelLocator.clear()
         viewModelLocator.cacheScene(sceneState.scene)
+        if (sceneState.modalScene != null) {
+            viewModelLocator.cacheScene(sceneState.modalScene)
+        }
 
         //booleans
         val baseSceneChanged = sceneStateChangesBaseScene(sceneState)
@@ -86,8 +89,9 @@ class RootContainerFragment : Fragment() {
             updateBaseSceneWithAnimation(sceneState)
         }
         //no initial modal, final modal, stable base -> present modal
-        else if (!baseSceneChanged && !initialStateContainsModal && finalStateContainsModal) {
+        else if (!baseSceneChanged && !initialStateContainsModal && finalStateContainsModal && sceneState.modalScene != null) {
             //present modal
+            presentModal(sceneState.modalScene)
         }
         //initial modal, no final modal, stable base -> dismiss modal
         else if (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal) {
@@ -122,6 +126,8 @@ class RootContainerFragment : Fragment() {
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
         val scene = sceneState.scene
+
+        //Replace this check with a different approach?
         if (incomingSceneIsAlreadyActive(scene)) {
             return
         }
@@ -143,35 +149,22 @@ class RootContainerFragment : Fragment() {
             .commit()
     }
 
+    private fun presentModal(modalScene: Scene) {
+        val fragment = SceneFragment.newInstance(
+            modalScene.fragmentType,
+            modalScene.viewModel.id.toString(),
+        ).apply {
+            setInitialSavedState(modalScene.viewModel.fragmentSavedState)
+        }
 
-//    private fun applyMainScene(sceneState: SceneState) {
-//        val scene = sceneState.scene
-//        if (incomingSceneIsAlreadyActive(scene)) {
-//            viewModelLocator.cacheScene(scene)
-//            return
-//        }
-//
-//        saveActiveSceneViewState()
-//
-//        //this will be replaced with a single call eventually
-//        viewModelLocator.clear()
-//        viewModelLocator.cacheScene(scene)
-//        //
-//
-//        val fragment = SceneFragment.newInstance(
-//            scene.fragmentType,
-//            scene.viewModel.id.toString(),
-//        ).apply {
-//            setInitialSavedState(scene.viewModel.fragmentSavedState)
-//        }
-//
-//        val (newScreenEntryAnimation, priorScreenExitAnimation) = animationsFor(sceneState.animation)
-//        childFragmentManager.beginTransaction()
-//            .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
-//            .setReorderingAllowed(true)
-//            .replace(R.id.child_fragment_container, fragment)
-//            .commit()
-//    }
+        showModalContainer()
+
+        childFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
+            .setReorderingAllowed(true)
+            .replace(R.id.modal_fragment_container, fragment)
+            .commit()
+    }
 
     //will be replaced by other logic above
     private fun incomingSceneIsAlreadyActive(scene: Scene): Boolean {
@@ -283,7 +276,7 @@ class RootContainerFragment : Fragment() {
     }
 
 
-    //Initialization Helper
+    //Initialization
 
     companion object {
         const val ARG_ROOT_CONTAINER_ID = "arg_root_container_id"
@@ -296,4 +289,37 @@ class RootContainerFragment : Fragment() {
             }
         }
     }
+
+
+
+
+
+//    private fun applyMainScene(sceneState: SceneState) {
+//        val scene = sceneState.scene
+//        if (incomingSceneIsAlreadyActive(scene)) {
+//            viewModelLocator.cacheScene(scene)
+//            return
+//        }
+//
+//        saveActiveSceneViewState()
+//
+//        //this will be replaced with a single call eventually
+//        viewModelLocator.clear()
+//        viewModelLocator.cacheScene(scene)
+//        //
+//
+//        val fragment = SceneFragment.newInstance(
+//            scene.fragmentType,
+//            scene.viewModel.id.toString(),
+//        ).apply {
+//            setInitialSavedState(scene.viewModel.fragmentSavedState)
+//        }
+//
+//        val (newScreenEntryAnimation, priorScreenExitAnimation) = animationsFor(sceneState.animation)
+//        childFragmentManager.beginTransaction()
+//            .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
+//            .setReorderingAllowed(true)
+//            .replace(R.id.child_fragment_container, fragment)
+//            .commit()
+//    }
 }
