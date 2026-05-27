@@ -181,19 +181,9 @@ class RootContainerFragment : Fragment() {
     //DismissModal()
 
     private fun dismissModal_new() {
-        //get reference to current modal fragment (else fallback to cleanup & exit)
-        val modalFragment = childFragmentManager.findFragmentById(R.id.modal_fragment_container) ?: run {
-            hideModalContainer()
-            return
-        }
-
-        //get the modals view (else fallback to cleanup & exit)
-        val modalView = modalFragment.view
-        if (modalView == null) {
-            childFragmentManager.beginTransaction()
-                .remove(modalFragment)
-                .commit()
-            hideModalContainer()
+        val modalFragment = getCurrentModalFragment()
+        val modalView = modalFragment?.view
+        if (modalFragment == null || modalView == null) {
             return
         }
 
@@ -201,7 +191,6 @@ class RootContainerFragment : Fragment() {
         val exitAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fragment_slide_out_bottom)
         exitAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) = Unit
-
             override fun onAnimationRepeat(animation: Animation?) = Unit
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -215,12 +204,13 @@ class RootContainerFragment : Fragment() {
         modalView.startAnimation(exitAnimation)
     }
 
+    private fun getCurrentModalFragment(): Fragment? {
+        return childFragmentManager.findFragmentById(R.id.modal_fragment_container)
+    }
+
     private fun hideModalContainer() {
         requireView().findViewById<View>(R.id.modal_fragment_container).visibility = View.GONE
     }
-
-
-
 
 
 
@@ -249,7 +239,7 @@ class RootContainerFragment : Fragment() {
         }
 
 
-    //Modal Mechanics
+    //Modal Mechanics Prior
 
     private fun applyModalScene(modalScene: Scene?) {
         if (modalScene == null) {
@@ -280,41 +270,6 @@ class RootContainerFragment : Fragment() {
             .replace(R.id.modal_fragment_container, fragment)
             .commit()
     }
-
-//    private fun dismissModal() {
-//        saveActiveModalViewState()
-//
-//        val modalContainer = requireView().findViewById<View>(R.id.modal_fragment_container)
-//        val modal = childFragmentManager.findFragmentById(R.id.modal_fragment_container) ?: run {
-//            modalContainer.visibility = View.GONE
-//            return
-//        }
-//
-//        val modalView = modal.view
-//        if (modalView == null) {
-//            childFragmentManager.beginTransaction()
-//                .remove(modal)
-//                .commit()
-//            modalContainer.visibility = View.GONE
-//            return
-//        }
-//
-//        val exitAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fragment_slide_out_bottom)
-//        exitAnimation.setAnimationListener(object : Animation.AnimationListener {
-//            override fun onAnimationStart(animation: Animation?) = Unit
-//
-//            override fun onAnimationRepeat(animation: Animation?) = Unit
-//
-//            override fun onAnimationEnd(animation: Animation?) {
-//                if (!isAdded) return
-//                childFragmentManager.beginTransaction()
-//                    .remove(modal)
-//                    .commit()
-//                modalContainer.visibility = View.GONE
-//            }
-//        })
-//        modalView.startAnimation(exitAnimation)
-//    }
 
 
     private fun incomingModalIsAlreadyActive(modalScene: Scene): Boolean {
@@ -377,5 +332,40 @@ class RootContainerFragment : Fragment() {
 //            .setReorderingAllowed(true)
 //            .replace(R.id.child_fragment_container, fragment)
 //            .commit()
+//    }
+
+//    private fun dismissModal() {
+//        saveActiveModalViewState()
+//
+//        val modalContainer = requireView().findViewById<View>(R.id.modal_fragment_container)
+//        val modal = childFragmentManager.findFragmentById(R.id.modal_fragment_container) ?: run {
+//            modalContainer.visibility = View.GONE
+//            return
+//        }
+//
+//        val modalView = modal.view
+//        if (modalView == null) {
+//            childFragmentManager.beginTransaction()
+//                .remove(modal)
+//                .commit()
+//            modalContainer.visibility = View.GONE
+//            return
+//        }
+//
+//        val exitAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fragment_slide_out_bottom)
+//        exitAnimation.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(animation: Animation?) = Unit
+//
+//            override fun onAnimationRepeat(animation: Animation?) = Unit
+//
+//            override fun onAnimationEnd(animation: Animation?) {
+//                if (!isAdded) return
+//                childFragmentManager.beginTransaction()
+//                    .remove(modal)
+//                    .commit()
+//                modalContainer.visibility = View.GONE
+//            }
+//        })
+//        modalView.startAnimation(exitAnimation)
 //    }
 }
