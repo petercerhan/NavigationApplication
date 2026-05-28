@@ -1,6 +1,7 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,19 @@ class RootContainerFragment : Fragment() {
     }
 
     private fun applySceneState(sceneState: SceneState) {
+        //if no implied change - base scene is unchanged, modal scene is unchanged - short circuit and return
+        //This happens on configuration change
+        if (incomingBaseSceneMatchesActiveBaseScene(sceneState.scene) && incomingModalMatchesActiveModal(sceneState.modalScene)) {
+            //In this path, we need to set the modal container to visible if there is a modal in the current scene state
+            //
+            if (sceneState.modalScene != null) {
+                showModalContainer()
+            } else {
+                hideModalContainer()
+            }
+            return
+        }
+
         //save active scene view state requires a locatable view model; so must be done before resetting the VM Locator
         saveActiveSceneViewState()
         saveActiveModalViewState()
@@ -77,34 +91,45 @@ class RootContainerFragment : Fragment() {
             viewModelLocator.cacheScene(sceneState.modalScene)
         }
 
-        //booleans
         val baseSceneChanged = sceneStateChangesBaseScene(sceneState)
         val initialStateContainsModal = initialStateContainsModal()
         val finalStateContainsModal = sceneStateContainsModal(sceneState)
 
+        val sceneStateTransitionsBaseScene = (baseSceneChanged && !initialStateContainsModal && !finalStateContainsModal)
+        val sceneStatePresentsModal = (!baseSceneChanged && !initialStateContainsModal && finalStateContainsModal)
+        val sceneStateDismissesModal = (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal)
+
 //        Log.d("PETERCERHAN", "Enter navigation cases $baseSceneChanged $initialStateContainsModal $finalStateContainsModal")
-        //no initial modal, no final modal, base change -> update base scene
-        if (baseSceneChanged && !initialStateContainsModal && !finalStateContainsModal) {
-            //standard navigation here
+        if (sceneStateTransitionsBaseScene) {
             updateBaseSceneWithAnimation(sceneState)
         }
-        //no initial modal, final modal, stable base -> present modal
-        else if (!baseSceneChanged && !initialStateContainsModal && finalStateContainsModal && sceneState.modalScene != null) {
-            //present modal
+        else if (sceneStatePresentsModal && sceneState.modalScene != null) {
             presentModal(sceneState.modalScene)
         }
-        //initial modal, no final modal, stable base -> dismiss modal
-        else if (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal) {
-            //dismiss Modal
+        else if (sceneStateDismissesModal) {
             dismissModal_new()
         }
-        //else, reset:set base and modal with no animation (ViewModalLocator already set
         else {
-            //make sure final state reflects Scene State
+            //make sure final state reflects Scene State?
+            //implementation depends on how self-recovering this is - we can simply throw a fatal error here
         }
+    }
 
-//        applyMainScene(sceneState)
-//        applyModalScene(sceneState.modalScene)
+
+    private fun incomingBaseSceneMatchesActiveBaseScene(scene: Scene): Boolean {
+        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+        return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId == scene.viewModel.id)
+    }
+
+    private fun incomingModalMatchesActiveModal(incomingModal: Scene?): Boolean {
+        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
+        if (activeModal == null && incomingModal == null) {
+            return true
+        }
+        if (incomingModal == null) {
+            return false
+        }
+        return (activeModal is SceneFragment<*> && activeModal.sceneViewModelId == incomingModal.viewModel.id)
     }
 
     private fun sceneStateChangesBaseScene(sceneState: SceneState): Boolean {
@@ -131,9 +156,9 @@ class RootContainerFragment : Fragment() {
         val scene = sceneState.scene
 
         //Replace this check with a different approach?
-        if (incomingSceneIsAlreadyActive(scene)) {
-            return
-        }
+//        if (incomingSceneIsAlreadyActive(scene)) {
+//            return
+//        }
 
         //Build Fragment for new Scene
         val fragment = SceneFragment.newInstance(
@@ -214,14 +239,7 @@ class RootContainerFragment : Fragment() {
 
 
 
-
-
-    //will be replaced by other logic above
-    private fun incomingSceneIsAlreadyActive(scene: Scene): Boolean {
-        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-        return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId == scene.viewModel.id)
-    }
-    /////
+    //Where to factor these:
 
     private fun saveActiveSceneViewState() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
@@ -232,59 +250,25 @@ class RootContainerFragment : Fragment() {
             childFragmentManager.saveFragmentInstanceState(activeScene)
     }
 
+    private fun saveActiveModalViewState() {
+        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
+                as? SceneFragment<*> ?: return
+
+        val viewModel = viewModelLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel ?: return
+        viewModel.fragmentSavedState =
+            childFragmentManager.saveFragmentInstanceState(activeModal)
+    }
+
     private fun animationsFor(animation: SceneAnimation): Pair<Int, Int> =
         when (animation) {
             SceneAnimation.SlideFromRight -> R.anim.fragment_slide_in_right to R.anim.fragment_slide_out_left
             SceneAnimation.SlideFromLeft -> R.anim.fragment_slide_in_left to R.anim.fragment_slide_out_right
         }
 
-
-    //Modal Mechanics Prior
-
-    private fun applyModalScene(modalScene: Scene?) {
-        if (modalScene == null) {
-//            dismissModal()
-            return
-        }
-
-        if (incomingModalIsAlreadyActive(modalScene)) {
-            viewModelLocator.cacheScene(modalScene)
-            showModalContainer()
-            return
-        }
-
-        saveActiveModalViewState()
-        viewModelLocator.cacheScene(modalScene)
-
-        val fragment = SceneFragment.newInstance(
-            modalScene.fragmentType,
-            modalScene.viewModel.id.toString(),
-        ).apply {
-            setInitialSavedState(modalScene.viewModel.fragmentSavedState)
-        }
-
-        showModalContainer()
-        childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
-            .setReorderingAllowed(true)
-            .replace(R.id.modal_fragment_container, fragment)
-            .commit()
-    }
+    ////
 
 
-    private fun incomingModalIsAlreadyActive(modalScene: Scene): Boolean {
-        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-        return (activeModal is SceneFragment<*> && activeModal.sceneViewModelId == modalScene.viewModel.id)
-    }
 
-    private fun saveActiveModalViewState() {
-        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-            as? SceneFragment<*> ?: return
-
-        val viewModel = viewModelLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel ?: return
-        viewModel.fragmentSavedState =
-            childFragmentManager.saveFragmentInstanceState(activeModal)
-    }
 
 
     //Initialization
@@ -367,5 +351,36 @@ class RootContainerFragment : Fragment() {
 //            }
 //        })
 //        modalView.startAnimation(exitAnimation)
+//    }
+    //Modal Mechanics Prior
+
+//    private fun applyModalScene(modalScene: Scene?) {
+//        if (modalScene == null) {
+////            dismissModal()
+//            return
+//        }
+//
+//        if (incomingModalIsAlreadyActive(modalScene)) {
+//            viewModelLocator.cacheScene(modalScene)
+//            showModalContainer()
+//            return
+//        }
+//
+//        saveActiveModalViewState()
+//        viewModelLocator.cacheScene(modalScene)
+//
+//        val fragment = SceneFragment.newInstance(
+//            modalScene.fragmentType,
+//            modalScene.viewModel.id.toString(),
+//        ).apply {
+//            setInitialSavedState(modalScene.viewModel.fragmentSavedState)
+//        }
+//
+//        showModalContainer()
+//        childFragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
+//            .setReorderingAllowed(true)
+//            .replace(R.id.modal_fragment_container, fragment)
+//            .commit()
 //    }
 }
