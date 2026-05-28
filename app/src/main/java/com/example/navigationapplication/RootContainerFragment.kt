@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -218,27 +217,30 @@ class RootContainerFragment : Fragment() {
     //DismissModal()
 
     private fun dismissModal() {
-        val modalFragment = getCurrentModalFragment()
-        val modalView = modalFragment?.view
-        if (modalFragment == null || modalView == null) {
+        val modalFragment = getCurrentModalFragment() ?: run {
+            hideModalContainer()
+            return
+        }
+        if (childFragmentManager.isStateSaved) {
             return
         }
 
-        //animate out modal, and remove container only after the animation is finished
-        val exitAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fragment_slide_out_bottom)
-        exitAnimation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) = Unit
-            override fun onAnimationRepeat(animation: Animation?) = Unit
-
-            override fun onAnimationEnd(animation: Animation?) {
-                if (!isAdded) return
-                childFragmentManager.beginTransaction()
-                    .remove(modalFragment)
-                    .commit()
+        val hideModalContainerAfterModalViewIsDestroyed = object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {
+                if (fragment !== modalFragment) {
+                    return
+                }
+                fragmentManager.unregisterFragmentLifecycleCallbacks(this)
                 hideModalContainer()
             }
-        })
-        modalView.startAnimation(exitAnimation)
+        }
+
+        childFragmentManager.registerFragmentLifecycleCallbacks(hideModalContainerAfterModalViewIsDestroyed, false)
+        childFragmentManager.beginTransaction()
+            .setCustomAnimations(0, R.anim.fragment_slide_out_bottom, 0, 0)
+            .setReorderingAllowed(true)
+            .remove(modalFragment)
+            .commit()
     }
 
     private fun getCurrentModalFragment(): Fragment? {
