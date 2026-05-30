@@ -1,6 +1,5 @@
 package com.example.navigationapplication
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
@@ -26,10 +25,10 @@ class RootContainerSystemViewModel(
     val sceneFlow: SharedFlow<SceneState>
         get() = rootContainerViewModel.sceneFlow
 
-    fun setTransactionInProgress() {
+    fun setTransactionInProgress(durationMilliseconds: Long) {
         _transactionInProgress.value = true
         viewModelScope.launch {
-            delay(2000)
+            delay(durationMilliseconds)
             _transactionInProgress.value = false
         }
     }
