@@ -247,6 +247,7 @@ class RootContainerFragment : Fragment() {
         when (animation) {
             SceneAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
             SceneAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
+            SceneAnimation.NoAnimation -> Triple(0, 0, 0L)
         }
 
 
