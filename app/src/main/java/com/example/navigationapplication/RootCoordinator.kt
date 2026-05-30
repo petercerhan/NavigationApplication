@@ -16,7 +16,7 @@ class RootCoordinator(
 
     fun start() {
         val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene, SceneAnimation.SlideFromRight)
+        rootContainerViewModel.showScene(scene, SceneAnimation.NoAnimation)
     }
 
     //Routing
