@@ -1,9 +1,9 @@
 package com.example.navigationapplication
 
-import com.example.navigationapplication.controller_library.SceneAnimation
+import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 
 class SceneState(
     val scene: Scene,
-    val animation: SceneAnimation,
+    val sceneTransitionAnimation: SceneTransitionAnimation,
     val modalScene: Scene?,
 )

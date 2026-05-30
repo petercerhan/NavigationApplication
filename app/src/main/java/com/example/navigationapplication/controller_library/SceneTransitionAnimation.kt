@@ -1,6 +1,6 @@
 package com.example.navigationapplication.controller_library
 
-enum class SceneAnimation {
+enum class SceneTransitionAnimation {
     SlideFromRight,
     SlideFromLeft,
     NoAnimation

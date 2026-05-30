@@ -15,9 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
-import com.example.navigationapplication.controller_library.SceneAnimation
+import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import java.util.UUID
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class RootContainerFragment : Fragment() {
@@ -227,7 +226,7 @@ class RootContainerFragment : Fragment() {
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
         val outgoingFragment = childFragmentManager.findFragmentById(R.id.child_fragment_container)
         val incomingFragment = createFragmentForScene(sceneState.scene)
-        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsFor(sceneState.animation)
+        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
         rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
         hideModalContainer()
@@ -243,11 +242,11 @@ class RootContainerFragment : Fragment() {
         transaction.commit()
     }
 
-    private fun animationsFor(animation: SceneAnimation): Triple<Int, Int, Long> =
+    private fun animationsParametersFor(animation: SceneTransitionAnimation): Triple<Int, Int, Long> =
         when (animation) {
-            SceneAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
-            SceneAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
-            SceneAnimation.NoAnimation -> Triple(0, 0, 0L)
+            SceneTransitionAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
+            SceneTransitionAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
+            SceneTransitionAnimation.NoAnimation -> Triple(0, 0, 0L)
         }
 
 
