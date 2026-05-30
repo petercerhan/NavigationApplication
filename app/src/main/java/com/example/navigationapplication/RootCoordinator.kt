@@ -1,5 +1,6 @@
 package com.example.navigationapplication
 
+import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import com.example.navigationapplication.infrastructure_services.UUIDService
 
@@ -47,7 +48,7 @@ class RootCoordinator(
         val simpleModalViewModel = SimpleModalViewModel(viewModelId, this)
 
         val scene = Scene(viewModel = simpleModalViewModel, fragmentType = SimpleModalFragment::class,)
-        rootContainerViewModel.showModal(scene)
+        rootContainerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {

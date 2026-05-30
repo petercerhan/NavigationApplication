@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import java.util.UUID
 import kotlinx.coroutines.launch
@@ -165,7 +166,7 @@ class RootContainerFragment : Fragment() {
         }
         else if (sceneStatePresentsModal && sceneState.modalScene != null) {
             Log.d("PETER CERHAN", "Case B Present Modal")
-            presentModal(sceneState.modalScene)
+            presentModal(sceneState)
         }
         else if (sceneStateDismissesModal) {
             Log.d("PETER CERHAN", "Case C Dismiss Modal")
@@ -252,18 +253,26 @@ class RootContainerFragment : Fragment() {
 
     //PresentModal()
 
-    private fun presentModal(modalScene: Scene) {
-        //call start transaction here, with animation-read driven timing
-        rootContainerSystemViewModel.setTransactionInProgress(300)
+    private fun presentModal(sceneState: SceneState) {
+        val modalScene = sceneState.modalScene ?: return
+        val (newScreenEntryAnimation, animationDuration) = modalPresentationAnimationsParametersFor(sceneState.modalPresentationAnimation)
+
+        rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
         showModalContainer()
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
+            .setCustomAnimations(newScreenEntryAnimation, 0, 0, 0)
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
 
         transaction.commit()
     }
+
+    private fun modalPresentationAnimationsParametersFor(animation: ModalPresentationAnimation?): Pair<Int, Long> =
+        when (animation) {
+            ModalPresentationAnimation.CoverFromBottom -> Pair(R.anim.fragment_slide_in_bottom, 300L)
+            null -> Pair(0, 0L)
+        }
 
 
     //DismissModal()
