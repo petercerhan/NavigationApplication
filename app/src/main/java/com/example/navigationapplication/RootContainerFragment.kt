@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -96,7 +97,7 @@ class RootContainerFragment : Fragment() {
         //cache scene state on (system?) view model
         rootContainerSystemViewModel.activeSceneState = sceneState
         //set transaction in progreess flag on (system?) view model
-        rootContainerSystemViewModel.transactionInProgress = true
+        rootContainerSystemViewModel.setTransactionInProgress()
         //call transition execution routine
         transitionToSceneState(sceneState)
     }
@@ -125,7 +126,7 @@ class RootContainerFragment : Fragment() {
     }
 
     private fun transactionIsInProgress(): Boolean {
-        return rootContainerSystemViewModel.transactionInProgress
+        return rootContainerSystemViewModel.transactionInProgress.value
     }
 
     private fun incomingSceneStateMatchesActiveSceneState(incomingSceneState: SceneState): Boolean {
@@ -150,15 +151,19 @@ class RootContainerFragment : Fragment() {
         val sceneStateDismissesModal = (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal)
 
         if (sceneStateTransitionsBaseScene) {
+            Log.d("PETER CERHAN", "Case A show()")
             updateBaseSceneWithAnimation(sceneState)
         }
         else if (sceneStatePresentsModal && sceneState.modalScene != null) {
+            Log.d("PETER CERHAN", "Case B Present Modal")
             presentModal(sceneState.modalScene)
         }
         else if (sceneStateDismissesModal) {
+            Log.d("PETER CERHAN", "Case C Dismiss Modal")
             dismissModal()
         }
         else {
+            Log.d("PETER CERHAN", "Case D Reject")
             //implementation depends on how self-recovering this component is - we could simply throw a fatal error here
         }
     }
@@ -215,6 +220,7 @@ class RootContainerFragment : Fragment() {
         val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation) = animationsFor(sceneState.animation)
 
+        //callback to finalize transaction once animations finish
         if (outgoingFragment != null) {
             val clearTransactionInProgressAfterAnimation = object : FragmentManager.FragmentLifecycleCallbacks() {
                 override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {
@@ -222,20 +228,23 @@ class RootContainerFragment : Fragment() {
                         return
                     }
                     fragmentManager.unregisterFragmentLifecycleCallbacks(this)
-                    rootContainerSystemViewModel.transactionInProgress = false
+//                    rootContainerSystemViewModel.transactionInProgress.tryEmit(false)
                 }
             }
             childFragmentManager.registerFragmentLifecycleCallbacks(clearTransactionInProgressAfterAnimation, false)
         }
 
+        //execute transaction with completion callback
         val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
             .setReorderingAllowed(true)
             .replace(R.id.child_fragment_container, incomingFragment)
 
+        //In the case of the initial screen transaction where there is no outgoing fragment (so the outgoing animation complete callback does not execute)
+        //We immediately set transactionInProgress to false
         if (outgoingFragment == null) {
             transaction.runOnCommit {
-                rootContainerSystemViewModel.transactionInProgress = false
+//                rootContainerSystemViewModel.transactionInProgress.tryEmit(false)
             }
         }
 
@@ -252,16 +261,58 @@ class RootContainerFragment : Fragment() {
     //PresentModal()
 
     private fun presentModal(modalScene: Scene) {
-        val fragment = createFragmentForScene(modalScene)
         showModalContainer()
-        childFragmentManager.beginTransaction()
+        val fragment = createFragmentForScene(modalScene)
+        val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.fragment_slide_in_bottom, 0, 0, 0)
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
-            .commit()
 
-        //move to end of transaction above
-//        rootContainerSystemViewModel.transactionInProgress = false
+        transaction.runOnCommit {
+            blockModalInteractionUntilEnterAnimationCompletes(fragment.view) {
+//                rootContainerSystemViewModel.transactionInProgress.tryEmit(false)
+            }
+        }
+
+        transaction.commit()
+    }
+
+    /**
+     * Fragment custom animations only affect drawing, not layout bounds. The modal view is
+     * interactive at its final position immediately, so block touches until the enter animation
+     * finishes.
+     */
+    private fun blockModalInteractionUntilEnterAnimationCompletes(
+        view: View?,
+        onAnimationComplete: () -> Unit,
+    ) {
+        if (view == null) {
+            onAnimationComplete()
+            return
+        }
+
+        view.isClickable = true
+        view.setOnTouchListener { _, _ -> true }
+
+        view.post {
+            val animation = view.animation
+            if (animation == null || animation.hasEnded()) {
+                view.setOnTouchListener(null)
+                onAnimationComplete()
+                return@post
+            }
+
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    view.setOnTouchListener(null)
+                    onAnimationComplete()
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+        }
     }
 
 
@@ -287,7 +338,7 @@ class RootContainerFragment : Fragment() {
                 hideModalContainer()
 
                 //Confirm this is the right place to execute this
-                rootContainerSystemViewModel.transactionInProgress = false
+//                rootContainerSystemViewModel.transactionInProgress.tryEmit(false)
             }
         }
 

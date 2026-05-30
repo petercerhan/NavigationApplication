@@ -1,5 +1,6 @@
 package com.example.navigationapplication
 
+import android.util.Log
 import com.example.navigationapplication.controller_library.SceneAnimation
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,12 +14,14 @@ class RootContainerViewModel(
     val sceneFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
 
     fun showScene(scene: Scene, animation: SceneAnimation) {
+        Log.d("PETER CERHAN", "VM showScene")
         //Here we will do additional work to maintain correct SceneState
         val sceneState = SceneState(scene, animation, null)
         _sceneFlow.tryEmit(sceneState)
     }
 
     fun showModal(scene: Scene) {
+        Log.d("PETER CERHAN", "VM showModal")
         //block if there is already a modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
         val sceneState = SceneState(current.scene, current.animation, scene)
@@ -26,6 +29,7 @@ class RootContainerViewModel(
     }
 
     fun dismissModal() {
+        Log.d("PETER CERHAN", "VM dismissModal")
         //block if there is no modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
         val sceneState = SceneState(current.scene, current.animation, null)
