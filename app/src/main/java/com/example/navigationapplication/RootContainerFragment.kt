@@ -1,6 +1,7 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,26 +75,66 @@ class RootContainerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 rootContainerSystemViewModel.sceneFlow.collect { sceneState ->
-                    applySceneState(sceneState)
+                    processIncomingSceneState(sceneState)
                 }
             }
         }
     }
 
-    private fun applySceneState(sceneState: SceneState) {
-        //if no implied change - base scene is unchanged, modal scene is unchanged - short circuit and return
-        //This happens on configuration change
-        if (incomingBaseSceneMatchesActiveBaseScene(sceneState.scene) && incomingModalMatchesActiveModal(sceneState.modalScene)) {
-            //In this path, we need to set the modal container to visible if there is a modal in the current scene state
-            //This is because the modal container scene has visible=GONE in the xml layout file
-            if (sceneState.modalScene != null) {
-                showModalContainer()
-            } else {
-                hideModalContainer()
-            }
+    private fun processIncomingSceneState(sceneState: SceneState) {
+        Log.d("PETER CERHAN", "Evaluate Scene State")
+        //Always set initial modal container visibility for currently active scene state
+        //This ensures that re-evaluated sceneState due to a configuration change has modal container visibility set correctly
+        //Because this property defaults to GONE as set in the xml resource file
+        setInitialModalContainerSceneState()
+
+        if (!shouldAcceptIncomingSceneState(sceneState)) {
+            Log.d("PETER CERHAN", "Reject Scene State")
             return
         }
 
+        //cache scene state on (system?) view model
+        rootContainerSystemViewModel.activeSceneState = sceneState
+        //set transaction in progreess flag on (system?) view model
+        rootContainerSystemViewModel.transactionInProgress = true
+        //call transition execution routine
+        transitionToSceneState(sceneState)
+    }
+
+    private fun setInitialModalContainerSceneState() {
+        val activeSceneState = rootContainerSystemViewModel.activeSceneState
+        if (activeSceneState == null)  {
+            hideModalContainer()
+        } else if (activeSceneState.modalScene == null) {
+            hideModalContainer()
+        } else {
+            showModalContainer()
+        }
+    }
+
+    private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
+        if (transactionIsInProgress()) {
+            Log.d("PETER CERHAN", "Reject Scene State: Transaction in Progress")
+            return false
+        } else if (incomingSceneStateMatchesActiveSceneState(incomingSceneState)) {
+            Log.d("PETER CERHAN", "Reject Scene State: Incoming Matches Active")
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private fun transactionIsInProgress(): Boolean {
+        return rootContainerSystemViewModel.transactionInProgress
+    }
+
+    private fun incomingSceneStateMatchesActiveSceneState(incomingSceneState: SceneState): Boolean {
+        val activeSceneState = rootContainerSystemViewModel.activeSceneState ?: return false
+        return (incomingSceneState.scene.viewModel.id == activeSceneState.scene.viewModel.id &&
+                incomingSceneState.modalScene?.viewModel?.id == activeSceneState.modalScene?.viewModel?.id)
+    }
+
+    private fun transitionToSceneState(sceneState: SceneState) {
         //save active scene view state requires a locatable view model; so this must be done before resetting the VM Locator
         saveActiveSceneViewState()
         saveActiveModalViewState()
@@ -118,24 +159,8 @@ class RootContainerFragment : Fragment() {
             dismissModal()
         }
         else {
-            //implementation depends on how self-recovering this is - we can simply throw a fatal error here
+            //implementation depends on how self-recovering this component is - we could simply throw a fatal error here
         }
-    }
-
-    private fun incomingBaseSceneMatchesActiveBaseScene(scene: Scene): Boolean {
-        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-        return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId == scene.viewModel.id)
-    }
-
-    private fun incomingModalMatchesActiveModal(incomingModal: Scene?): Boolean {
-        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-        if (activeModal == null && incomingModal == null) {
-            return true
-        }
-        if (incomingModal == null) {
-            return false
-        }
-        return (activeModal is SceneFragment<*> && activeModal.sceneViewModelId == incomingModal.viewModel.id)
     }
 
     private fun saveActiveSceneViewState() {
@@ -185,13 +210,36 @@ class RootContainerFragment : Fragment() {
     //Show()
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
-        val fragment = createFragmentForScene(sceneState.scene)
+        hideModalContainer()
+        val outgoingFragment = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+        val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation) = animationsFor(sceneState.animation)
-        childFragmentManager.beginTransaction()
+
+        if (outgoingFragment != null) {
+            val clearTransactionInProgressAfterAnimation = object : FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {
+                    if (fragment !== outgoingFragment) {
+                        return
+                    }
+                    fragmentManager.unregisterFragmentLifecycleCallbacks(this)
+                    rootContainerSystemViewModel.transactionInProgress = false
+                }
+            }
+            childFragmentManager.registerFragmentLifecycleCallbacks(clearTransactionInProgressAfterAnimation, false)
+        }
+
+        val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
             .setReorderingAllowed(true)
-            .replace(R.id.child_fragment_container, fragment)
-            .commit()
+            .replace(R.id.child_fragment_container, incomingFragment)
+
+        if (outgoingFragment == null) {
+            transaction.runOnCommit {
+                rootContainerSystemViewModel.transactionInProgress = false
+            }
+        }
+
+        transaction.commit()
     }
 
     private fun animationsFor(animation: SceneAnimation): Pair<Int, Int> =
@@ -211,6 +259,9 @@ class RootContainerFragment : Fragment() {
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
             .commit()
+
+        //move to end of transaction above
+//        rootContainerSystemViewModel.transactionInProgress = false
     }
 
 
@@ -221,6 +272,8 @@ class RootContainerFragment : Fragment() {
             hideModalContainer()
             return
         }
+
+        //TODO: What is this code for?
         if (childFragmentManager.isStateSaved) {
             return
         }
@@ -232,6 +285,9 @@ class RootContainerFragment : Fragment() {
                 }
                 fragmentManager.unregisterFragmentLifecycleCallbacks(this)
                 hideModalContainer()
+
+                //Confirm this is the right place to execute this
+                rootContainerSystemViewModel.transactionInProgress = false
             }
         }
 

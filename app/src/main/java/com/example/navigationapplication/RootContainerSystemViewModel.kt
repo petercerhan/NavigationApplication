@@ -10,6 +10,9 @@ class RootContainerSystemViewModel(
     val serviceLocator: MutableMap<UUID, Any>,
 ) : ViewModel() {
 
+    var transactionInProgress = false
+    var activeSceneState: SceneState? = null
+
     val rootContainerViewModel: RootContainerViewModel
         get() = serviceLocator[rootContainerId] as RootContainerViewModel
 
