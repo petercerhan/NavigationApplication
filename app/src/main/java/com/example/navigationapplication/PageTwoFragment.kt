@@ -26,6 +26,7 @@ class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
         view.findViewById<View>(R.id.button_next).setOnClickListener {
             viewModel.next()
         }
+
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 viewModel.back()
