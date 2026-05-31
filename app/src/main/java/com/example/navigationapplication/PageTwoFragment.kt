@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import com.example.navigationapplication.level_two.ContainerFragment
 import com.example.navigationapplication.level_two.InitialScreen
 import java.util.UUID
 
 class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
-
-    private var backPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,15 +23,13 @@ class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
         view.findViewById<View>(R.id.button_next).setOnClickListener {
             viewModel.next()
         }
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.back()
-            }
-        }
-        backPressedCallback = callback
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
+
+    override fun backButtonAction() {
+        viewModel.back()
+    }
+
+
 
     //Legacy Navigation Functions//
 

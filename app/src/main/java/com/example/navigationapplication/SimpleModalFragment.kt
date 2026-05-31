@@ -1,15 +1,11 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 
 class SimpleModalFragment : SceneFragment<SimpleModalViewModel>() {
-
-    private var backPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,13 +20,10 @@ class SimpleModalFragment : SceneFragment<SimpleModalViewModel>() {
         view.findViewById<View>(R.id.button_dismiss).setOnClickListener {
             viewModel.dismiss()
         }
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.dismiss()
-            }
-        }
-        backPressedCallback = callback
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
+
+    override fun backButtonAction() {
+        viewModel.dismiss()
+    }
+
 }

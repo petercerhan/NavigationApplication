@@ -1,6 +1,8 @@
 package com.example.navigationapplication
 
 import android.os.Bundle
+import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -10,6 +12,8 @@ import java.util.UUID
 import kotlin.reflect.KClass
 
 abstract class SceneFragment<VM : Any> : Fragment() {
+
+    //System View Models
 
     protected val activityViewModel: MainActivityViewModel by activityViewModels()
 
@@ -34,6 +38,9 @@ abstract class SceneFragment<VM : Any> : Fragment() {
     protected val viewModel: VM
         get() = frameworkViewModel.viewModel
 
+
+    //Initialization
+
     companion object {
         const val VIEW_MODEL_ID = "view_model_id"
 
@@ -48,4 +55,24 @@ abstract class SceneFragment<VM : Any> : Fragment() {
                 arguments = sceneArguments(viewModelId)
             }
     }
+
+
+    //Lifecycle
+
+    private var backPressedCallback: OnBackPressedCallback? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backButtonAction()
+            }
+        }
+        backPressedCallback = callback
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    abstract fun backButtonAction()
+
 }
