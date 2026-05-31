@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import java.util.UUID
@@ -170,7 +171,7 @@ class RootContainerFragment : Fragment() {
         }
         else if (sceneStateDismissesModal) {
             Log.d("PETER CERHAN", "Case C Dismiss Modal")
-            dismissModal()
+            dismissModal(sceneState)
         }
         else {
             Log.d("PETER CERHAN", "Case D Reject")
@@ -277,7 +278,7 @@ class RootContainerFragment : Fragment() {
 
     //DismissModal()
 
-    private fun dismissModal() {
+    private fun dismissModal(sceneState: SceneState) {
         val modalFragment = getCurrentModalFragment() ?: run {
             hideModalContainer()
             return
@@ -288,8 +289,8 @@ class RootContainerFragment : Fragment() {
             return
         }
 
-        //call start transaction here, with animation-read driven timing
-        rootContainerSystemViewModel.setTransactionInProgress(300)
+        val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
+        rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
 
         val hideModalContainerAfterModalViewIsDestroyed = object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {
@@ -303,11 +304,17 @@ class RootContainerFragment : Fragment() {
 
         childFragmentManager.registerFragmentLifecycleCallbacks(hideModalContainerAfterModalViewIsDestroyed, false)
         childFragmentManager.beginTransaction()
-            .setCustomAnimations(0, R.anim.fragment_slide_out_bottom, 0, 0)
+            .setCustomAnimations(0, priorScreenExitAnimation, 0, 0)
             .setReorderingAllowed(true)
             .remove(modalFragment)
             .commit()
     }
+
+    private fun modalDismissalAnimationsParametersFor(animation: ModalDismissalAnimation?): Pair<Int, Long> =
+        when (animation) {
+            ModalDismissalAnimation.UncoverDown -> Pair(R.anim.fragment_slide_out_bottom, 300L)
+            null -> Pair(0, 0L)
+        }
 
     private fun getCurrentModalFragment(): Fragment? {
         return childFragmentManager.findFragmentById(R.id.modal_fragment_container)

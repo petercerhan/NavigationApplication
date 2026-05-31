@@ -1,5 +1,6 @@
 package com.example.navigationapplication
 
+import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import com.example.navigationapplication.infrastructure_services.UUIDService
@@ -59,7 +60,7 @@ class RootCoordinator(
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
-        rootContainerViewModel.dismissModal()
+        rootContainerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
 }
