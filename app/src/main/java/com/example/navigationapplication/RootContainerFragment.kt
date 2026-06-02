@@ -125,7 +125,10 @@ class RootContainerFragment : Fragment() {
     }
 
     private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
-        if (transactionIsInProgress()) {
+        if (childFragmentManager.isStateSaved) {
+            Log.d("PETER CERHAN", "Reject Scene State: Fragment State Saved")
+            return false
+        } else if (transactionIsInProgress()) {
             Log.d("PETER CERHAN", "Reject Scene State: Transaction in Progress")
             return false
         } else if (incomingSceneStateMatchesActiveSceneState(incomingSceneState)) {
@@ -281,11 +284,6 @@ class RootContainerFragment : Fragment() {
     private fun dismissModal(sceneState: SceneState) {
         val modalFragment = getCurrentModalFragment() ?: run {
             hideModalContainer()
-            return
-        }
-
-        //TODO: What is this code for?
-        if (childFragmentManager.isStateSaved) {
             return
         }
 
