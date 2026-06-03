@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.navigationapplication.controller_library.LocatorViewModel
 import java.util.UUID
 import kotlin.reflect.KClass
 
@@ -17,7 +18,9 @@ abstract class SceneFragment<VM : Any> : Fragment() {
 
     //System View Models
 
-    protected val activityViewModel: MainActivityViewModel by activityViewModels()
+    protected val locatorViewModel: LocatorViewModel by viewModels(
+        ownerProducer = { requireParentFragment() }
+    )
 
     val sceneViewModelId: UUID
         get() = UUID.fromString(
@@ -31,7 +34,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return FrameworkViewModel<VM>(
                     sceneViewModelId,
-                    activityViewModel.viewModelLocator,
+                    locatorViewModel.viewModelLocator,
                 ) as T
             }
         }

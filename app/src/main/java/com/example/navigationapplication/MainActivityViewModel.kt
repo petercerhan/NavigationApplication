@@ -8,8 +8,8 @@ import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
 
 class MainActivityViewModel : ViewModel() {
+//    val rootContainerServiceLocator: MutableMap<UUID, Any> = mutableMapOf()
     val viewModelLocator: ApplicationViewModelLocator = ApplicationViewModelLocator()
-    val rootContainerServiceLocator: MutableMap<UUID, Any> = mutableMapOf()
     val coordinator: RootCoordinator
     val uuidService: UUIDService = UUIDServiceImpl()
 
@@ -19,7 +19,8 @@ class MainActivityViewModel : ViewModel() {
 
         coordinator = RootCoordinator(rootContainerViewModel, uuidService)
 
-        rootContainerServiceLocator[rootContainerId] = rootContainerViewModel
+//        viewModelLocator[rootContainerId] = rootContainerViewModel
+        viewModelLocator.cacheViewModel(rootContainerId, rootContainerViewModel)
 
         coordinator.start()
     }

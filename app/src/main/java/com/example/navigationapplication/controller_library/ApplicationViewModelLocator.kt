@@ -15,6 +15,10 @@ class ApplicationViewModelLocator {
         viewModelMap[scene.viewModel.id] = scene.viewModel
     }
 
+    fun cacheViewModel(id: UUID, viewModel: Any) {
+        viewModelMap[id] = viewModel
+    }
+
     fun viewModelForId(id: UUID): Any? {
         return viewModelMap[id]
     }

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.LocatorViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
@@ -25,11 +26,10 @@ class RootContainerFragment : Fragment() {
 
     val activityViewModel: MainActivityViewModel by activityViewModels()
 
-    private val viewModelLocator: ApplicationViewModelLocator
-        get() = activityViewModel.viewModelLocator
+    val locatorViewModel: LocatorViewModel by viewModels()
 
-    private val rootContainerServiceLocator: MutableMap<UUID, Any>
-        get() = activityViewModel.rootContainerServiceLocator
+    private val rootContainerServiceLocator: ApplicationViewModelLocator
+        get() = activityViewModel.viewModelLocator
 
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -41,11 +41,14 @@ class RootContainerFragment : Fragment() {
                 )
                 return RootContainerSystemViewModel(
                     rootContainerId = id,
-                    serviceLocator = activityViewModel.rootContainerServiceLocator,
+                    serviceLocator = activityViewModel.viewModelLocator,
                 ) as T
             }
         }
     }
+
+    private val viewModelLocator: ApplicationViewModelLocator
+        get() = locatorViewModel.viewModelLocator
 
     //Initialization
 
