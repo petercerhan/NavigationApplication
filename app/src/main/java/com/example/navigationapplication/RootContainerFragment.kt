@@ -24,12 +24,14 @@ import kotlinx.coroutines.launch
 
 class RootContainerFragment : Fragment() {
 
-    val activityViewModel: MainActivityViewModel by activityViewModels()
+    val parentServiceLocatorViewModel: MainActivityViewModel by viewModels(
+        ownerProducer = { parentFragment ?: requireActivity() }
+    )
 
-    val locatorViewModel: LocatorViewModel by viewModels()
+    val serviceLocatorViewModel: LocatorViewModel by viewModels()
 
     private val rootContainerServiceLocator: ApplicationViewModelLocator
-        get() = activityViewModel.viewModelLocator
+        get() = parentServiceLocatorViewModel.viewModelLocator
 
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -41,14 +43,14 @@ class RootContainerFragment : Fragment() {
                 )
                 return RootContainerSystemViewModel(
                     rootContainerId = id,
-                    serviceLocator = activityViewModel.viewModelLocator,
+                    serviceLocator = parentServiceLocatorViewModel.viewModelLocator,
                 ) as T
             }
         }
     }
 
     private val viewModelLocator: ApplicationViewModelLocator
-        get() = locatorViewModel.viewModelLocator
+        get() = serviceLocatorViewModel.viewModelLocator
 
     //Initialization
 

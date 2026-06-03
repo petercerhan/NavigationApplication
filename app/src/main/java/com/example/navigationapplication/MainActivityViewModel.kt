@@ -4,12 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import java.util.UUID
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.LocatorViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
 
-class MainActivityViewModel : ViewModel() {
-//    val rootContainerServiceLocator: MutableMap<UUID, Any> = mutableMapOf()
-    val viewModelLocator: ApplicationViewModelLocator = ApplicationViewModelLocator()
+class MainActivityViewModel : LocatorViewModel() {
     val coordinator: RootCoordinator
     val uuidService: UUIDService = UUIDServiceImpl()
 
@@ -19,7 +18,6 @@ class MainActivityViewModel : ViewModel() {
 
         coordinator = RootCoordinator(rootContainerViewModel, uuidService)
 
-//        viewModelLocator[rootContainerId] = rootContainerViewModel
         viewModelLocator.cacheViewModel(rootContainerId, rootContainerViewModel)
 
         coordinator.start()
