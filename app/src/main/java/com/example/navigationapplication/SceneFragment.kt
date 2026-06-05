@@ -28,21 +28,8 @@ abstract class SceneFragment<VM : Any> : Fragment() {
                 ?: error("Missing $VIEW_MODEL_ID"),
         )
 
-    val frameworkViewModel: FrameworkViewModel<VM> by viewModels {
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return FrameworkViewModel<VM>(
-                    sceneViewModelId,
-                    locatorViewModel.viewModelLocator,
-                ) as T
-            }
-        }
-    }
-
     protected val viewModel: VM
-        get() = frameworkViewModel.viewModel
-
+        get() = locatorViewModel.viewModelLocator.viewModelForId(sceneViewModelId) as VM
 
     //Initialization
 
