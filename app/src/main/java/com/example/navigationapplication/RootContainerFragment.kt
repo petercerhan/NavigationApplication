@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.navigationapplication.SceneFragment.Companion.VIEW_MODEL_ID
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
-import com.example.navigationapplication.controller_library.LocatorViewModel
+import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
@@ -28,29 +28,34 @@ class RootContainerFragment : Fragment() {
         ownerProducer = { parentFragment ?: requireActivity() }
     )
 
-    val serviceLocatorViewModel: LocatorViewModel by viewModels()
+    val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
     private val rootContainerServiceLocator: ApplicationViewModelLocator
-        get() = parentServiceLocatorViewModel.viewModelLocator
+        get() = parentServiceLocatorViewModel.serviceLocator
 
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val id = UUID.fromString(
-                    requireArguments().getString(ARG_ROOT_CONTAINER_ID)
-                        ?: error("Missing $ARG_ROOT_CONTAINER_ID")
-                )
                 return RootContainerSystemViewModel(
-                    rootContainerId = id,
-                    serviceLocator = parentServiceLocatorViewModel.viewModelLocator,
+                    serviceLocator = parentServiceLocatorViewModel.serviceLocator,
                 ) as T
             }
         }
     }
 
     private val viewModelLocator: ApplicationViewModelLocator
-        get() = serviceLocatorViewModel.viewModelLocator
+        get() = serviceLocatorViewModel.serviceLocator
+
+
+    val sceneViewModelId: UUID
+        get() = UUID.fromString(
+            requireArguments().getString(ARG_ROOT_CONTAINER_ID)
+                ?: error("Missing $VIEW_MODEL_ID"),
+        )
+
+    private val viewModel: RootContainerViewModel
+        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as RootContainerViewModel
 
     //Initialization
 
@@ -87,7 +92,7 @@ class RootContainerFragment : Fragment() {
                     }
                 }
                 launch {
-                    rootContainerSystemViewModel.sceneFlow.collect { sceneState ->
+                    viewModel.sceneFlow.collect { sceneState ->
                         processIncomingSceneState(sceneState)
                     }
                 }

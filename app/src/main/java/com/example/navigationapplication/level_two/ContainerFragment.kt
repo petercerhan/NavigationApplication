@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.navigationapplication.level_two.LevelTwoPageOneFragment
 import com.example.navigationapplication.MainActivityViewModel
 import com.example.navigationapplication.R
 import java.util.UUID

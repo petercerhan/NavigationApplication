@@ -6,11 +6,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.navigationapplication.controller_library.LocatorViewModel
+import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import java.util.UUID
 import kotlin.reflect.KClass
 
@@ -18,7 +15,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
 
     //System View Models
 
-    protected val locatorViewModel: LocatorViewModel by viewModels(
+    protected val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels(
         ownerProducer = { requireParentFragment() }
     )
 
@@ -29,7 +26,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
         )
 
     protected val viewModel: VM
-        get() = locatorViewModel.viewModelLocator.viewModelForId(sceneViewModelId) as VM
+        get() = serviceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as VM
 
     //Initialization
 
