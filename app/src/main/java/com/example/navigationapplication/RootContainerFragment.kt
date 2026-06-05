@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.navigationapplication.SceneFragment.Companion.VIEW_MODEL_ID
@@ -30,23 +28,11 @@ class RootContainerFragment : Fragment() {
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
-    private val rootContainerServiceLocator: ApplicationViewModelLocator
-        get() = parentServiceLocatorViewModel.serviceLocator
+    //Come up with a new name here
+    val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels()
 
-    val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return RootContainerSystemViewModel(
-                    serviceLocator = parentServiceLocatorViewModel.serviceLocator,
-                ) as T
-            }
-        }
-    }
-
-    private val viewModelLocator: ApplicationViewModelLocator
+    private val serviceLocator: ApplicationViewModelLocator
         get() = serviceLocatorViewModel.serviceLocator
-
 
     val sceneViewModelId: UUID
         get() = UUID.fromString(
@@ -196,7 +182,7 @@ class RootContainerFragment : Fragment() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = viewModelLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel ?: return
+        val viewModel = serviceLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeScene)
     }
@@ -205,16 +191,16 @@ class RootContainerFragment : Fragment() {
         val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = viewModelLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel ?: return
+        val viewModel = serviceLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeModal)
     }
 
     private fun updateViewModelLocatorForIncomingSceneState(sceneState: SceneState) {
-        viewModelLocator.clear()
-        viewModelLocator.cacheScene(sceneState.scene)
+        serviceLocator.clear()
+        serviceLocator.cacheScene(sceneState.scene)
         if (sceneState.modalScene != null) {
-            viewModelLocator.cacheScene(sceneState.modalScene)
+            serviceLocator.cacheScene(sceneState.modalScene)
         }
     }
 
