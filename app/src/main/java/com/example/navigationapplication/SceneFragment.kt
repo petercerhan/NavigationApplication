@@ -15,18 +15,18 @@ abstract class SceneFragment<VM : Any> : Fragment() {
 
     //System View Models
 
-    protected val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels(
-        ownerProducer = { requireParentFragment() }
+    protected val parentServiceLocatorViewModel: ServiceLocatorViewModel by viewModels(
+        ownerProducer = { parentFragment ?: requireActivity() }
     )
 
     val sceneViewModelId: UUID
         get() = UUID.fromString(
             requireArguments().getString(VIEW_MODEL_ID)
-                ?: error("Missing $VIEW_MODEL_ID"),
+                ?: error("Missing ${VIEW_MODEL_ID}"),
         )
 
     protected val viewModel: VM
-        get() = serviceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as VM
+        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as VM
 
     //Initialization
 

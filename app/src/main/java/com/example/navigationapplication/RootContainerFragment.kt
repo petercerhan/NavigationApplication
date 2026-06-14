@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.navigationapplication.SceneFragment.Companion.VIEW_MODEL_ID
 import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
@@ -20,11 +19,11 @@ import com.example.navigationapplication.controller_library.SceneTransitionAnima
 import java.util.UUID
 import kotlinx.coroutines.launch
 
-class RootContainerFragment : Fragment() {
+class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
 
-    val parentServiceLocatorViewModel: MainActivityViewModel by viewModels(
-        ownerProducer = { parentFragment ?: requireActivity() }
-    )
+    override fun backButtonAction() {
+        Log.d("Peter Cerhan", "RootContainerFragment intercepted back button press")
+    }
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
@@ -34,28 +33,6 @@ class RootContainerFragment : Fragment() {
     private val serviceLocator: ApplicationViewModelLocator
         get() = serviceLocatorViewModel.serviceLocator
 
-    val sceneViewModelId: UUID
-        get() = UUID.fromString(
-            requireArguments().getString(ARG_ROOT_CONTAINER_ID)
-                ?: error("Missing $VIEW_MODEL_ID"),
-        )
-
-    private val viewModel: RootContainerViewModel
-        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as RootContainerViewModel
-
-    //Initialization
-
-    companion object {
-        const val ARG_ROOT_CONTAINER_ID = "arg_root_container_id"
-
-        fun newInstance(rootContainerId: UUID): RootContainerFragment {
-            return RootContainerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_ROOT_CONTAINER_ID, rootContainerId.toString())
-                }
-            }
-        }
-    }
 
     //Lifecycle
 

@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class RootContainerViewModel(
-    val id: UUID,
-) {
+    id: UUID,
+): ApplicationViewModel(id) {
     private val _sceneFlow = MutableSharedFlow<SceneState>(replay = 1)
     val sceneFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
 
