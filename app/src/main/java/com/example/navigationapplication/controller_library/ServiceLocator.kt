@@ -4,17 +4,16 @@ import android.util.Log
 import com.example.navigationapplication.Scene
 import java.util.UUID
 
-class ApplicationViewModelLocator {
+class ServiceLocator {
 
     init {
-        ApplicationViewModelLocator.counter++
-        Log.d("Peter Cerhan", "ApplicationViewModelLocator Initialized ${ApplicationViewModelLocator.counter}")
+        ServiceLocator.counter++
+        Log.d("Peter Cerhan", "ApplicationViewModelLocator Initialized ${ServiceLocator.counter}")
     }
 
     companion object {
         var counter: Int = 0
     }
-
 
     private val viewModelMap: MutableMap<UUID, Any> = mutableMapOf()
 
@@ -27,12 +26,12 @@ class ApplicationViewModelLocator {
     }
 
     fun cacheViewModel(id: UUID, viewModel: Any) {
-        Log.d("Peter Cerhan", "On ${ApplicationViewModelLocator.counter} Cache view model $id")
+        Log.d("Peter Cerhan", "On ${ServiceLocator.counter} Cache view model $id")
         viewModelMap[id] = viewModel
     }
 
     fun viewModelForId(id: UUID): Any? {
-        Log.d("Peter Cerhan", "On ${ApplicationViewModelLocator.counter} View Model for id $id")
+        Log.d("Peter Cerhan", "On ${ServiceLocator.counter} View Model for id $id")
         return viewModelMap[id]
     }
 

@@ -11,12 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
+import com.example.navigationapplication.controller_library.ServiceLocator
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
-import java.util.UUID
 import kotlinx.coroutines.launch
 
 class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
@@ -30,7 +29,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     //Come up with a new name here
     val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels()
 
-    private val serviceLocator: ApplicationViewModelLocator
+    private val serviceLocator: ServiceLocator
         get() = serviceLocatorViewModel.serviceLocator
 
 

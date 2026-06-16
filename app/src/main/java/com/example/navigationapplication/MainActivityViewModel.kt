@@ -2,8 +2,6 @@ package com.example.navigationapplication
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.navigationapplication.controller_library.ApplicationViewModelLocator
-import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
 
