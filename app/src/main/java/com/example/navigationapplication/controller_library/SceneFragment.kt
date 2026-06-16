@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.controller_library
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import java.util.UUID
 import kotlin.reflect.KClass
 

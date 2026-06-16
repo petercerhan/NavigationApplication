@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
