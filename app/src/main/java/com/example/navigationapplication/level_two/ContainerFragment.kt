@@ -6,14 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.navigationapplication.MainActivityViewModel
 import com.example.navigationapplication.R
 import java.util.UUID
 import kotlin.getValue
 
 class ContainerFragment : Fragment() {
-
-    val activityViewModel: MainActivityViewModel by activityViewModels()
 
     val rootCoordinatorId: UUID by lazy {
         UUID.fromString(

@@ -14,7 +14,6 @@ import java.util.ServiceLoader
 class MainActivity : AppCompatActivity() {
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
-    val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
