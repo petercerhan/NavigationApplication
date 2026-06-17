@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.root_container
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.navigationapplication.R
+import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.ServiceLocator
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
@@ -159,7 +161,8 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel ?: return
+        val viewModel = serviceLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel
+            ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeScene)
     }
@@ -168,7 +171,8 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel ?: return
+        val viewModel = serviceLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel
+            ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeModal)
     }
@@ -295,7 +299,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     //Shared Subroutines
 
     private fun createFragmentForScene(scene: Scene): Fragment {
-        val fragment = SceneFragment.newInstance(
+        val fragment = newInstance(
             scene.fragmentType,
             scene.viewModel.id.toString(),
         ).apply {

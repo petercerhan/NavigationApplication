@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.controller_library
 
 import androidx.fragment.app.Fragment
 import java.util.UUID

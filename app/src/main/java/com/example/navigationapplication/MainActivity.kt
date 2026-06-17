@@ -9,7 +9,8 @@ import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
-import java.util.ServiceLoader
+import com.example.navigationapplication.root_container.RootContainerFragment
+import com.example.navigationapplication.root_container.RootContainerViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         //set up coordinator etc.
         val uuidService: UUIDService = UUIDServiceImpl()
         val rootContainerId = uuidService.newUUID()
-        val rootContainerViewModel = RootContainerViewModel(id=rootContainerId)
+        val rootContainerViewModel = RootContainerViewModel(id = rootContainerId)
         val coordinator = RootCoordinator(rootContainerViewModel, uuidService)
 
         serviceLocatorViewModel.serviceLocator.cacheViewModel(rootContainerId, rootContainerViewModel)

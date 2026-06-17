@@ -1,6 +1,7 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.root_container
 
 import android.util.Log
+import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
@@ -26,7 +27,8 @@ class RootContainerViewModel(
         Log.d("PETER CERHAN", "VM showModal")
         //block if there is already a modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
-        val sceneState = SceneState(current.scene, current.sceneTransitionAnimation, scene, animation, null)
+        val sceneState =
+            SceneState(current.scene, current.sceneTransitionAnimation, scene, animation, null)
         _sceneFlow.tryEmit(sceneState)
     }
 
@@ -34,7 +36,8 @@ class RootContainerViewModel(
         Log.d("PETER CERHAN", "VM dismissModal")
         //block if there is no modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
-        val sceneState = SceneState(current.scene, current.sceneTransitionAnimation, null, null, animation)
+        val sceneState =
+            SceneState(current.scene, current.sceneTransitionAnimation, null, null, animation)
         _sceneFlow.tryEmit(sceneState)
     }
 

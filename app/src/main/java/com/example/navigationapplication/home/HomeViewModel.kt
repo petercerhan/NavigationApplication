@@ -1,6 +1,7 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.home
 
 import android.util.Log
+import com.example.navigationapplication.controller_library.ApplicationViewModel
 import java.util.UUID
 
 interface HomeViewModelDelegate {
