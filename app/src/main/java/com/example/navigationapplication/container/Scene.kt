@@ -1,4 +1,4 @@
-package com.example.navigationapplication.root_container
+package com.example.navigationapplication.container
 
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.SceneFragment

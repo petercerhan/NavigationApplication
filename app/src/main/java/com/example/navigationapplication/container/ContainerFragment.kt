@@ -1,4 +1,4 @@
-package com.example.navigationapplication.root_container
+package com.example.navigationapplication.container
 
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +22,7 @@ import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import kotlinx.coroutines.launch
 
-class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
+class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     val instanceNumber = ++instanceCount
 
@@ -31,13 +31,13 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     }
 
     override fun backButtonAction() {
-        Log.d("Peter Cerhan", "RootContainerFragment intercepted back button press")
+        Log.d("Peter Cerhan", "ContainerFragment intercepted back button press")
     }
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
     //Come up with a new name here
-    val rootContainerSystemViewModel: RootContainerSystemViewModel by viewModels()
+    val containerSystemViewModel: ContainerSystemViewModel by viewModels()
 
     private val serviceLocator: ServiceLocator
         get() = serviceLocatorViewModel.serviceLocator
@@ -73,7 +73,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    rootContainerSystemViewModel.transactionInProgress.collect { inProgress ->
+                    containerSystemViewModel.transactionInProgress.collect { inProgress ->
                         updateTransactionInputBlocker(inProgress)
                     }
                 }
@@ -103,13 +103,13 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         }
 
         //cache scene state on (system?) view model
-        rootContainerSystemViewModel.activeSceneState = sceneState
+        containerSystemViewModel.activeSceneState = sceneState
         //call transition execution routine
         transitionToSceneState(sceneState)
     }
 
     private fun setInitialModalContainerSceneState() {
-        val activeSceneState = rootContainerSystemViewModel.activeSceneState
+        val activeSceneState = containerSystemViewModel.activeSceneState
         if (activeSceneState == null)  {
             hideModalContainer()
         } else if (activeSceneState.modalScene == null) {
@@ -135,11 +135,11 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     }
 
     private fun transactionIsInProgress(): Boolean {
-        return rootContainerSystemViewModel.transactionInProgress.value
+        return containerSystemViewModel.transactionInProgress.value
     }
 
     private fun incomingSceneStateMatchesActiveSceneState(incomingSceneState: SceneState): Boolean {
-        val activeSceneState = rootContainerSystemViewModel.activeSceneState ?: return false
+        val activeSceneState = containerSystemViewModel.activeSceneState ?: return false
         return (incomingSceneState.scene.viewModel.id == activeSceneState.scene.viewModel.id &&
                 incomingSceneState.modalScene?.viewModel?.id == activeSceneState.modalScene?.viewModel?.id)
     }
@@ -230,7 +230,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
-        rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerSystemViewModel.setTransactionInProgress(animationDuration)
         hideModalContainer()
 
         //execute transaction with completion callback
@@ -258,7 +258,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         val modalScene = sceneState.modalScene ?: return
         val (newScreenEntryAnimation, animationDuration) = modalPresentationAnimationsParametersFor(sceneState.modalPresentationAnimation)
 
-        rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerSystemViewModel.setTransactionInProgress(animationDuration)
         showModalContainer()
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
@@ -285,7 +285,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         }
 
         val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
-        rootContainerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerSystemViewModel.setTransactionInProgress(animationDuration)
 
         val hideModalContainerAfterModalViewIsDestroyed = object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {

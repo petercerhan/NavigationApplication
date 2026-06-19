@@ -9,8 +9,8 @@ import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
-import com.example.navigationapplication.root_container.RootContainerFragment
-import com.example.navigationapplication.root_container.RootContainerViewModel
+import com.example.navigationapplication.container.ContainerFragment
+import com.example.navigationapplication.container.ContainerViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,18 +23,18 @@ class MainActivity : AppCompatActivity() {
 
         //set up coordinator etc.
         val uuidService: UUIDService = UUIDServiceImpl()
-        val rootContainerId = uuidService.newUUID()
-        val rootContainerViewModel = RootContainerViewModel(id = rootContainerId)
-        val coordinator = RootCoordinator(rootContainerViewModel, uuidService)
+        val containerId = uuidService.newUUID()
+        val containerViewModel = ContainerViewModel(id = containerId)
+        val coordinator = RootCoordinator(containerViewModel, uuidService)
 
-        serviceLocatorViewModel.serviceLocator.cacheViewModel(rootContainerId, rootContainerViewModel)
+        serviceLocatorViewModel.serviceLocator.cacheViewModel(containerId, containerViewModel)
 
         coordinator.start()
         //add to service locator on service locator view model
         //add coordinator to root activity
 
 
-        val fragment = SceneFragment.newInstance(RootContainerFragment::class,coordinator.rootContainerViewModel.id.toString() )
+        val fragment = SceneFragment.newInstance(ContainerFragment::class,coordinator.containerViewModel.id.toString() )
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

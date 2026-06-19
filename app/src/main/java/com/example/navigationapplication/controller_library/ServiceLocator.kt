@@ -1,7 +1,6 @@
 package com.example.navigationapplication.controller_library
 
-import android.util.Log
-import com.example.navigationapplication.root_container.Scene
+import com.example.navigationapplication.container.Scene
 import java.util.UUID
 
 class ServiceLocator {

@@ -1,4 +1,4 @@
-package com.example.navigationapplication.root_container
+package com.example.navigationapplication.container
 
 import android.util.Log
 import com.example.navigationapplication.controller_library.ApplicationViewModel
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class RootContainerViewModel(
+class ContainerViewModel(
     id: UUID,
 ): ApplicationViewModel(id) {
     private val _sceneFlow = MutableSharedFlow<SceneState>(replay = 1)

@@ -1,6 +1,5 @@
 package com.example.navigationapplication
 
-import android.util.Log
 import com.example.navigationapplication.home.HomeFragment
 import com.example.navigationapplication.home.HomeViewModel
 import com.example.navigationapplication.home.HomeViewModelDelegate
@@ -13,19 +12,14 @@ import com.example.navigationapplication.controller_library.SceneTransitionAnima
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
 import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorDelegate
-import com.example.navigationapplication.root_container.RootContainerFragment
-import com.example.navigationapplication.root_container.RootContainerViewModel
-import com.example.navigationapplication.root_container.Scene
-import com.example.navigationapplication.simple_modal.SimpleModalFragment
+import com.example.navigationapplication.container.ContainerFragment
+import com.example.navigationapplication.container.ContainerViewModel
+import com.example.navigationapplication.container.Scene
 import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class RootCoordinator(
-    val rootContainerViewModel: RootContainerViewModel,
+    val containerViewModel: ContainerViewModel,
     val uuidService: UUIDService,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
@@ -35,7 +29,7 @@ class RootCoordinator(
 
     fun start() {
         val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene, SceneTransitionAnimation.NoAnimation)
+        containerViewModel.showScene(scene, SceneTransitionAnimation.NoAnimation)
     }
 
     //Routing
@@ -58,7 +52,7 @@ class RootCoordinator(
         val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
-        rootContainerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+        containerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(homeViewModel: HomeViewModel) {
@@ -68,29 +62,29 @@ class RootCoordinator(
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
-        val rootContainerId = uuidService.newUUID()
-        val newContainerViewModel = RootContainerViewModel(id = rootContainerId)
+        val containerId = uuidService.newUUID()
+        val newContainerViewModel = ContainerViewModel(id = containerId)
         val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
         coordinator.start()
-        val scene = Scene(viewModel = newContainerViewModel, fragmentType = RootContainerFragment::class,)
-        rootContainerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
+        val scene = Scene(viewModel = newContainerViewModel, fragmentType = ContainerFragment::class,)
+        containerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = getHomeScene()
-        rootContainerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        containerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
 
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
-        rootContainerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
+        containerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
     //ModalSequenceCoordinatorDelegate
 
     override fun back(modalSequenceCoordinator: ModalSequenceCoordinator) {
-        rootContainerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
+        containerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
 }
