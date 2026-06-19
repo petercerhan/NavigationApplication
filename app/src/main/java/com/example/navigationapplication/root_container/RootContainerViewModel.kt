@@ -27,6 +27,7 @@ class RootContainerViewModel(
         Log.d("PETER CERHAN", "VM showModal")
         //block if there is already a modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
+        Log.d("PETER CERHAN", "VM showModal FINISHED")
         val sceneState =
             SceneState(current.scene, current.sceneTransitionAnimation, scene, animation, null)
         _sceneFlow.tryEmit(sceneState)

@@ -1,5 +1,6 @@
 package com.example.navigationapplication.root_container
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RootContainerSystemViewModel: ViewModel() {
-
     var activeSceneState: SceneState? = null
 
     private val _transactionInProgress = MutableStateFlow(false)

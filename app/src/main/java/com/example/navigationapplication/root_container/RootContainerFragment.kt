@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -23,6 +24,12 @@ import kotlinx.coroutines.launch
 
 class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
 
+    val instanceNumber = ++instanceCount
+
+    companion object {
+        private var instanceCount = 0
+    }
+
     override fun backButtonAction() {
         Log.d("Peter Cerhan", "RootContainerFragment intercepted back button press")
     }
@@ -35,6 +42,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     private val serviceLocator: ServiceLocator
         get() = serviceLocatorViewModel.serviceLocator
 
+    private lateinit var transactionInputBlocker: View
 
     //Lifecycle
 
@@ -43,7 +51,20 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_container, container, false)
+        val root = inflater.inflate(R.layout.fragment_container, container, false) as FrameLayout
+        transactionInputBlocker = View(requireContext()).apply {
+            id = View.generateViewId()
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+            isClickable = true
+            isFocusable = true
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            visibility = View.GONE
+        }
+        root.addView(transactionInputBlocker)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,8 +87,7 @@ class RootContainerFragment : SceneFragment<RootContainerViewModel>() {
     }
 
     private fun updateTransactionInputBlocker(blockInput: Boolean) {
-        requireView().findViewById<View>(R.id.transaction_input_blocker).visibility =
-            if (blockInput) View.VISIBLE else View.GONE
+        transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
     }
 
     private fun processIncomingSceneState(sceneState: SceneState) {

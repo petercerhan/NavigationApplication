@@ -8,7 +8,6 @@ class ServiceLocator {
 
     init {
         ServiceLocator.counter++
-        Log.d("Peter Cerhan", "ApplicationViewModelLocator Initialized ${ServiceLocator.counter}")
     }
 
     companion object {
@@ -26,12 +25,10 @@ class ServiceLocator {
     }
 
     fun cacheViewModel(id: UUID, viewModel: Any) {
-        Log.d("Peter Cerhan", "On ${ServiceLocator.counter} Cache view model $id")
         viewModelMap[id] = viewModel
     }
 
     fun viewModelForId(id: UUID): Any? {
-        Log.d("Peter Cerhan", "On ${ServiceLocator.counter} View Model for id $id")
         return viewModelMap[id]
     }
 

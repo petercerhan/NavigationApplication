@@ -17,13 +17,4 @@
         android:visibility="gone"
         tools:layout="@layout/fragment_simple_modal" />
 
-    <View
-        android:id="@+id/transaction_input_blocker"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:importantForAccessibility="noHideDescendants"
-        android:visibility="gone" />
-
 </FrameLayout>
