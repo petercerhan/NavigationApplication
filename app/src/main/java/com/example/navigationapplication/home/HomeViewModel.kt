@@ -12,7 +12,6 @@ interface HomeViewModelDelegate {
 class HomeViewModel(
     id: UUID,
     val delegate: HomeViewModelDelegate,
-    val homeSceneNumber: Int,
 ) : ApplicationViewModel(id) {
 
     fun next() {
@@ -21,10 +20,6 @@ class HomeViewModel(
 
     fun back() {
         delegate.back(this)
-    }
-
-    fun ping() {
-        Log.d("PeterCerhan", "Ping HomeViewModel $id")
     }
 
 }

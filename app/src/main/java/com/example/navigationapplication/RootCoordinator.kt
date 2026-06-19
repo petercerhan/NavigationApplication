@@ -23,8 +23,6 @@ class RootCoordinator(
     val uuidService: UUIDService,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
-    private var homeSceneCount = 0
-
     private var homeSceneCache: Scene? = null
 
     fun start() {
@@ -37,9 +35,8 @@ class RootCoordinator(
     private fun getHomeScene(): Scene {
         homeSceneCache?.let { return it }
 
-        homeSceneCount++
         val viewModelId = uuidService.newUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this, homeSceneCount)
+        val homeViewModel = HomeViewModel(viewModelId, this)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         homeSceneCache = scene
         return scene

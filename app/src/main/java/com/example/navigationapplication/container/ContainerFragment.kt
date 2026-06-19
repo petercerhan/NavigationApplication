@@ -24,12 +24,6 @@ import kotlinx.coroutines.launch
 
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
-    val instanceNumber = ++instanceCount
-
-    companion object {
-        private var instanceCount = 0
-    }
-
     override fun backButtonAction() {
         Log.d("Peter Cerhan", "ContainerFragment intercepted back button press")
     }

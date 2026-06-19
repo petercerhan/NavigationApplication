@@ -21,8 +21,6 @@ class HomeFragment : SceneFragment<HomeViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<TextView>(R.id.text_home_scene_number).text =
-            getString(R.string.home_scene_number_label, viewModel.homeSceneNumber)
         view.findViewById<View>(R.id.button_next).setOnClickListener {
             navigateToPageTwo()
         }

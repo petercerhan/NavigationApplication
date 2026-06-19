@@ -29,7 +29,7 @@ class ModalSequenceCoordinator(
 
     fun start() {
         val viewModelId = uuidService.newUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this, 0)
+        val homeViewModel = HomeViewModel(viewModelId, this)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         containerViewModel.showScene(scene, SceneTransitionAnimation.NoAnimation)
     }
@@ -60,7 +60,7 @@ class ModalSequenceCoordinator(
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val viewModelId = uuidService.newUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this, 0)
+        val homeViewModel = HomeViewModel(viewModelId, this)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         containerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
