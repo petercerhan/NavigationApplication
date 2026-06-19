@@ -6,6 +6,7 @@ import java.util.UUID
 
 interface HomeViewModelDelegate {
     fun next(homeViewModel: HomeViewModel)
+    fun back(homeViewModel: HomeViewModel)
 }
 
 class HomeViewModel(
@@ -16,6 +17,10 @@ class HomeViewModel(
 
     fun next() {
         delegate.next(this)
+    }
+
+    fun back() {
+        delegate.back(this)
     }
 
     fun ping() {

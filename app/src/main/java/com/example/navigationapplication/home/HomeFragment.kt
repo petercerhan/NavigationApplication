@@ -33,6 +33,6 @@ class HomeFragment : SceneFragment<HomeViewModel>() {
     }
 
     override fun backButtonAction() {
-        Log.d("Peter Cerhan", "HomeFragment blocking back action")
+        viewModel.back()
     }
 }

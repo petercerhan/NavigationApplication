@@ -52,12 +52,6 @@ abstract class SceneFragment<VM : Any> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
-            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            windowInsets
-        }
-
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 backButtonAction()

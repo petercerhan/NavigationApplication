@@ -12,6 +12,7 @@ import com.example.navigationapplication.controller_library.ModalPresentationAni
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
+import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.root_container.RootContainerFragment
 import com.example.navigationapplication.root_container.RootContainerViewModel
 import com.example.navigationapplication.root_container.Scene
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 class RootCoordinator(
     val rootContainerViewModel: RootContainerViewModel,
     val uuidService: UUIDService,
-): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate {
+): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
     private var homeSceneCount = 0
 
@@ -60,23 +61,19 @@ class RootCoordinator(
         rootContainerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
+    override fun back(homeViewModel: HomeViewModel) {
+        //do nothing
+    }
+
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         val rootContainerId = uuidService.newUUID()
         val newContainerViewModel = RootContainerViewModel(id = rootContainerId)
-        val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService)
+        val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
         coordinator.start()
         val scene = Scene(viewModel = newContainerViewModel, fragmentType = RootContainerFragment::class,)
         rootContainerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
-    }
-
-    fun nextPRIOR(pageTwoViewModel: PageTwoViewModel) {
-//        val viewModelId = uuidService.newUUID()
-//        val simpleModalViewModel = SimpleModalViewModel(viewModelId, this)
-//
-//        val scene = Scene(viewModel = simpleModalViewModel, fragmentType = SimpleModalFragment::class,)
-//        rootContainerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
@@ -87,6 +84,12 @@ class RootCoordinator(
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
+        rootContainerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
+    }
+
+    //ModalSequenceCoordinatorDelegate
+
+    override fun back(modalSequenceCoordinator: ModalSequenceCoordinator) {
         rootContainerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
