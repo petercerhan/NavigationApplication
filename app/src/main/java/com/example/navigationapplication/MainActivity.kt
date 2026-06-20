@@ -11,6 +11,7 @@ import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
 import com.example.navigationapplication.container.ContainerFragment
 import com.example.navigationapplication.container.ContainerViewModel
+import com.example.navigationapplication.infrastructure_services.Logger
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,9 +23,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //set up coordinator etc.
+        val logger = Logger(false)
+
         val uuidService: UUIDService = UUIDServiceImpl()
         val containerId = uuidService.newUUID()
-        val containerViewModel = ContainerViewModel(id = containerId)
+        val containerViewModel = ContainerViewModel(id = containerId, logger)
         val coordinator = RootCoordinator(containerViewModel, uuidService)
 
         serviceLocatorViewModel.serviceLocator.cacheViewModel(containerId, containerViewModel)

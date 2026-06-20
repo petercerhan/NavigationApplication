@@ -15,6 +15,7 @@ import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
 import com.example.navigationapplication.container.ContainerFragment
 import com.example.navigationapplication.container.ContainerViewModel
 import com.example.navigationapplication.container.Scene
+import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
 
@@ -59,8 +60,10 @@ class RootCoordinator(
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
+        val logger = Logger(false)
+
         val containerId = uuidService.newUUID()
-        val newContainerViewModel = ContainerViewModel(id = containerId)
+        val newContainerViewModel = ContainerViewModel(id = containerId, logger)
         val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
         coordinator.start()
         val scene = Scene(viewModel = newContainerViewModel, fragmentType = ContainerFragment::class,)

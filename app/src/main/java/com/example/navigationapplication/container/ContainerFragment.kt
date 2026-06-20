@@ -1,7 +1,6 @@
 package com.example.navigationapplication.container
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     override fun backButtonAction() {
-        Log.d("Peter Cerhan", "ContainerFragment intercepted back button press")
+        viewModel.logger.log("ContainerFragment intercepted back button press")
     }
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
@@ -85,14 +84,14 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     }
 
     private fun processIncomingSceneState(sceneState: SceneState) {
-        Log.d("PETER CERHAN", "Evaluate Scene State")
+        viewModel.logger.log("Evaluate Scene State")
         //Always set initial modal container visibility for currently active scene state
         //This ensures that re-evaluated sceneState due to a configuration change has modal container visibility set correctly
         //Because this property defaults to GONE as set in the xml resource file
         setInitialModalContainerSceneState()
 
         if (!shouldAcceptIncomingSceneState(sceneState)) {
-            Log.d("PETER CERHAN", "Reject Scene State")
+            viewModel.logger.log("Reject Scene State")
             return
         }
 
@@ -115,13 +114,13 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
         if (childFragmentManager.isStateSaved) {
-            Log.d("PETER CERHAN", "Reject Scene State: Fragment State Saved")
+            viewModel.logger.log("Reject Scene State: Fragment State Saved")
             return false
         } else if (transactionIsInProgress()) {
-            Log.d("PETER CERHAN", "Reject Scene State: Transaction in Progress")
+            viewModel.logger.log("Reject Scene State: Transaction in Progress")
             return false
         } else if (incomingSceneStateMatchesActiveSceneState(incomingSceneState)) {
-            Log.d("PETER CERHAN", "Reject Scene State: Incoming Matches Active")
+            viewModel.logger.log("Reject Scene State: Incoming Matches Active")
             return false
         } else {
             return true
@@ -154,19 +153,19 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val sceneStateDismissesModal = (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal)
 
         if (sceneStateTransitionsBaseScene) {
-            Log.d("PETER CERHAN", "Case A show()")
+            viewModel.logger.log("Case A show()")
             updateBaseSceneWithAnimation(sceneState)
         }
         else if (sceneStatePresentsModal && sceneState.modalScene != null) {
-            Log.d("PETER CERHAN", "Case B Present Modal")
+            viewModel.logger.log("Case B Present Modal")
             presentModal(sceneState)
         }
         else if (sceneStateDismissesModal) {
-            Log.d("PETER CERHAN", "Case C Dismiss Modal")
+            viewModel.logger.log("Case C Dismiss Modal")
             dismissModal(sceneState)
         }
         else {
-            Log.d("PETER CERHAN", "Case D Reject")
+            viewModel.logger.log("Case D Reject")
             //implementation depends on how self-recovering this component is - we could simply throw a fatal error here
         }
     }

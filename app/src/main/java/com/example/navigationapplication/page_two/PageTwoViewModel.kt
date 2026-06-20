@@ -21,8 +21,4 @@ class PageTwoViewModel(
     fun back() {
         delegate.back(this)
     }
-
-    fun ping() {
-        Log.d("PeterCerhan", "Ping PageTwoViewModel $id")
-    }
 }
