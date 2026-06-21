@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         //add coordinator to root activity
 
 
-        val fragment = SceneFragment.newInstance(ContainerFragment::class,coordinator.containerViewModel.id.toString() )
+        val fragment = SceneFragment.newInstance(ContainerFragment::class,containerId.toString() )
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

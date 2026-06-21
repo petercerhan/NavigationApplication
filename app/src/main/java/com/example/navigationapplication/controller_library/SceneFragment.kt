@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 abstract class SceneFragment<VM : Any> : Fragment() {
 
-    //System View Models
+    //View Model Attachment
 
     protected val parentServiceLocatorViewModel: ServiceLocatorViewModel by viewModels(
         ownerProducer = { parentFragment ?: requireActivity() }

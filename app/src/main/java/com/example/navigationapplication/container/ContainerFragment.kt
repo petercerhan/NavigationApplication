@@ -30,7 +30,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
     //Come up with a new name here
-    val containerSystemViewModel: ContainerSystemViewModel by viewModels()
+    val containerFrameworkViewModel: ContainerFrameworkViewModel by viewModels()
 
     private val serviceLocator: ServiceLocator
         get() = serviceLocatorViewModel.serviceLocator
@@ -66,7 +66,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    containerSystemViewModel.transactionInProgress.collect { inProgress ->
+                    containerFrameworkViewModel.transactionInProgress.collect { inProgress ->
                         updateTransactionInputBlocker(inProgress)
                     }
                 }
@@ -96,13 +96,13 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
 
         //cache scene state on (system?) view model
-        containerSystemViewModel.activeSceneState = sceneState
+        containerFrameworkViewModel.activeSceneState = sceneState
         //call transition execution routine
         transitionToSceneState(sceneState)
     }
 
     private fun setInitialModalContainerSceneState() {
-        val activeSceneState = containerSystemViewModel.activeSceneState
+        val activeSceneState = containerFrameworkViewModel.activeSceneState
         if (activeSceneState == null)  {
             hideModalContainer()
         } else if (activeSceneState.modalScene == null) {
@@ -128,11 +128,11 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     }
 
     private fun transactionIsInProgress(): Boolean {
-        return containerSystemViewModel.transactionInProgress.value
+        return containerFrameworkViewModel.transactionInProgress.value
     }
 
     private fun incomingSceneStateMatchesActiveSceneState(incomingSceneState: SceneState): Boolean {
-        val activeSceneState = containerSystemViewModel.activeSceneState ?: return false
+        val activeSceneState = containerFrameworkViewModel.activeSceneState ?: return false
         return (incomingSceneState.scene.viewModel.id == activeSceneState.scene.viewModel.id &&
                 incomingSceneState.modalScene?.viewModel?.id == activeSceneState.modalScene?.viewModel?.id)
     }
@@ -223,7 +223,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
-        containerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
         hideModalContainer()
 
         //execute transaction with completion callback
@@ -251,7 +251,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val modalScene = sceneState.modalScene ?: return
         val (newScreenEntryAnimation, animationDuration) = modalPresentationAnimationsParametersFor(sceneState.modalPresentationAnimation)
 
-        containerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
         showModalContainer()
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
@@ -278,7 +278,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
 
         val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
-        containerSystemViewModel.setTransactionInProgress(animationDuration)
+        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
 
         val hideModalContainerAfterModalViewIsDestroyed = object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {

@@ -1,6 +1,5 @@
 package com.example.navigationapplication.container
 
-import android.util.Log
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
@@ -14,18 +13,23 @@ import kotlinx.coroutines.flow.asSharedFlow
 class ContainerViewModel(
     id: UUID,
     val logger: Logger
-): ApplicationViewModel(id) {
+): ApplicationViewModel(id), Container {
+
+    //Internal Mechanics - Interface for Container Fragment
+
     private val _sceneFlow = MutableSharedFlow<SceneState>(replay = 1)
     val sceneFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
 
-    fun showScene(scene: Scene, animation: SceneTransitionAnimation) {
+    //Container Interface
+
+    override fun showScene(scene: Scene, animation: SceneTransitionAnimation) {
         logger.log("VM showScene")
         //Here we will do additional work to maintain correct SceneState
         val sceneState = SceneState(scene, animation, null, null, null)
         _sceneFlow.tryEmit(sceneState)
     }
 
-    fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
+    override fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
         logger.log("VM showModal")
         //block if there is already a modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return
@@ -34,7 +38,7 @@ class ContainerViewModel(
         _sceneFlow.tryEmit(sceneState)
     }
 
-    fun dismissModal(animation: ModalDismissalAnimation) {
+    override fun dismissModal(animation: ModalDismissalAnimation) {
         logger.log("VM dismissModal")
         //block if there is no modal
         val current = _sceneFlow.replayCache.firstOrNull() ?: return

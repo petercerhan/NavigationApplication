@@ -1,5 +1,6 @@
 package com.example.navigationapplication
 
+import com.example.navigationapplication.container.Container
 import com.example.navigationapplication.home.HomeFragment
 import com.example.navigationapplication.home.HomeViewModel
 import com.example.navigationapplication.home.HomeViewModelDelegate
@@ -20,7 +21,7 @@ import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
 
 class RootCoordinator(
-    val containerViewModel: ContainerViewModel,
+    val container: Container,
     val uuidService: UUIDService,
 ): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
@@ -28,7 +29,7 @@ class RootCoordinator(
 
     fun start() {
         val scene = getHomeScene()
-        containerViewModel.showScene(scene, SceneTransitionAnimation.NoAnimation)
+        container.showScene(scene, SceneTransitionAnimation.NoAnimation)
     }
 
     //Routing
@@ -50,7 +51,7 @@ class RootCoordinator(
         val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
-        containerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+        container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(homeViewModel: HomeViewModel) {
@@ -67,24 +68,24 @@ class RootCoordinator(
         val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
         coordinator.start()
         val scene = Scene(viewModel = newContainerViewModel, fragmentType = ContainerFragment::class,)
-        containerViewModel.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
+        container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = getHomeScene()
-        containerViewModel.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
 
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
-        containerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
+        container.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
     //ModalSequenceCoordinatorDelegate
 
     override fun back(modalSequenceCoordinator: ModalSequenceCoordinator) {
-        containerViewModel.dismissModal(ModalDismissalAnimation.UncoverDown)
+        container.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
 }

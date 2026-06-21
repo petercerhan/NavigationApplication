@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ContainerSystemViewModel: ViewModel() {
+class ContainerFrameworkViewModel: ViewModel() {
     var activeSceneState: SceneState? = null
 
     private val _transactionInProgress = MutableStateFlow(false)
