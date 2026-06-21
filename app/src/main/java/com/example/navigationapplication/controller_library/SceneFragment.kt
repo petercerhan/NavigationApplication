@@ -3,8 +3,6 @@ package com.example.navigationapplication.controller_library
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import java.util.UUID
@@ -18,14 +16,14 @@ abstract class SceneFragment<VM : Any> : Fragment() {
         ownerProducer = { parentFragment ?: requireActivity() }
     )
 
-    val sceneViewModelId: UUID
+    val viewModelId: UUID
         get() = UUID.fromString(
             requireArguments().getString(VIEW_MODEL_ID)
                 ?: error("Missing ${VIEW_MODEL_ID}"),
         )
 
     protected val viewModel: VM
-        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(sceneViewModelId) as VM
+        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(viewModelId) as VM
 
     //Initialization
 

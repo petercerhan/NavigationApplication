@@ -174,7 +174,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeScene.sceneViewModelId) as? ApplicationViewModel
+        val viewModel = serviceLocator.viewModelForId(activeScene.viewModelId) as? ApplicationViewModel
             ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeScene)
@@ -184,7 +184,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeModal.sceneViewModelId) as? ApplicationViewModel
+        val viewModel = serviceLocator.viewModelForId(activeModal.viewModelId) as? ApplicationViewModel
             ?: return
         viewModel.fragmentSavedState =
             childFragmentManager.saveFragmentInstanceState(activeModal)
@@ -203,7 +203,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         if (activeScene == null) {
             return true
         }
-        return (activeScene is SceneFragment<*> && activeScene.sceneViewModelId != sceneState.scene.viewModel.id)
+        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.scene.viewModel.id)
     }
 
     private fun initialStateContainsModal(): Boolean {
