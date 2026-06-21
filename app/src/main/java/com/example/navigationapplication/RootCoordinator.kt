@@ -37,8 +37,7 @@ class RootCoordinator(
     private fun getHomeScene(): Scene {
         homeSceneCache?.let { return it }
 
-        val viewModelId = uuidService.newUUID()
-        val homeViewModel = HomeViewModel(viewModelId, this)
+        val homeViewModel = HomeViewModel(uuidService, this)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         homeSceneCache = scene
         return scene
@@ -47,8 +46,7 @@ class RootCoordinator(
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val viewModelId = uuidService.newUUID()
-        val pageTwoViewModel = PageTwoViewModel(viewModelId, this)
+        val pageTwoViewModel = PageTwoViewModel(uuidService, this)
 
         val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
         container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
@@ -63,8 +61,7 @@ class RootCoordinator(
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         val logger = Logger(false)
 
-        val containerId = uuidService.newUUID()
-        val newContainerViewModel = ContainerViewModel(id = containerId, logger)
+        val newContainerViewModel = ContainerViewModel(uuidService, logger)
         val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
         coordinator.start()
         val scene = Scene(viewModel = newContainerViewModel, fragmentType = ContainerFragment::class,)

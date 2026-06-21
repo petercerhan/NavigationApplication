@@ -26,18 +26,17 @@ class MainActivity : AppCompatActivity() {
         val logger = Logger(false)
 
         val uuidService: UUIDService = UUIDServiceImpl()
-        val containerId = uuidService.newUUID()
-        val containerViewModel = ContainerViewModel(id = containerId, logger)
+        val containerViewModel = ContainerViewModel(uuidService, logger)
         val coordinator = RootCoordinator(containerViewModel, uuidService)
 
-        serviceLocatorViewModel.serviceLocator.cacheViewModel(containerId, containerViewModel)
+        serviceLocatorViewModel.serviceLocator.cacheViewModel(containerViewModel.id, containerViewModel)
 
         coordinator.start()
         //add to service locator on service locator view model
         //add coordinator to root activity
 
 
-        val fragment = SceneFragment.newInstance(ContainerFragment::class,containerId.toString() )
+        val fragment = SceneFragment.newInstance(ContainerFragment::class,containerViewModel.id.toString() )
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

@@ -5,15 +5,16 @@ import com.example.navigationapplication.controller_library.ModalDismissalAnimat
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
 import com.example.navigationapplication.infrastructure_services.Logger
+import com.example.navigationapplication.infrastructure_services.UUIDService
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class ContainerViewModel(
-    id: UUID,
+    uuidService: UUIDService,
     val logger: Logger
-): ApplicationViewModel(id), Container {
+): ApplicationViewModel(uuidService), Container {
 
     //Internal Mechanics - Interface for Container Fragment
 

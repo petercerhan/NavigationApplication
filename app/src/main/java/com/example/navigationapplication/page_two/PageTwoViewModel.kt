@@ -2,6 +2,7 @@ package com.example.navigationapplication.page_two
 
 import android.util.Log
 import com.example.navigationapplication.controller_library.ApplicationViewModel
+import com.example.navigationapplication.infrastructure_services.UUIDService
 import java.util.UUID
 
 interface PageTwoViewModelDelegate {
@@ -10,9 +11,9 @@ interface PageTwoViewModelDelegate {
 }
 
 class PageTwoViewModel(
-    id: UUID,
+    uuidService: UUIDService,
     val delegate: PageTwoViewModelDelegate,
-) : ApplicationViewModel(id) {
+) : ApplicationViewModel(uuidService) {
 
     fun next() {
         delegate.next(this)

@@ -1,6 +1,7 @@
 package com.example.navigationapplication.simple_modal
 
 import com.example.navigationapplication.controller_library.ApplicationViewModel
+import com.example.navigationapplication.infrastructure_services.UUIDService
 import java.util.UUID
 
 interface SimpleModalViewModelDelegate {
@@ -8,9 +9,9 @@ interface SimpleModalViewModelDelegate {
 }
 
 class SimpleModalViewModel(
-    id: UUID,
+    uuidService: UUIDService,
     val delegate: SimpleModalViewModelDelegate,
-) : ApplicationViewModel(id) {
+) : ApplicationViewModel(uuidService) {
 
     fun dismiss() {
         delegate.dismiss(this)
