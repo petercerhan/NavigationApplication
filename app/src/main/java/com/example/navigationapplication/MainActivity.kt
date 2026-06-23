@@ -22,21 +22,12 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        //set up coordinator etc.
-        val logger = Logger(false)
-
         val uuidService: UUIDService = UUIDServiceImpl()
-        val containerViewModel = ContainerViewModel(uuidService, logger)
-        val coordinator = RootCoordinator(containerViewModel, uuidService)
 
-        serviceLocatorViewModel.serviceLocator.cacheViewModel(containerViewModel.id, containerViewModel)
+        val coordinator = composeRootCoordinator(uuidService)
+        serviceLocatorViewModel.serviceLocator.cacheViewModel(coordinator.containerViewModel.id, coordinator.containerViewModel)
 
-        coordinator.start()
-        //add to service locator on service locator view model
-        //add coordinator to root activity
-
-
-        val fragment = SceneFragment.newInstance(ContainerFragment::class,containerViewModel.id.toString() )
+        val fragment = SceneFragment.newInstance(ContainerFragment::class,coordinator.containerViewModel.id.toString() )
 
         if (savedInstanceState == null) {
             supportFragmentManager.commit {

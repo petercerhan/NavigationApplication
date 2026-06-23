@@ -13,6 +13,7 @@ import com.example.navigationapplication.page_two.PageTwoViewModel
 import com.example.navigationapplication.page_two.PageTwoViewModelDelegate
 import com.example.navigationapplication.container.ContainerViewModel
 import com.example.navigationapplication.container.Scene
+import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.simple_modal.SimpleModalFragment
 import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
@@ -26,9 +27,12 @@ class ModalSequenceCoordinator(
     val container: Container,
     val uuidService: UUIDService,
     val delegate: ModalSequenceCoordinatorDelegate,
-): HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate {
+): Coordinator, HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate {
 
-    fun start() {
+    override val containerViewModel: ContainerViewModel
+        get() = container.asContainerViewModel
+
+    init {
         val homeViewModel = HomeViewModel(uuidService, this)
         val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         container.showScene(scene, SceneTransitionAnimation.NoAnimation)

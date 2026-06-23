@@ -23,6 +23,9 @@ class ContainerViewModel(
 
     //Container Interface
 
+    override val asContainerViewModel: ContainerViewModel
+        get() = this
+
     override fun showScene(scene: Scene, animation: SceneTransitionAnimation) {
         logger.log("VM showScene")
         //Here we will do additional work to maintain correct SceneState

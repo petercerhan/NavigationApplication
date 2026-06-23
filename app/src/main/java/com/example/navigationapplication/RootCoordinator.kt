@@ -16,18 +16,24 @@ import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
 import com.example.navigationapplication.container.ContainerFragment
 import com.example.navigationapplication.container.ContainerViewModel
 import com.example.navigationapplication.container.Scene
+import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.infrastructure_services.Logger
+import com.example.navigationapplication.modal_sequence.composeModalSequenceCoordinator
 import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
 
 class RootCoordinator(
     val container: Container,
     val uuidService: UUIDService,
-): PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
+): Coordinator, PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
     private var homeSceneCache: Scene? = null
+    private var childCoordinator: Coordinator? = null
 
-    fun start() {
+    override val containerViewModel: ContainerViewModel
+        get() = container.asContainerViewModel
+
+    init {
         val scene = getHomeScene()
         container.showScene(scene, SceneTransitionAnimation.NoAnimation)
     }
@@ -59,18 +65,16 @@ class RootCoordinator(
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
-        val logger = Logger(false)
-
-        val newContainerViewModel = ContainerViewModel(uuidService, logger)
-        val coordinator = ModalSequenceCoordinator(newContainerViewModel, uuidService, this)
-        coordinator.start()
-        val scene = Scene(viewModel = newContainerViewModel, fragmentType = ContainerFragment::class,)
+        val coordinator = composeModalSequenceCoordinator(uuidService, this)
+        childCoordinator = coordinator
+        val scene = Scene(viewModel = coordinator.containerViewModel, fragmentType = ContainerFragment::class,)
         container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = getHomeScene()
         container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        childCoordinator = null
     }
 
     //SimpleModalViewModelDelegate
