@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     override fun backButtonAction() {
-        viewModel.logger.log("ContainerFragment intercepted back button press")
+        //unreachable
     }
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
@@ -63,6 +64,15 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    dispatchBack()
+                }
+            },
+        )
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -81,6 +91,22 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun updateTransactionInputBlocker(blockInput: Boolean) {
         transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
+    }
+
+    private fun dispatchBack() {
+        if (transactionIsInProgress()) {
+            return
+        }
+
+        val modalScene = getCurrentModalFragment() as? SceneFragment<*>
+        if (modalScene != null) {
+            modalScene.backButtonAction()
+            return
+        }
+
+        val baseScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+            as? SceneFragment<*>
+        baseScene?.backButtonAction()
     }
 
     private fun processIncomingSceneState(sceneState: SceneState) {

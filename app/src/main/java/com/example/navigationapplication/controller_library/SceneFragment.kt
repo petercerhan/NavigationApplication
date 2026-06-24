@@ -1,8 +1,6 @@
 package com.example.navigationapplication.controller_library
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import java.util.UUID
@@ -40,23 +38,6 @@ abstract class SceneFragment<VM : Any> : Fragment() {
             type.java.getDeclaredConstructor().newInstance().apply {
                 arguments = sceneArguments(viewModelId)
             }
-    }
-
-
-    //Lifecycle
-
-    private var backPressedCallback: OnBackPressedCallback? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                backButtonAction()
-            }
-        }
-        backPressedCallback = callback
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
     abstract fun backButtonAction()
