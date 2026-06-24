@@ -25,7 +25,7 @@ interface ModalSequenceCoordinatorDelegate {
 
 class ModalSequenceCoordinator(
     val container: Container,
-    val uuidService: UUIDService,
+    val composer: ModalSequenceComposer,
     val delegate: ModalSequenceCoordinatorDelegate,
 ): Coordinator, HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate {
 
@@ -33,17 +33,14 @@ class ModalSequenceCoordinator(
         get() = container.asContainerViewModel
 
     init {
-        val homeViewModel = HomeViewModel(uuidService, this)
-        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
+        val scene = composer.composeHomeScene(this)
         container.showScene(scene, SceneTransitionAnimation.NoAnimation)
     }
 
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val pageTwoViewModel = PageTwoViewModel(uuidService, this)
-
-        val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
+        val scene = composer.composePageTwoScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
@@ -54,15 +51,12 @@ class ModalSequenceCoordinator(
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
-        val simpleModalViewModel = SimpleModalViewModel(uuidService, this)
-
-        val scene = Scene(viewModel = simpleModalViewModel, fragmentType = SimpleModalFragment::class,)
+        val scene = composer.composeSimpleModalScene(this)
         container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
-        val homeViewModel = HomeViewModel(uuidService, this)
-        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
+        val scene = composer.composeHomeScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
 

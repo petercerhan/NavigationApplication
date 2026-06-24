@@ -10,9 +10,10 @@ fun composeModalSequenceCoordinator(
 ): ModalSequenceCoordinator {
     val logger = Logger(false)
     val containerViewModel = ContainerViewModel(uuidService, logger)
+    val composer = ModalSequenceComposer(uuidService)
     return ModalSequenceCoordinator(
         containerViewModel,
-        uuidService,
+        composer,
         delegate,
     )
 }
