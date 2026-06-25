@@ -10,24 +10,21 @@ import com.example.navigationapplication.page_two.PageTwoViewModelDelegate
 import com.example.navigationapplication.controller_library.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneTransitionAnimation
-import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
 import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.container.ContainerFragment
 import com.example.navigationapplication.container.ContainerViewModel
 import com.example.navigationapplication.container.Scene
 import com.example.navigationapplication.controller_library.Coordinator
-import com.example.navigationapplication.infrastructure_services.Logger
-import com.example.navigationapplication.modal_sequence.composeModalSequenceCoordinator
+import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorFactory
 import com.example.navigationapplication.simple_modal.SimpleModalViewModel
 import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
 
 class RootCoordinator(
     val container: Container,
-    val uuidService: UUIDService,
+    val composer: RootSequenceComposer,
 ): Coordinator, PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
-    private var homeSceneCache: Scene? = null
     private var childCoordinator: Coordinator? = null
 
     override val containerViewModel: ContainerViewModel
@@ -41,20 +38,13 @@ class RootCoordinator(
     //Routing
 
     private fun getHomeScene(): Scene {
-        homeSceneCache?.let { return it }
-
-        val homeViewModel = HomeViewModel(uuidService, this)
-        val scene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
-        homeSceneCache = scene
-        return scene
+        return composer.composeHomeScene(this)
     }
 
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val pageTwoViewModel = PageTwoViewModel(uuidService, this)
-
-        val scene = Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
+        val scene = composer.composePageTwoScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
@@ -65,7 +55,7 @@ class RootCoordinator(
     //PageTwoViewModelDelegate
 
     override fun next(pageTwoViewModel: PageTwoViewModel) {
-        val coordinator = composeModalSequenceCoordinator(uuidService, this)
+        val coordinator = composer.composeModalSequenceCoordinator(this)
         childCoordinator = coordinator
         val scene = Scene(viewModel = coordinator.containerViewModel, fragmentType = ContainerFragment::class,)
         container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
