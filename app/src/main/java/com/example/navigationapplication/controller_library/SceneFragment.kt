@@ -33,10 +33,10 @@ abstract class SceneFragment<VM : Any> : Fragment() {
 
         fun newInstance(
             type: KClass<out SceneFragment<*>>,
-            viewModelId: String,
+            viewModelId: UUID,
         ): SceneFragment<*> =
             type.java.getDeclaredConstructor().newInstance().apply {
-                arguments = sceneArguments(viewModelId)
+                arguments = sceneArguments(viewModelId.toString())
             }
     }
 

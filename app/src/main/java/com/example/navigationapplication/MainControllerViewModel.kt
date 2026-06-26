@@ -18,7 +18,7 @@ class MainControllerViewModel: ViewModel() {
         this.rootCoordinator = rootCoordinator
         serviceLocator.cacheViewModel(rootCoordinator.containerViewModel.id, rootCoordinator.containerViewModel)
 
-        return SceneFragment.newInstance(ContainerFragment::class,rootCoordinator.containerViewModel.id.toString() )
+        return SceneFragment.newInstance(ContainerFragment::class,rootCoordinator.containerViewModel.id)
     }
 
 }

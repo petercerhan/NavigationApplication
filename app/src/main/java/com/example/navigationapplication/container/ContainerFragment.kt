@@ -340,7 +340,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     private fun createFragmentForScene(scene: Scene): Fragment {
         val fragment = newInstance(
             scene.fragmentType,
-            scene.viewModel.id.toString(),
+            scene.viewModel.id,
         ).apply {
             setInitialSavedState(scene.viewModel.fragmentSavedState)
         }
