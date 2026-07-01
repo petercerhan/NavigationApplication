@@ -13,27 +13,45 @@ class MainActivity : AppCompatActivity() {
     val mainControllerViewModel: MainControllerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val isProcessDeathRecreation =
-            savedInstanceState != null && !mainControllerViewModel.hasCompletedInitialCreate
+        val viewModelScopedInitializedFlagSet = mainControllerViewModel.hasCompletedInitialCreate
+        val savedInstanceStateSet = (savedInstanceState != null)
 
-        if (isProcessDeathRecreation) {
+
+        if (!savedInstanceStateSet && !viewModelScopedInitializedFlagSet) { //cold start launch
             super.onCreate(null)
-        } else {
-            super.onCreate(savedInstanceState)
+            executePostOnCreateRequiredSetup()
+            initializeRootCoordinatorAndAddRootFragment()
         }
-
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-
-        if (isProcessDeathRecreation || savedInstanceState == null) {
-            val fragment = mainControllerViewModel.composeRootCoordinatorReturningFragment(
-                serviceLocatorViewModel.serviceLocator,
-            )
-            supportFragmentManager.commit {
-                replace(R.id.main, fragment)
-            }
+        else if (savedInstanceStateSet && !viewModelScopedInitializedFlagSet) { //process death recreation launch
+            super.onCreate(null) //saved instance state is non-null, and discarded. This is the crux of forcing relaunch on process death recreation
+            executePostOnCreateRequiredSetup()
+            initializeRootCoordinatorAndAddRootFragment()
+        }
+        else if (savedInstanceStateSet && viewModelScopedInitializedFlagSet) { //configuration change
+            super.onCreate(savedInstanceState)
+            executePostOnCreateRequiredSetup()
+        }
+        else { //unexpected state
+            //execute cold start
+            super.onCreate(null)
+            executePostOnCreateRequiredSetup()
+            initializeRootCoordinatorAndAddRootFragment()
         }
 
         mainControllerViewModel.hasCompletedInitialCreate = true
+    }
+
+    private fun executePostOnCreateRequiredSetup() {
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+    }
+
+    private fun initializeRootCoordinatorAndAddRootFragment() {
+        val fragment = mainControllerViewModel.composeRootCoordinatorReturningFragment(
+            serviceLocatorViewModel.serviceLocator,
+        )
+        supportFragmentManager.commit {
+            replace(R.id.main, fragment)
+        }
     }
 }
