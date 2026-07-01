@@ -1,4 +1,4 @@
-package com.example.navigationapplication.controller_library
+package com.example.navigationapplication.controller_library.container.animations
 
 enum class SceneTransitionAnimation {
     SlideFromRight,

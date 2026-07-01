@@ -1,4 +1,4 @@
-package com.example.navigationapplication.container
+package com.example.navigationapplication.controller_library.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,10 +16,10 @@ import com.example.navigationapplication.R
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.ServiceLocator
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
-import com.example.navigationapplication.controller_library.ModalDismissalAnimation
-import com.example.navigationapplication.controller_library.ModalPresentationAnimation
+import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
+import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneFragment
-import com.example.navigationapplication.controller_library.SceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
 import kotlinx.coroutines.launch
 
 class ContainerFragment : SceneFragment<ContainerViewModel>() {

@@ -1,4 +1,4 @@
-package com.example.navigationapplication.container
+package com.example.navigationapplication.controller_library.container
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

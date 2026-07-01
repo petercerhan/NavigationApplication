@@ -1,6 +1,6 @@
 package com.example.navigationapplication.modal_sequence
 
-import com.example.navigationapplication.container.Scene
+import com.example.navigationapplication.controller_library.container.Scene
 import com.example.navigationapplication.home.HomeFragment
 import com.example.navigationapplication.home.HomeViewModel
 import com.example.navigationapplication.home.HomeViewModelDelegate

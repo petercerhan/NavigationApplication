@@ -1,12 +1,11 @@
-package com.example.navigationapplication.container
+package com.example.navigationapplication.controller_library.container
 
 import com.example.navigationapplication.controller_library.ApplicationViewModel
-import com.example.navigationapplication.controller_library.ModalDismissalAnimation
-import com.example.navigationapplication.controller_library.ModalPresentationAnimation
-import com.example.navigationapplication.controller_library.SceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
+import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
+import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

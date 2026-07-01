@@ -2,7 +2,7 @@ package com.example.navigationapplication
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import com.example.navigationapplication.container.ContainerFragment
+import com.example.navigationapplication.controller_library.container.ContainerFragment
 import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocator
