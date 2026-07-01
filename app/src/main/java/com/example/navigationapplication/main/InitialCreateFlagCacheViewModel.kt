@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.main
 
 import androidx.lifecycle.ViewModel
 

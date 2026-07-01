@@ -1,17 +1,16 @@
-package com.example.navigationapplication.modal_sequence
+package com.example.navigationapplication.modal_sequence.controller
 
 import com.example.navigationapplication.controller_library.container.Container
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
-import com.example.navigationapplication.home.HomeViewModel
-import com.example.navigationapplication.home.HomeViewModelDelegate
-import com.example.navigationapplication.page_two.PageTwoViewModel
-import com.example.navigationapplication.page_two.PageTwoViewModelDelegate
+import com.example.navigationapplication.root_sequence.controller.HomeViewModel
+import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
+import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
+import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.controller_library.Coordinator
-import com.example.navigationapplication.simple_modal.SimpleModalViewModel
-import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
+import com.example.navigationapplication.modal_sequence.main.ModalSequenceComposer
 
 
 interface ModalSequenceCoordinatorDelegate {

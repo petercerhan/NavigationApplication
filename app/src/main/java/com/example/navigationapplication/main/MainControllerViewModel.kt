@@ -1,4 +1,4 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.main
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,7 @@ import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocator
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
+import com.example.navigationapplication.root_sequence.main.RootCoordinatorFactory
 
 class MainControllerViewModel: ViewModel() {
 

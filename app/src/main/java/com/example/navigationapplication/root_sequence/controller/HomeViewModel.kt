@@ -1,9 +1,7 @@
-package com.example.navigationapplication.home
+package com.example.navigationapplication.root_sequence.controller
 
-import android.util.Log
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
-import java.util.UUID
 
 interface HomeViewModelDelegate {
     fun next(homeViewModel: HomeViewModel)

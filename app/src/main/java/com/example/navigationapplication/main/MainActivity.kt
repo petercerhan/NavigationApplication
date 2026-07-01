@@ -1,10 +1,11 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.main
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import com.example.navigationapplication.R
 import com.example.navigationapplication.controller_library.ServiceLocatorViewModel
 
 class MainActivity : AppCompatActivity() {

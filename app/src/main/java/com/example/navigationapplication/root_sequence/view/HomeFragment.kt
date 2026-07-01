@@ -1,13 +1,12 @@
-package com.example.navigationapplication.home
+package com.example.navigationapplication.root_sequence.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.example.navigationapplication.R
 import com.example.navigationapplication.controller_library.SceneFragment
+import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 
 class HomeFragment : SceneFragment<HomeViewModel>() {
 

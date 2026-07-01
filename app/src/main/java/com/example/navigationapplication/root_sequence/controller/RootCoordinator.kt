@@ -1,26 +1,24 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.root_sequence.controller
 
+import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.container.Container
-import com.example.navigationapplication.home.HomeViewModel
-import com.example.navigationapplication.home.HomeViewModelDelegate
-import com.example.navigationapplication.page_two.PageTwoViewModel
-import com.example.navigationapplication.page_two.PageTwoViewModelDelegate
-import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
-import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
-import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
-import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinator
-import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.controller_library.container.ContainerFragment
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.controller_library.container.Scene
-import com.example.navigationapplication.controller_library.Coordinator
-import com.example.navigationapplication.simple_modal.SimpleModalViewModel
-import com.example.navigationapplication.simple_modal.SimpleModalViewModelDelegate
+import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
+import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
+import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
+import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinator
+import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinatorDelegate
+import com.example.navigationapplication.root_sequence.main.RootSequenceComposer
+import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModel
+import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModelDelegate
 
 class RootCoordinator(
     val container: Container,
     val composer: RootSequenceComposer,
-): Coordinator, PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
+): Coordinator, PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate,
+    ModalSequenceCoordinatorDelegate {
 
     private var childCoordinator: Coordinator? = null
 
@@ -54,7 +52,10 @@ class RootCoordinator(
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         val coordinator = composer.composeModalSequenceCoordinator(this)
         childCoordinator = coordinator
-        val scene = Scene(viewModel = coordinator.containerViewModel, fragmentType = ContainerFragment::class,)
+        val scene = Scene(
+            viewModel = coordinator.containerViewModel,
+            fragmentType = ContainerFragment::class,
+        )
         container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 

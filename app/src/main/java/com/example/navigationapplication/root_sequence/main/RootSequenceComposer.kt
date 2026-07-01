@@ -1,16 +1,16 @@
-package com.example.navigationapplication
+package com.example.navigationapplication.root_sequence.main
 
 import com.example.navigationapplication.controller_library.container.Scene
 import com.example.navigationapplication.controller_library.Coordinator
-import com.example.navigationapplication.home.HomeFragment
-import com.example.navigationapplication.home.HomeViewModel
-import com.example.navigationapplication.home.HomeViewModelDelegate
+import com.example.navigationapplication.root_sequence.view.HomeFragment
+import com.example.navigationapplication.root_sequence.controller.HomeViewModel
+import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
 import com.example.navigationapplication.infrastructure_services.UUIDService
-import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorDelegate
-import com.example.navigationapplication.modal_sequence.ModalSequenceCoordinatorFactory
-import com.example.navigationapplication.page_two.PageTwoFragment
-import com.example.navigationapplication.page_two.PageTwoViewModel
-import com.example.navigationapplication.page_two.PageTwoViewModelDelegate
+import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinatorDelegate
+import com.example.navigationapplication.modal_sequence.main.ModalSequenceCoordinatorFactory
+import com.example.navigationapplication.root_sequence.view.PageTwoFragment
+import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
+import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
 
 class RootSequenceComposer(
     val uuidService: UUIDService,

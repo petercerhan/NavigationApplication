@@ -1,8 +1,7 @@
-package com.example.navigationapplication.simple_modal
+package com.example.navigationapplication.modal_sequence.controller
 
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.infrastructure_services.UUIDService
-import java.util.UUID
 
 interface SimpleModalViewModelDelegate {
     fun dismiss(simpleModalViewModel: SimpleModalViewModel)
