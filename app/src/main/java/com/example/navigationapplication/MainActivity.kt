@@ -11,9 +11,10 @@ class MainActivity : AppCompatActivity() {
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
     val mainControllerViewModel: MainControllerViewModel by viewModels()
+    val initialCreateFlagCacheViewModel: InitialCreateFlagCacheViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val viewModelScopedInitializedFlagSet = mainControllerViewModel.hasCompletedInitialCreate
+        val viewModelScopedInitializedFlagSet = initialCreateFlagCacheViewModel.hasCompletedInitialCreate
         val savedInstanceStateSet = (savedInstanceState != null)
 
 
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             initializeRootCoordinatorAndAddRootFragment()
         }
 
-        mainControllerViewModel.hasCompletedInitialCreate = true
+        initialCreateFlagCacheViewModel.hasCompletedInitialCreate = true
     }
 
     private fun executePostOnCreateRequiredSetup() {

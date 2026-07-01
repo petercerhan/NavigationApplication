@@ -13,9 +13,6 @@ class MainControllerViewModel: ViewModel() {
     val uuidService = UUIDServiceImpl()
     var rootCoordinator: Coordinator? = null
 
-    /** Survives configuration changes but not process death. */
-    var hasCompletedInitialCreate = false
-
     fun composeRootCoordinatorReturningFragment(serviceLocator: ServiceLocator): Fragment {
         val rootCoordinator = RootCoordinatorFactory.composeRootCoordinator(uuidService)
         this.rootCoordinator = rootCoordinator
