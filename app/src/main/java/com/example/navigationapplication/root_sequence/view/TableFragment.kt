@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.navigationapplication.R
 import com.example.navigationapplication.controller_library.SceneFragment
-import com.example.navigationapplication.root_sequence.controller.HomeViewModel
+import com.example.navigationapplication.root_sequence.controller.TableViewModel
 
-class HomeFragment : SceneFragment<HomeViewModel>() {
+class TableFragment : SceneFragment<TableViewModel>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_table, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,4 +28,5 @@ class HomeFragment : SceneFragment<HomeViewModel>() {
     override fun backButtonAction() {
         viewModel.back()
     }
+
 }

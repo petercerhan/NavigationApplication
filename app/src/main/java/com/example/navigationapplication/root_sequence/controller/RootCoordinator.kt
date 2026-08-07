@@ -17,8 +17,8 @@ import com.example.navigationapplication.modal_sequence.controller.SimpleModalVi
 class RootCoordinator(
     val container: Container,
     val composer: RootSequenceComposer,
-): Coordinator, PageTwoViewModelDelegate, HomeViewModelDelegate, SimpleModalViewModelDelegate,
-    ModalSequenceCoordinatorDelegate {
+): Coordinator, PageTwoViewModelDelegate, TableViewModelDelegate, HomeViewModelDelegate,
+    SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
     private var childCoordinator: Coordinator? = null
 
@@ -39,12 +39,24 @@ class RootCoordinator(
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val scene = composer.composePageTwoScene(this)
+        val scene = composer.composeTableScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(homeViewModel: HomeViewModel) {
         //do nothing
+    }
+
+    //TableViewModelDelegate
+
+    override fun next(tableViewModel: TableViewModel) {
+        val scene = composer.composePageTwoScene(this)
+        container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+    }
+
+    override fun back(tableViewModel: TableViewModel) {
+        val scene = getHomeScene()
+        container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
 
     //PageTwoViewModelDelegate
@@ -60,7 +72,7 @@ class RootCoordinator(
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
-        val scene = getHomeScene()
+        val scene = composer.composeTableScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
         childCoordinator = null
     }

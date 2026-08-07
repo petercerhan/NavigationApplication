@@ -9,8 +9,11 @@ import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.modal_sequence.main.ModalSequenceCoordinatorFactory
 import com.example.navigationapplication.root_sequence.view.PageTwoFragment
+import com.example.navigationapplication.root_sequence.view.TableFragment
 import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
 import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
+import com.example.navigationapplication.root_sequence.controller.TableViewModel
+import com.example.navigationapplication.root_sequence.controller.TableViewModelDelegate
 
 class RootSequenceComposer(
     val uuidService: UUIDService,
@@ -25,6 +28,11 @@ class RootSequenceComposer(
         val homeScene = Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
         this.homeSceneCache = homeScene
         return homeScene
+    }
+
+    fun composeTableScene(delegate: TableViewModelDelegate): Scene {
+        val tableViewModel = TableViewModel(uuidService, delegate)
+        return Scene(viewModel = tableViewModel, fragmentType = TableFragment::class,)
     }
 
     fun composePageTwoScene(delegate: PageTwoViewModelDelegate): Scene {
