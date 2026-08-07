@@ -19,7 +19,7 @@ class RootSequenceComposer(
     val uuidService: UUIDService,
 ) {
     private var homeSceneCache: Scene? = null
-
+    private var tableSceneCache: Scene? = null
 
     fun composeHomeScene(delegate: HomeViewModelDelegate): Scene {
         homeSceneCache?.let { return it }
@@ -31,8 +31,12 @@ class RootSequenceComposer(
     }
 
     fun composeTableScene(delegate: TableViewModelDelegate): Scene {
+        tableSceneCache?.let { return it }
+
         val tableViewModel = TableViewModel(uuidService, delegate)
-        return Scene(viewModel = tableViewModel, fragmentType = TableFragment::class,)
+        val tableScene = Scene(viewModel = tableViewModel, fragmentType = TableFragment::class,)
+        this.tableSceneCache = tableScene
+        return tableScene
     }
 
     fun composePageTwoScene(delegate: PageTwoViewModelDelegate): Scene {

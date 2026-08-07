@@ -26,14 +26,8 @@ class RootCoordinator(
         get() = container.asContainerViewModel
 
     init {
-        val scene = getHomeScene()
+        val scene = composer.composeHomeScene(this)
         container.showScene(scene, SceneTransitionAnimation.NoAnimation)
-    }
-
-    //Routing
-
-    private fun getHomeScene(): Scene {
-        return composer.composeHomeScene(this)
     }
 
     //HomeViewModelDelegate
@@ -55,7 +49,7 @@ class RootCoordinator(
     }
 
     override fun back(tableViewModel: TableViewModel) {
-        val scene = getHomeScene()
+        val scene = composer.composeHomeScene(this)
         container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
     }
 
