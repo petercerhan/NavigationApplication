@@ -25,6 +25,12 @@ class RootCoordinator(
     override val containerViewModel: ContainerViewModel
         get() = container.asContainerViewModel
 
+    override val containerScene: Scene
+        get() = Scene(
+            viewModel = containerViewModel,
+            fragmentType = ContainerFragment::class,
+        )
+
     init {
         val scene = composer.composeHomeScene(this)
         container.showScene(scene, SceneTransitionAnimation.NoAnimation)
@@ -58,11 +64,7 @@ class RootCoordinator(
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         val coordinator = composer.composeModalSequenceCoordinator(this)
         childCoordinator = coordinator
-        val scene = Scene(
-            viewModel = coordinator.containerViewModel,
-            fragmentType = ContainerFragment::class,
-        )
-        container.showModal(scene, ModalPresentationAnimation.CoverFromBottom)
+        container.showModal(coordinator.containerScene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
