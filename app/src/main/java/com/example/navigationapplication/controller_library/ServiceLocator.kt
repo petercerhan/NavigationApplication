@@ -15,7 +15,7 @@ class ServiceLocator {
         viewModelMap[scene.viewModel.id] = scene.viewModel
     }
 
-    fun cacheViewModel(id: UUID, viewModel: Any) {
+    fun cacheViewModel(id: UUID, viewModel: ApplicationViewModel) {
         viewModelMap[id] = viewModel
     }
 
