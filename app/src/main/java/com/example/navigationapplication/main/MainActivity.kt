@@ -15,21 +15,21 @@ class MainActivity : AppCompatActivity() {
     val initialCreateFlagCacheViewModel: InitialCreateFlagCacheViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val viewModelScopedInitializedFlagSet = initialCreateFlagCacheViewModel.hasCompletedInitialCreate
+        val firstOnCreateAlreadyRun = initialCreateFlagCacheViewModel.hasCompletedInitialCreate
         val savedInstanceStateSet = (savedInstanceState != null)
 
 
-        if (!savedInstanceStateSet && !viewModelScopedInitializedFlagSet) { //cold start launch
+        if (!savedInstanceStateSet && !firstOnCreateAlreadyRun) { //cold start launch
             super.onCreate(null)
             executePostOnCreateRequiredSetup()
             initializeRootCoordinatorAndAddRootFragment()
         }
-        else if (savedInstanceStateSet && !viewModelScopedInitializedFlagSet) { //process death recreation launch
-            super.onCreate(null) //saved instance state is non-null, and discarded. This is the crux of forcing relaunch on process death recreation
+        else if (savedInstanceStateSet && !firstOnCreateAlreadyRun) { //process death recreation launch
+            super.onCreate(null) //saved instance state is non-null, and discarded. This is the crux of "forcing relaunch" on process death recreation
             executePostOnCreateRequiredSetup()
             initializeRootCoordinatorAndAddRootFragment()
         }
-        else if (savedInstanceStateSet && viewModelScopedInitializedFlagSet) { //configuration change
+        else if (savedInstanceStateSet && firstOnCreateAlreadyRun) { //configuration change
             super.onCreate(savedInstanceState)
             executePostOnCreateRequiredSetup()
         }

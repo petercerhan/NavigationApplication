@@ -5,14 +5,6 @@ import java.util.UUID
 
 class ServiceLocator {
 
-    init {
-        ServiceLocator.counter++
-    }
-
-    companion object {
-        var counter: Int = 0
-    }
-
     private val viewModelMap: MutableMap<UUID, Any> = mutableMapOf()
 
     fun clear() {
