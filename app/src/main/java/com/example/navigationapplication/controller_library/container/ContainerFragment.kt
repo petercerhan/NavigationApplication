@@ -30,7 +30,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
-    //Come up with a new name here
     val containerFrameworkViewModel: ContainerFrameworkViewModel by viewModels()
 
     private val serviceLocator: ServiceLocator
@@ -89,10 +88,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
     }
 
-    private fun updateTransactionInputBlocker(blockInput: Boolean) {
-        transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
-    }
-
     private fun dispatchBack() {
         if (transactionIsInProgress()) {
             return
@@ -105,8 +100,12 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
 
         val baseScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-            as? SceneFragment<*>
+                as? SceneFragment<*>
         baseScene?.backButtonAction()
+    }
+
+    private fun updateTransactionInputBlocker(blockInput: Boolean) {
+        transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
     }
 
     private fun processIncomingSceneState(sceneState: SceneState) {
@@ -121,9 +120,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             return
         }
 
-        //cache scene state on (system?) view model
         containerFrameworkViewModel.activeSceneState = sceneState
-        //call transition execution routine
         transitionToSceneState(sceneState)
     }
 
@@ -164,7 +161,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     }
 
     private fun transitionToSceneState(sceneState: SceneState) {
-        //save active scene view state requires a locatable view model; so this must be done before resetting the VM Locator
+        //save active scene view state requires a locatable view model; so this must be done before resetting the Service Locator which locates those View Models
         saveActiveSceneViewState()
         saveActiveModalViewState()
 
@@ -182,7 +179,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             viewModel.logger.log("Case A show()")
             updateBaseSceneWithAnimation(sceneState)
         }
-        else if (sceneStatePresentsModal && sceneState.modalScene != null) {
+        else if (sceneStatePresentsModal) {
             viewModel.logger.log("Case B Present Modal")
             presentModal(sceneState)
         }
@@ -245,7 +242,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     //Show()
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
-        val outgoingFragment = childFragmentManager.findFragmentById(R.id.child_fragment_container)
         val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
