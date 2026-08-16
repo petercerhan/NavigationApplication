@@ -18,7 +18,7 @@ class ContainerViewModel(
     //Internal Mechanics - Interface for Container Fragment
 
     private val _sceneFlow = MutableSharedFlow<SceneState>(replay = 1)
-    val sceneFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
+    val sceneStateFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
 
     //Container Interface
 

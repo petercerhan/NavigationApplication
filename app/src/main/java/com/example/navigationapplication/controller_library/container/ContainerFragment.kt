@@ -117,7 +117,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     private fun bindSceneState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.sceneFlow.collect { sceneState ->
+                viewModel.sceneStateFlow.collect { sceneState ->
                     processIncomingSceneState(sceneState)
                 }
             }
