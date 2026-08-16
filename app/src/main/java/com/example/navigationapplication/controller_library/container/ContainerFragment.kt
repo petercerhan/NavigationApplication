@@ -62,7 +62,14 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bindBackButtonHandling()
+        bindTransactionInProgress()
+        bindSceneState()
+    }
 
+    //Back Button Handling
+
+    private fun bindBackButtonHandling() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -71,21 +78,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
                 }
             },
         )
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    containerFrameworkViewModel.transactionInProgress.collect { inProgress ->
-                        updateTransactionInputBlocker(inProgress)
-                    }
-                }
-                launch {
-                    viewModel.sceneFlow.collect { sceneState ->
-                        processIncomingSceneState(sceneState)
-                    }
-                }
-            }
-        }
     }
 
     private fun dispatchBack() {
@@ -104,8 +96,32 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         baseScene?.backButtonAction()
     }
 
+    //Transaction In Progress Handling
+
+    private fun bindTransactionInProgress() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                containerFrameworkViewModel.transactionInProgress.collect { inProgress ->
+                    updateTransactionInputBlocker(inProgress)
+                }
+            }
+        }
+    }
+
     private fun updateTransactionInputBlocker(blockInput: Boolean) {
         transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
+    }
+
+    //Scene State Transition Handling
+
+    private fun bindSceneState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sceneFlow.collect { sceneState ->
+                    processIncomingSceneState(sceneState)
+                }
+            }
+        }
     }
 
     private fun processIncomingSceneState(sceneState: SceneState) {
