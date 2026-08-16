@@ -10,4 +10,9 @@ class SceneState(
     val modalScene: Scene?,
     val modalPresentationAnimation: ModalPresentationAnimation?,
     val modalDismissalAnimation: ModalDismissalAnimation?,
-)
+) {
+    fun hasIdenticalScenesAs(other: SceneState): Boolean {
+        return (scene.viewModel.id == other.scene.viewModel.id) &&
+                (modalScene?.viewModel?.id == other.modalScene?.viewModel?.id)
+    }
+}

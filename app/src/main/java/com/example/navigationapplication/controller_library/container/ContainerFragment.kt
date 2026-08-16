@@ -158,8 +158,8 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         } else if (transactionIsInProgress()) {
             viewModel.logger.log("Reject Scene State: Transaction in Progress")
             return false
-        } else if (incomingSceneStateMatchesActiveSceneState(incomingSceneState)) {
-            viewModel.logger.log("Reject Scene State: Incoming Matches Active")
+        } else if (incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState)) {
+            viewModel.logger.log("Reject Scene State: incoming scene state matches currently active scene state")
             return false
         } else {
             return true
@@ -170,10 +170,9 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         return containerFrameworkViewModel.transactionInProgress.value
     }
 
-    private fun incomingSceneStateMatchesActiveSceneState(incomingSceneState: SceneState): Boolean {
-        val activeSceneState = containerFrameworkViewModel.activeSceneState ?: return false
-        return (incomingSceneState.scene.viewModel.id == activeSceneState.scene.viewModel.id &&
-                incomingSceneState.modalScene?.viewModel?.id == activeSceneState.modalScene?.viewModel?.id)
+    private fun incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState: SceneState): Boolean {
+        val currentActiveSceneState = containerFrameworkViewModel.activeSceneState ?: return false
+        return currentActiveSceneState.hasIdenticalScenesAs(incomingSceneState)
     }
 
     private fun transitionToSceneState(sceneState: SceneState) {
