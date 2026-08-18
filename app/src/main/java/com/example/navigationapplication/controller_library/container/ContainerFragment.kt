@@ -262,16 +262,12 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
         containerFrameworkViewModel.setTransactionInProgress(animationDuration)
-        hideModalContainer()
 
-        //execute transaction with completion callback
         val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
             .setReorderingAllowed(true)
             .replace(R.id.child_fragment_container, incomingFragment)
 
-        //In the case of the initial screen transaction where there is no outgoing fragment (so the outgoing animation complete callback does not execute)
-        //We immediately set transactionInProgress to false
         transaction.commit()
     }
 
