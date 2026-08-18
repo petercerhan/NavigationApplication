@@ -311,9 +311,18 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             return
         }
 
+        registerCallbackToHideModalContainerOnModalFragmentRemoval(modalFragment)
+
         val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
         containerFrameworkViewModel.setTransactionInProgress(animationDuration)
+        childFragmentManager.beginTransaction()
+            .setCustomAnimations(0, priorScreenExitAnimation, 0, 0)
+            .setReorderingAllowed(true)
+            .remove(modalFragment)
+            .commit()
+    }
 
+    private fun registerCallbackToHideModalContainerOnModalFragmentRemoval(modalFragment: Fragment) {
         val hideModalContainerAfterModalViewIsDestroyed = object : FragmentManager.FragmentLifecycleCallbacks() {
             override fun onFragmentViewDestroyed(fragmentManager: FragmentManager, fragment: Fragment) {
                 if (fragment !== modalFragment) {
@@ -323,13 +332,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
                 hideModalContainer()
             }
         }
-
         childFragmentManager.registerFragmentLifecycleCallbacks(hideModalContainerAfterModalViewIsDestroyed, false)
-        childFragmentManager.beginTransaction()
-            .setCustomAnimations(0, priorScreenExitAnimation, 0, 0)
-            .setReorderingAllowed(true)
-            .remove(modalFragment)
-            .commit()
     }
 
     private fun modalDismissalAnimationsParametersFor(animation: ModalDismissalAnimation?): Pair<Int, Long> =
