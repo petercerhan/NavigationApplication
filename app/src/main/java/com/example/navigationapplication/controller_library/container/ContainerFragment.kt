@@ -153,7 +153,8 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
         if (childFragmentManager.isStateSaved) {
-            viewModel.logger.log("Reject Scene State: Fragment State Saved")
+            //Child fragment can not receive new fragments after this point
+            viewModel.logger.log("Reject Scene State: Fragment Manager isStateSaved=true")
             return false
         } else if (transactionIsInProgress()) {
             viewModel.logger.log("Reject Scene State: Transaction in Progress")
