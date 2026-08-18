@@ -329,7 +329,10 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
                     return
                 }
                 fragmentManager.unregisterFragmentLifecycleCallbacks(this)
-                hideModalContainer()
+                // Guard against possibility of view already being null (theoretical but not likely possibility according to agent review)
+                if (view != null) {
+                    hideModalContainer()
+                }
             }
         }
         childFragmentManager.registerFragmentLifecycleCallbacks(hideModalContainerAfterModalViewIsDestroyed, false)
