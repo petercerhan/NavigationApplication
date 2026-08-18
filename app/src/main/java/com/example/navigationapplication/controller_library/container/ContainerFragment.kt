@@ -261,7 +261,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val incomingFragment = createFragmentForScene(sceneState.scene)
         val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
 
-        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationDuration)
 
         val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
@@ -285,7 +285,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         val modalScene = sceneState.modalScene ?: return
         val (newScreenEntryAnimation, animationDuration) = modalPresentationAnimationsParametersFor(sceneState.modalPresentationAnimation)
 
-        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationDuration)
         showModalContainer()
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
@@ -314,7 +314,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         registerCallbackToHideModalContainerOnModalFragmentRemoval(modalFragment)
 
         val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
-        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationDuration)
         childFragmentManager.beginTransaction()
             .setCustomAnimations(0, priorScreenExitAnimation, 0, 0)
             .setReorderingAllowed(true)
@@ -359,6 +359,10 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             setInitialSavedState(scene.viewModel.fragmentSavedState)
         }
         return fragment
+    }
+
+    private fun setTransactionInProgress(animationDuration: Long) {
+        containerFrameworkViewModel.setTransactionInProgress(animationDuration)
     }
 
     private fun showModalContainer() {
