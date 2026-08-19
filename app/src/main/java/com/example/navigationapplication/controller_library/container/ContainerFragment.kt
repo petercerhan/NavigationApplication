@@ -19,7 +19,7 @@ import com.example.navigationapplication.controller_library.ServiceLocatorViewMo
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneFragment
-import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
@@ -35,7 +35,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     private val serviceLocator: ServiceLocator
         get() = serviceLocatorViewModel.serviceLocator
 
-    private lateinit var transactionInputBlocker: View
+    private lateinit var interactionBlocker: View
 
     //Lifecycle
 
@@ -45,7 +45,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         savedInstanceState: Bundle?
     ): View {
         val root = inflater.inflate(R.layout.fragment_container, container, false) as FrameLayout
-        transactionInputBlocker = View(requireContext()).apply {
+        interactionBlocker = View(requireContext()).apply {
             id = View.generateViewId()
             layoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -56,7 +56,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
             visibility = View.GONE
         }
-        root.addView(transactionInputBlocker)
+        root.addView(interactionBlocker)
         return root
     }
 
@@ -109,7 +109,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     }
 
     private fun updateTransactionInputBlocker(blockInput: Boolean) {
-        transactionInputBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
+        interactionBlocker.visibility = if (blockInput) View.VISIBLE else View.GONE
     }
 
     //Scene State Transition Handling
@@ -231,7 +231,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun updateViewModelLocatorForIncomingSceneState(sceneState: SceneState) {
         serviceLocator.clear()
-        serviceLocator.cacheScene(sceneState.scene)
+        serviceLocator.cacheScene(sceneState.baseScene)
         if (sceneState.modalScene != null) {
             serviceLocator.cacheScene(sceneState.modalScene)
         }
@@ -242,7 +242,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         if (activeScene == null) {
             return true
         }
-        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.scene.viewModel.id)
+        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.baseScene.viewModel.id)
     }
 
     private fun initialStateContainsModal(): Boolean {
@@ -258,8 +258,8 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     //Show()
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
-        val incomingFragment = createFragmentForScene(sceneState.scene)
-        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.sceneTransitionAnimation)
+        val incomingFragment = createFragmentForScene(sceneState.baseScene)
+        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.baseSceneTransitionAnimation)
 
         setTransactionInProgress(animationDuration)
 
@@ -271,11 +271,11 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         transaction.commit()
     }
 
-    private fun animationsParametersFor(animation: SceneTransitionAnimation): Triple<Int, Int, Long> =
+    private fun animationsParametersFor(animation: BaseSceneTransitionAnimation): Triple<Int, Int, Long> =
         when (animation) {
-            SceneTransitionAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
-            SceneTransitionAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
-            SceneTransitionAnimation.NoAnimation -> Triple(0, 0, 0L)
+            BaseSceneTransitionAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
+            BaseSceneTransitionAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
+            BaseSceneTransitionAnimation.NoAnimation -> Triple(0, 0, 0L)
         }
 
 

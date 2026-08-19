@@ -7,7 +7,7 @@ import com.example.navigationapplication.controller_library.container.ContainerV
 import com.example.navigationapplication.controller_library.container.Scene
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
-import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinator
 import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.root_sequence.main.RootSequenceComposer
@@ -33,14 +33,14 @@ class RootCoordinator(
 
     init {
         val scene = composer.composeHomeScene(this)
-        container.showScene(scene, SceneTransitionAnimation.NoAnimation)
+        container.showScene(scene, BaseSceneTransitionAnimation.NoAnimation)
     }
 
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
         val scene = composer.composeTableScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(homeViewModel: HomeViewModel) {
@@ -51,12 +51,12 @@ class RootCoordinator(
 
     override fun next(tableViewModel: TableViewModel) {
         val scene = composer.composePageTwoScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(tableViewModel: TableViewModel) {
         val scene = composer.composeHomeScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromLeft)
     }
 
     //PageTwoViewModelDelegate
@@ -69,7 +69,7 @@ class RootCoordinator(
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = composer.composeTableScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromLeft)
         childCoordinator = null
     }
 

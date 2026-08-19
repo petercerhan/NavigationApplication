@@ -3,7 +3,7 @@ package com.example.navigationapplication.modal_sequence.controller
 import com.example.navigationapplication.controller_library.container.Container
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
-import com.example.navigationapplication.controller_library.container.animations.SceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
 import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
@@ -36,14 +36,14 @@ class ModalSequenceCoordinator(
 
     init {
         val scene = composer.composeHomeScene(this)
-        container.showScene(scene, SceneTransitionAnimation.NoAnimation)
+        container.showScene(scene, BaseSceneTransitionAnimation.NoAnimation)
     }
 
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
         val scene = composer.composePageTwoScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromRight)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromRight)
     }
 
     override fun back(homeViewModel: HomeViewModel) {
@@ -59,7 +59,7 @@ class ModalSequenceCoordinator(
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {
         val scene = composer.composeHomeScene(this)
-        container.showScene(scene, SceneTransitionAnimation.SlideFromLeft)
+        container.showScene(scene, BaseSceneTransitionAnimation.SlideFromLeft)
     }
 
     //SimpleModalViewModelDelegate
