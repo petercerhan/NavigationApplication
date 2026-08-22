@@ -29,7 +29,7 @@ abstract class SceneFragment<VM : Any> : Fragment() {
     }
 
     protected fun requestAppRelaunch(): Nothing {
-        (activity as? AppRelauncher)?.relaunchFromScratch()
+        (activity as? AppRelauncher)?.relaunch()
         error("App relaunch requested")
     }
 

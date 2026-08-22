@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), AppRelauncher {
 
     private var relaunchInProgress = false
 
-    override fun relaunchFromScratch() {
+    override fun relaunch() {
         if (!relaunchInProgress) {
             relaunchInProgress = true
             startActivity(Intent.makeRestartActivityTask(componentName))
