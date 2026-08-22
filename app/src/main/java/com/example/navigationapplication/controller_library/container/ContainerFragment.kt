@@ -85,15 +85,13 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             return
         }
 
-        val modalScene = getCurrentModalFragment() as? SceneFragment<*>
+        val modalScene = getCurrentModalFragment()
         if (modalScene != null) {
             modalScene.backButtonAction()
             return
         }
 
-        val baseScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-                as? SceneFragment<*>
-        baseScene?.backButtonAction()
+        getCurrentBaseScene()?.backButtonAction()
     }
 
     //Transaction In Progress Handling
@@ -344,12 +342,17 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             null -> Pair(0, 0L)
         }
 
-    private fun getCurrentModalFragment(): Fragment? {
-        return childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-    }
-
 
     //Shared Subroutines
+
+    private fun getCurrentModalFragment(): SceneFragment<*>? {
+        return childFragmentManager.findFragmentById(R.id.modal_fragment_container) as? SceneFragment<*>
+    }
+
+    fun getCurrentBaseScene(): SceneFragment<*>? {
+        return childFragmentManager.findFragmentById(R.id.child_fragment_container)
+                as? SceneFragment<*>
+    }
 
     private fun createFragmentForScene(scene: Scene): Fragment {
         val fragment = newInstance(

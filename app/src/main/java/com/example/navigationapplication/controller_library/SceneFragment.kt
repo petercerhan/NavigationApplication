@@ -21,7 +21,17 @@ abstract class SceneFragment<VM : Any> : Fragment() {
         )
 
     protected val viewModel: VM
-        get() = parentServiceLocatorViewModel.serviceLocator.viewModelForId(viewModelId) as VM
+        get() = lookupViewModel() ?: requestAppRelaunch()
+
+    private fun lookupViewModel(): VM? {
+        @Suppress("UNCHECKED_CAST")
+        return parentServiceLocatorViewModel.serviceLocator.viewModelForId(viewModelId) as? VM
+    }
+
+    protected fun requestAppRelaunch(): Nothing {
+        (activity as? AppRelauncher)?.relaunchFromScratch()
+        error("App relaunch requested")
+    }
 
     //Initialization
 
