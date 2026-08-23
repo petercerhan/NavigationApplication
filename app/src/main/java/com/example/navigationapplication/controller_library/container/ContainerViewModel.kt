@@ -27,26 +27,53 @@ class ContainerViewModel(
 
     override fun showScene(scene: Scene, animation: BaseSceneTransitionAnimation) {
         logger.log("VM showScene")
+        val previousState = _sceneFlow.replayCache.firstOrNull()
         //Here we will do additional work to maintain correct SceneState
-        val sceneState = SceneState(scene, animation, null, null, null)
+        val sceneState = SceneState(
+            uuidService.newUUID(),
+            previousState?.id,
+            SceneStateTransitionType.TransitionBaseScene,
+            scene,
+            animation,
+            null, null,
+            null
+        )
         _sceneFlow.tryEmit(sceneState)
     }
 
     override fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
         logger.log("VM showModal")
         //block if there is already a modal
-        val current = _sceneFlow.replayCache.firstOrNull() ?: return
+        val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
         val sceneState =
-            SceneState(current.baseScene, current.baseSceneTransitionAnimation, scene, animation, null)
+            SceneState(
+                uuidService.newUUID(),
+                previousState?.id,
+                SceneStateTransitionType.PresentModal,
+                previousState.baseScene,
+                null,
+                scene,
+                animation,
+                null
+            )
         _sceneFlow.tryEmit(sceneState)
     }
 
     override fun dismissModal(animation: ModalDismissalAnimation) {
         logger.log("VM dismissModal")
         //block if there is no modal
-        val current = _sceneFlow.replayCache.firstOrNull() ?: return
+        val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
         val sceneState =
-            SceneState(current.baseScene, current.baseSceneTransitionAnimation, null, null, animation)
+            SceneState(
+                uuidService.newUUID(),
+                previousState.id,
+                SceneStateTransitionType.DismissModal,
+                previousState.baseScene,
+                null,
+                null,
+                null,
+                animation
+            )
         _sceneFlow.tryEmit(sceneState)
     }
 

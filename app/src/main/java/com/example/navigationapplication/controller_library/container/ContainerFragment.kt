@@ -134,7 +134,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             return
         }
 
-        containerFrameworkViewModel.activeSceneState = sceneState
         transitionToSceneState(sceneState)
     }
 
@@ -171,7 +170,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState: SceneState): Boolean {
         val currentActiveSceneState = containerFrameworkViewModel.activeSceneState ?: return false
-        return currentActiveSceneState.hasIdenticalScenesAs(incomingSceneState)
+        return currentActiveSceneState.id == incomingSceneState.id
     }
 
     private fun transitionToSceneState(sceneState: SceneState) {
@@ -181,30 +180,19 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
         updateViewModelLocatorForIncomingSceneState(sceneState)
 
-        val baseSceneChanged = sceneStateChangesBaseScene(sceneState)
-        val initialStateContainsModal = initialStateContainsModal()
-        val finalStateContainsModal = sceneStateContainsModal(sceneState)
+        when (sceneState.transitionType) {
+            SceneStateTransitionType.TransitionBaseScene -> {
+                updateBaseSceneWithAnimation(sceneState)
+            }
+            SceneStateTransitionType.PresentModal -> {
+                presentModal(sceneState)
+            }
+            SceneStateTransitionType.DismissModal -> {
+                dismissModal(sceneState)
+            }
+        }
 
-        val sceneStateTransitionsBaseScene = (baseSceneChanged && !initialStateContainsModal && !finalStateContainsModal)
-        val sceneStatePresentsModal = (!baseSceneChanged && !initialStateContainsModal && finalStateContainsModal)
-        val sceneStateDismissesModal = (!baseSceneChanged && initialStateContainsModal && !finalStateContainsModal)
-
-        if (sceneStateTransitionsBaseScene) {
-            viewModel.logger.log("Case A show()")
-            updateBaseSceneWithAnimation(sceneState)
-        }
-        else if (sceneStatePresentsModal) {
-            viewModel.logger.log("Case B Present Modal")
-            presentModal(sceneState)
-        }
-        else if (sceneStateDismissesModal) {
-            viewModel.logger.log("Case C Dismiss Modal")
-            dismissModal(sceneState)
-        }
-        else {
-            viewModel.logger.log("Case D Reject")
-            //implementation depends on how self-recovering this component is - we could simply throw a fatal error here
-        }
+        containerFrameworkViewModel.activeSceneState = sceneState
     }
 
     private fun saveActiveSceneViewState() {
@@ -235,22 +223,24 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
     }
 
-    private fun sceneStateChangesBaseScene(sceneState: SceneState): Boolean {
-        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-        if (activeScene == null) {
-            return true
-        }
-        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.baseScene.viewModel.id)
-    }
 
-    private fun initialStateContainsModal(): Boolean {
-        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-        return (activeModal != null)
-    }
-
-    private fun sceneStateContainsModal(sceneState: SceneState): Boolean {
-        return (sceneState.modalScene != null)
-    }
+    //Hold on to these temporarily - may repurpose for correctness checks when new Scene States come in
+//    private fun sceneStateChangesBaseScene(sceneState: SceneState): Boolean {
+//        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+//        if (activeScene == null) {
+//            return true
+//        }
+//        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.baseScene.viewModel.id)
+//    }
+//
+//    private fun initialStateContainsModal(): Boolean {
+//        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
+//        return (activeModal != null)
+//    }
+//
+//    private fun sceneStateContainsModal(sceneState: SceneState): Boolean {
+//        return (sceneState.modalScene != null)
+//    }
 
 
     //Show()
@@ -269,11 +259,12 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         transaction.commit()
     }
 
-    private fun animationsParametersFor(animation: BaseSceneTransitionAnimation): Triple<Int, Int, Long> =
+    private fun animationsParametersFor(animation: BaseSceneTransitionAnimation?): Triple<Int, Int, Long> =
         when (animation) {
             BaseSceneTransitionAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
             BaseSceneTransitionAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
             BaseSceneTransitionAnimation.NoAnimation -> Triple(0, 0, 0L)
+            null -> Triple(0, 0, 0L)
         }
 
 
