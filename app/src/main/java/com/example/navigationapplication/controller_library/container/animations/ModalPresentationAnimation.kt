@@ -1,5 +1,11 @@
 package com.example.navigationapplication.controller_library.container.animations
 
-enum class ModalPresentationAnimation {
-    CoverFromBottom
+import com.example.navigationapplication.R
+
+enum class ModalPresentationAnimation(
+    val enterAnimation: Int,
+    val duration: Long,
+) {
+    CoverFromBottom(R.anim.fragment_slide_in_bottom, 300L),
+    NoAnimation(0, 0L)
 }

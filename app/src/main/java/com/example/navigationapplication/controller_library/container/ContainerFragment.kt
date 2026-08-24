@@ -264,24 +264,18 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun presentModal(sceneState: SceneState) {
         val modalScene = sceneState.modalScene ?: return
-        val (newScreenEntryAnimation, animationDuration) = modalPresentationAnimationsParametersFor(sceneState.modalPresentationAnimation)
+        val animationValues = sceneState.modalPresentationAnimation ?: ModalPresentationAnimation.NoAnimation
 
-        setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationValues.duration)
         showModalContainer()
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
-            .setCustomAnimations(newScreenEntryAnimation, 0, 0, 0)
+            .setCustomAnimations(animationValues.enterAnimation, 0, 0, 0)
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
 
         transaction.commit()
     }
-
-    private fun modalPresentationAnimationsParametersFor(animation: ModalPresentationAnimation?): Pair<Int, Long> =
-        when (animation) {
-            ModalPresentationAnimation.CoverFromBottom -> Pair(R.anim.fragment_slide_in_bottom, 300L)
-            null -> Pair(0, 0L)
-        }
 
 
     //DismissModal()
@@ -291,13 +285,13 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             hideModalContainer()
             return
         }
+        val animationValues = sceneState.modalDismissalAnimation ?: ModalDismissalAnimation.NoAnimation
 
         registerCallbackToHideModalContainerOnModalFragmentRemoval(modalFragment)
 
-        val (priorScreenExitAnimation, animationDuration) = modalDismissalAnimationsParametersFor(sceneState.modalDismissalAnimation)
-        setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationValues.duration)
         childFragmentManager.beginTransaction()
-            .setCustomAnimations(0, priorScreenExitAnimation, 0, 0)
+            .setCustomAnimations(0, animationValues.exitAnimation, 0, 0)
             .setReorderingAllowed(true)
             .remove(modalFragment)
             .commit()
@@ -318,12 +312,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
         childFragmentManager.registerFragmentLifecycleCallbacks(hideModalContainerAfterModalViewIsDestroyed, false)
     }
-
-    private fun modalDismissalAnimationsParametersFor(animation: ModalDismissalAnimation?): Pair<Int, Long> =
-        when (animation) {
-            ModalDismissalAnimation.UncoverDown -> Pair(R.anim.fragment_slide_out_bottom, 300L)
-            null -> Pair(0, 0L)
-        }
 
 
     //Shared Subroutines
