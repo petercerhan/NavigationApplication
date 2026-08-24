@@ -19,6 +19,7 @@ import com.example.navigationapplication.controller_library.ServiceLocatorViewMo
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneFragment
+import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
@@ -246,14 +247,12 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
         val incomingFragment = createFragmentForScene(sceneState.baseScene)
-        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) =
-            sceneState.baseSceneTransitionAnimation?.animationParameters(requireContext())
-                ?: Triple(0, 0, 0L)
+        val animationValues = sceneState.baseSceneTransitionAnimation ?: BaseSceneTransitionAnimation.NoAnimation
 
-        setTransactionInProgress(animationDuration)
+        setTransactionInProgress(animationValues.duration)
 
         val transaction = childFragmentManager.beginTransaction()
-            .setCustomAnimations(newScreenEntryAnimation, priorScreenExitAnimation)
+            .setCustomAnimations(animationValues.enterAnimation, animationValues.exitAnimation)
             .setReorderingAllowed(true)
             .replace(R.id.child_fragment_container, incomingFragment)
 
