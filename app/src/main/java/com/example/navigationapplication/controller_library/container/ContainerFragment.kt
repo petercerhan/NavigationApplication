@@ -19,7 +19,6 @@ import com.example.navigationapplication.controller_library.ServiceLocatorViewMo
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneFragment
-import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
 class ContainerFragment : SceneFragment<ContainerViewModel>() {
@@ -247,7 +246,9 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun updateBaseSceneWithAnimation(sceneState: SceneState) {
         val incomingFragment = createFragmentForScene(sceneState.baseScene)
-        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) = animationsParametersFor(sceneState.baseSceneTransitionAnimation)
+        val (newScreenEntryAnimation, priorScreenExitAnimation, animationDuration) =
+            sceneState.baseSceneTransitionAnimation?.animationParameters(requireContext())
+                ?: Triple(0, 0, 0L)
 
         setTransactionInProgress(animationDuration)
 
@@ -258,14 +259,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
         transaction.commit()
     }
-
-    private fun animationsParametersFor(animation: BaseSceneTransitionAnimation?): Triple<Int, Int, Long> =
-        when (animation) {
-            BaseSceneTransitionAnimation.SlideFromRight -> Triple(R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left, 300L)
-            BaseSceneTransitionAnimation.SlideFromLeft -> Triple(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_right, 300L)
-            BaseSceneTransitionAnimation.NoAnimation -> Triple(0, 0, 0L)
-            null -> Triple(0, 0, 0L)
-        }
 
 
     //PresentModal()
