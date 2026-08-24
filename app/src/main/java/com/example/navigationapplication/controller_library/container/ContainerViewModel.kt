@@ -1,5 +1,6 @@
 package com.example.navigationapplication.controller_library.container
 
+import android.os.SystemClock
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
@@ -20,14 +21,19 @@ class ContainerViewModel(
     private val _sceneFlow = MutableSharedFlow<SceneState>(replay = 1)
     val sceneStateFlow: SharedFlow<SceneState> = _sceneFlow.asSharedFlow()
 
+    private var acceptRequestsAfterElapsedRealtimeMs = 0L
+
     //Container Interface
 
     override val asContainerViewModel: ContainerViewModel
         get() = this
 
     override fun showScene(scene: Scene, animation: BaseSceneTransitionAnimation) {
-        logger.log("VM showScene")
+        if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull()
+
+        lockContainerForIncomingRequest(animation.duration)
+
         //Here we will do additional work to maintain correct SceneState
         val sceneState = SceneState(
             uuidService.newUUID(),
@@ -42,9 +48,12 @@ class ContainerViewModel(
     }
 
     override fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
-        logger.log("VM showModal")
-        //block if there is already a modal
+        if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
+
+        //block if there is already a modal
+
+        lockContainerForIncomingRequest(animation.duration)
         val sceneState =
             SceneState(
                 uuidService.newUUID(),
@@ -60,9 +69,12 @@ class ContainerViewModel(
     }
 
     override fun dismissModal(animation: ModalDismissalAnimation) {
-        logger.log("VM dismissModal")
-        //block if there is no modal
+        if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
+
+        //block if there is no modal
+
+        lockContainerForIncomingRequest(animation.duration)
         val sceneState =
             SceneState(
                 uuidService.newUUID(),
@@ -75,6 +87,19 @@ class ContainerViewModel(
                 animation
             )
         _sceneFlow.tryEmit(sceneState)
+    }
+
+    private fun containerIsLockedForExistingRequest(): Boolean {
+        if (SystemClock.elapsedRealtime() < acceptRequestsAfterElapsedRealtimeMs) {
+            logger.log("Reject Container request: transition in progress")
+            return true
+        }
+        return false
+    }
+
+    private fun lockContainerForIncomingRequest(durationMilliseconds: Long) {
+        acceptRequestsAfterElapsedRealtimeMs =
+            SystemClock.elapsedRealtime() + durationMilliseconds + 100L
     }
 
 }
