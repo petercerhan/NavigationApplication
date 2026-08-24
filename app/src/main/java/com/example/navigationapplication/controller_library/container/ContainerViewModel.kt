@@ -51,8 +51,7 @@ class ContainerViewModel(
     override fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
         if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
-
-        //block if there is already a modal
+        if (previousState.modalScene != null) return
 
         lockContainerForIncomingRequest(animation.duration)
         val sceneState =
@@ -72,8 +71,7 @@ class ContainerViewModel(
     override fun dismissModal(animation: ModalDismissalAnimation) {
         if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
-
-        //block if there is no modal
+        if (previousState.modalScene == null) return
 
         lockContainerForIncomingRequest(animation.duration)
         val sceneState =
