@@ -6,16 +6,21 @@ import com.example.navigationapplication.controller_library.container.ContainerF
 import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.ServiceLocator
+import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeServiceImpl
 import com.example.navigationapplication.infrastructure_services.UUIDServiceImpl
 import com.example.navigationapplication.root_sequence.main.RootCoordinatorFactory
 
 class MainControllerViewModel: ViewModel() {
 
     val uuidService = UUIDServiceImpl()
+    val elapsedRealtimeService = ElapsedRealtimeServiceImpl()
     var rootCoordinator: Coordinator? = null
 
     fun composeRootCoordinatorReturningFragment(serviceLocator: ServiceLocator): Fragment {
-        val rootCoordinator = RootCoordinatorFactory.composeRootCoordinator(uuidService)
+        val rootCoordinator = RootCoordinatorFactory.composeRootCoordinator(
+            uuidService,
+            elapsedRealtimeService,
+        )
         this.rootCoordinator = rootCoordinator
         serviceLocator.cacheViewModel(rootCoordinator.containerViewModel.id, rootCoordinator.containerViewModel)
 

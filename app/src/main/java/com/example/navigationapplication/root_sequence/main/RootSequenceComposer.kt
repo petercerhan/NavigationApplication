@@ -5,6 +5,7 @@ import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.root_sequence.view.HomeFragment
 import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
+import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import com.example.navigationapplication.modal_sequence.controller.ModalSequenceCoordinatorDelegate
 import com.example.navigationapplication.modal_sequence.main.ModalSequenceCoordinatorFactory
@@ -17,6 +18,7 @@ import com.example.navigationapplication.root_sequence.controller.TableViewModel
 
 class RootSequenceComposer(
     val uuidService: UUIDService,
+    val elapsedRealtimeService: ElapsedRealtimeService,
 ) {
     private var homeSceneCache: Scene? = null
     private var tableSceneCache: Scene? = null
@@ -45,7 +47,11 @@ class RootSequenceComposer(
     }
 
     fun composeModalSequenceCoordinator(delegate: ModalSequenceCoordinatorDelegate): Coordinator {
-        return ModalSequenceCoordinatorFactory.composeModalSequenceCoordinator(uuidService, delegate)
+        return ModalSequenceCoordinatorFactory.composeModalSequenceCoordinator(
+            uuidService,
+            elapsedRealtimeService,
+            delegate,
+        )
     }
 
 }

@@ -1,10 +1,10 @@
 package com.example.navigationapplication.controller_library.container
 
-import android.os.SystemClock
 import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
+import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class ContainerViewModel(
     uuidService: UUIDService,
+    private val elapsedRealtimeService: ElapsedRealtimeService,
     val logger: Logger
 ): ApplicationViewModel(uuidService), Container {
 
@@ -90,7 +91,7 @@ class ContainerViewModel(
     }
 
     private fun containerIsLockedForExistingRequest(): Boolean {
-        if (SystemClock.elapsedRealtime() < acceptRequestsAfterElapsedRealtimeMs) {
+        if (elapsedRealtimeService.elapsedRealtime() < acceptRequestsAfterElapsedRealtimeMs) {
             logger.log("Reject Container request: transition in progress")
             return true
         }
@@ -99,7 +100,7 @@ class ContainerViewModel(
 
     private fun lockContainerForIncomingRequest(durationMilliseconds: Long) {
         acceptRequestsAfterElapsedRealtimeMs =
-            SystemClock.elapsedRealtime() + durationMilliseconds + 100L
+            elapsedRealtimeService.elapsedRealtime() + durationMilliseconds + 100L
     }
 
 }
