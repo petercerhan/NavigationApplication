@@ -7,6 +7,6 @@ import com.example.navigationapplication.controller_library.container.animations
 interface Container {
     val asContainerViewModel: ContainerViewModel
     fun showScene(scene: Scene, animation: BaseSceneTransitionAnimation)
-    fun showModal(scene: Scene, animation: ModalPresentationAnimation)
+    fun presentModal(scene: Scene, animation: ModalPresentationAnimation)
     fun dismissModal(animation: ModalDismissalAnimation)
 }

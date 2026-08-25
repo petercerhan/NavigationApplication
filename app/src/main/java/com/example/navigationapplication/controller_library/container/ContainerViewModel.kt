@@ -36,9 +36,10 @@ class ContainerViewModel(
         lockContainerForIncomingRequest(animation.duration)
 
         //Here we will do additional work to maintain correct SceneState
+        //not allowed if there is a modal presented
         val sceneState = SceneState(
             uuidService.newUUID(),
-            previousState?.id,
+            previousState,
             SceneStateTransitionType.TransitionBaseScene,
             scene,
             animation,
@@ -48,7 +49,7 @@ class ContainerViewModel(
         _sceneFlow.tryEmit(sceneState)
     }
 
-    override fun showModal(scene: Scene, animation: ModalPresentationAnimation) {
+    override fun presentModal(scene: Scene, animation: ModalPresentationAnimation) {
         if (containerIsLockedForExistingRequest()) return
         val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
         if (previousState.modalScene != null) return
@@ -57,7 +58,7 @@ class ContainerViewModel(
         val sceneState =
             SceneState(
                 uuidService.newUUID(),
-                previousState?.id,
+                previousState,
                 SceneStateTransitionType.PresentModal,
                 previousState.baseScene,
                 null,
@@ -77,7 +78,7 @@ class ContainerViewModel(
         val sceneState =
             SceneState(
                 uuidService.newUUID(),
-                previousState.id,
+                previousState,
                 SceneStateTransitionType.DismissModal,
                 previousState.baseScene,
                 null,

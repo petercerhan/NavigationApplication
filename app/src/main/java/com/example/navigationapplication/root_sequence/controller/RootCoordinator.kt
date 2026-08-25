@@ -64,7 +64,7 @@ class RootCoordinator(
     override fun next(pageTwoViewModel: PageTwoViewModel) {
         val coordinator = composer.composeModalSequenceCoordinator(this)
         childCoordinator = coordinator
-        container.showModal(coordinator.containerScene, ModalPresentationAnimation.CoverFromBottom)
+        container.presentModal(coordinator.containerScene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(pageTwoViewModel: PageTwoViewModel) {

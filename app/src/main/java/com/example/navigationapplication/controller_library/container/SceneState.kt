@@ -7,18 +7,12 @@ import java.util.UUID
 
 class SceneState(
     val id: UUID,
-    val previousStateUUID: UUID?,
-    val transitionType: SceneStateTransitionType,
+    val previousState: SceneState?,
 
+    val transitionType: SceneStateTransitionType,
     val baseScene: Scene,
     val baseSceneTransitionAnimation: BaseSceneTransitionAnimation?,
     val modalScene: Scene?,
     val modalPresentationAnimation: ModalPresentationAnimation?,
     val modalDismissalAnimation: ModalDismissalAnimation?,
 )
-
-//transition type
-//base scene change
-//modal dismissal
-//modal presentation
-//last applied scene state id

@@ -124,10 +124,16 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun processIncomingSceneState(sceneState: SceneState) {
         viewModel.logger.log("Evaluate Scene State")
+
+        //1) Rename this method to indicate why we always do it regardless of the guards
         //Always set initial modal container visibility for currently active scene state
         //This ensures that re-evaluated sceneState due to a configuration change has modal container visibility set correctly
         //Because this property defaults to GONE as set in the xml resource file
         setInitialModalContainerSceneState()
+
+        //2) confirm previous scene state = incomingSceneState.previousSceneState (Consistent with View Model)
+
+        //3) confirm previousScene State matches what is live in containers (consistent with Fragment Managers)
 
         if (!shouldAcceptIncomingSceneState(sceneState)) {
             viewModel.logger.log("Reject Scene State")
