@@ -94,6 +94,10 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         getCurrentBaseScene()?.backButtonAction()
     }
 
+    private fun transactionIsInProgress(): Boolean {
+        return containerFrameworkViewModel.transactionInProgress.value
+    }
+
     //Transaction In Progress Handling
 
     private fun bindTransactionInProgress() {
@@ -125,16 +129,23 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     private fun processIncomingSceneState(sceneState: SceneState) {
         viewModel.logger.log("Evaluate Scene State")
 
-        //1) Rename this method to indicate why we always do it regardless of the guards
-        //Always set initial modal container visibility for currently active scene state
-        //This ensures that re-evaluated sceneState due to a configuration change has modal container visibility set correctly
-        //Because this property defaults to GONE as set in the xml resource file
-        setInitialModalContainerSceneState()
+        //Always set initial modal container visibility before evaluating guards
+        //This ensures that after a configuration change, the modal container visibility is set correctly
+        //Even though the re-emitted scene state will not pass the guard below to prevent re-transitioning after a configuration change
+        //Modal Container visibility defaults to GONE as set in the xml resource file - need it to be visible if active state includes a modal
+        setModalContainerVisibilityForInitialSceneState()
 
         //2) confirm previous scene state = incomingSceneState.previousSceneState (Consistent with View Model)
+        if (!viewModelAndFragmentAgreeOnOutgoingSceneState(sceneState)) {
+            //ContainerFragment and ContainerViewModel states are inconsistent - restart app to avoid errors
+            viewModel.logger.log("Reject Scene State: outgoing scene state inconsistent between View Model and Fragment")
 
-        //3) confirm previousScene State matches what is live in containers (consistent with Fragment Managers)
+            return
+        }
 
+
+
+        //step in here, then step out each case
         if (!shouldAcceptIncomingSceneState(sceneState)) {
             viewModel.logger.log("Reject Scene State")
             return
@@ -143,7 +154,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         transitionToSceneState(sceneState)
     }
 
-    private fun setInitialModalContainerSceneState() {
+    private fun setModalContainerVisibilityForInitialSceneState() {
         val activeSceneState = containerFrameworkViewModel.activeSceneState
         if (activeSceneState == null)  {
             hideModalContainer()
@@ -154,13 +165,15 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         }
     }
 
+    private fun viewModelAndFragmentAgreeOnOutgoingSceneState(incomingSceneState: SceneState): Boolean {
+        val outgoingSceneState = containerFrameworkViewModel.activeSceneState
+        return (outgoingSceneState?.id == incomingSceneState.previousState?.id)
+    }
+
     private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
         if (childFragmentManager.isStateSaved) {
             //Child fragment can not receive new fragments after this point
             viewModel.logger.log("Reject Scene State: Fragment Manager isStateSaved=true")
-            return false
-        } else if (transactionIsInProgress()) {
-            viewModel.logger.log("Reject Scene State: Transaction in Progress")
             return false
         } else if (incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState)) {
             viewModel.logger.log("Reject Scene State: incoming scene state matches currently active scene state")
@@ -168,10 +181,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         } else {
             return true
         }
-    }
-
-    private fun transactionIsInProgress(): Boolean {
-        return containerFrameworkViewModel.transactionInProgress.value
     }
 
     private fun incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState: SceneState): Boolean {
