@@ -22,7 +22,7 @@ class MainControllerViewModel: ViewModel() {
             elapsedRealtimeService,
         )
         this.rootCoordinator = rootCoordinator
-        serviceLocator.cacheViewModel(rootCoordinator.containerViewModel.id, rootCoordinator.containerViewModel)
+        serviceLocator.registerViewModel(rootCoordinator.containerViewModel)
 
         return SceneFragment.newInstance(ContainerFragment::class,rootCoordinator.containerViewModel.id)
     }

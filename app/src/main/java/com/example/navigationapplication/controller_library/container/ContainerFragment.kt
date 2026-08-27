@@ -136,7 +136,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         setModalContainerVisibilityForInitialSceneState()
 
         if (childFragmentManager.isStateSaved) {
-            //Child fragment cannot receive new fragments after this point in its lifecycle
+            //Child fragment manager cannot receive new fragments after this point in its lifecycle
             viewModel.logger.log("Reject Scene State: Fragment Manager isStateSaved=true")
             return
         }
@@ -180,8 +180,8 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
 
     private fun transitionToSceneState(sceneState: SceneState) {
         //save active scene view state requires a locatable view model; so this must be done before resetting the Service Locator which locates those View Models
-        saveActiveSceneViewState()
-        saveActiveModalViewState()
+        saveBaseSceneViewState()
+        saveModalSceneViewState()
 
         updateViewModelLocatorForIncomingSceneState(sceneState)
 
@@ -200,31 +200,31 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         containerFrameworkViewModel.activeSceneState = sceneState
     }
 
-    private fun saveActiveSceneViewState() {
-        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
+    private fun saveBaseSceneViewState() {
+        val baseSceneFragment = childFragmentManager.findFragmentById(R.id.child_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeScene.viewModelId) as? ApplicationViewModel
+        val viewModel = serviceLocator.viewModelForId(baseSceneFragment.viewModelId) as? ApplicationViewModel
             ?: return
         viewModel.fragmentSavedState =
-            childFragmentManager.saveFragmentInstanceState(activeScene)
+            childFragmentManager.saveFragmentInstanceState(baseSceneFragment)
     }
 
-    private fun saveActiveModalViewState() {
-        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
+    private fun saveModalSceneViewState() {
+        val modalSceneFragment = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
                 as? SceneFragment<*> ?: return
 
-        val viewModel = serviceLocator.viewModelForId(activeModal.viewModelId) as? ApplicationViewModel
+        val viewModel = serviceLocator.viewModelForId(modalSceneFragment.viewModelId) as? ApplicationViewModel
             ?: return
         viewModel.fragmentSavedState =
-            childFragmentManager.saveFragmentInstanceState(activeModal)
+            childFragmentManager.saveFragmentInstanceState(modalSceneFragment)
     }
 
     private fun updateViewModelLocatorForIncomingSceneState(sceneState: SceneState) {
-        serviceLocator.clear()
-        serviceLocator.cacheScene(sceneState.baseScene)
+        serviceLocator.reset()
+        serviceLocator.registerViewModel(sceneState.baseScene.viewModel)
         if (sceneState.modalScene != null) {
-            serviceLocator.cacheScene(sceneState.modalScene)
+            serviceLocator.registerViewModel(sceneState.modalScene.viewModel)
         }
     }
 
@@ -306,8 +306,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     }
 
     fun getCurrentBaseScene(): SceneFragment<*>? {
-        return childFragmentManager.findFragmentById(R.id.child_fragment_container)
-                as? SceneFragment<*>
+        return childFragmentManager.findFragmentById(R.id.child_fragment_container) as? SceneFragment<*>
     }
 
     private fun createFragmentForScene(scene: Scene): Fragment {

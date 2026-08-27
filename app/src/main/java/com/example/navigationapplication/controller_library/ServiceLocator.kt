@@ -1,26 +1,21 @@
 package com.example.navigationapplication.controller_library
 
-import com.example.navigationapplication.controller_library.container.Scene
 import java.util.UUID
 
 class ServiceLocator {
 
     private val viewModelMap: MutableMap<UUID, Any> = mutableMapOf()
 
-    fun clear() {
+    fun reset() {
         viewModelMap.clear()
     }
 
-    fun cacheScene(scene: Scene) {
-        viewModelMap[scene.viewModel.id] = scene.viewModel
+    fun registerViewModel(viewModel: ApplicationViewModel) {
+        viewModelMap[viewModel.id] = viewModel
     }
 
-    fun cacheViewModel(id: UUID, viewModel: ApplicationViewModel) {
-        viewModelMap[id] = viewModel
-    }
-
-    fun viewModelForId(id: UUID): Any? {
-        return viewModelMap[id]
+    fun viewModelForId(id: UUID): ApplicationViewModel? {
+        return viewModelMap[id] as? ApplicationViewModel
     }
 
 }
