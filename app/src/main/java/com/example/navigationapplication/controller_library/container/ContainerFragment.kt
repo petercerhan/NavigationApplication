@@ -135,19 +135,22 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         //Modal Container visibility defaults to GONE as set in the xml resource file - need it to be visible if active state includes a modal
         setModalContainerVisibilityForInitialSceneState()
 
-        //2) confirm previous scene state = incomingSceneState.previousSceneState (Consistent with View Model)
-        if (!viewModelAndFragmentAgreeOnOutgoingSceneState(sceneState)) {
-            //ContainerFragment and ContainerViewModel states are inconsistent - restart app to avoid errors
-            viewModel.logger.log("Reject Scene State: outgoing scene state inconsistent between View Model and Fragment")
-
+        if (childFragmentManager.isStateSaved) {
+            //Child fragment cannot receive new fragments after this point in its lifecycle
+            viewModel.logger.log("Reject Scene State: Fragment Manager isStateSaved=true")
             return
         }
 
+        if (incomingSceneStateMatchesCurrentActiveSceneState(sceneState)) {
+            //On configuration change, the Container Fragment is recreated and the collector re-emits its last value; we get a repeated scene state and intercept it here
+            viewModel.logger.log("Reject Scene State: incoming scene state matches currently active scene state")
+            return
+        }
 
-
-        //step in here, then step out each case
-        if (!shouldAcceptIncomingSceneState(sceneState)) {
-            viewModel.logger.log("Reject Scene State")
+        if (!viewModelAndFragmentAgreeOnOutgoingSceneState(sceneState)) {
+            //ContainerFragment and ContainerViewModel states are inconsistent - restart app to avoid errors
+            viewModel.logger.log("Reject Scene State: outgoing scene state inconsistent between View Model and Fragment")
+            requestAppRelaunch()
             return
         }
 
@@ -168,19 +171,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
     private fun viewModelAndFragmentAgreeOnOutgoingSceneState(incomingSceneState: SceneState): Boolean {
         val outgoingSceneState = containerFrameworkViewModel.activeSceneState
         return (outgoingSceneState?.id == incomingSceneState.previousState?.id)
-    }
-
-    private fun shouldAcceptIncomingSceneState(incomingSceneState: SceneState): Boolean {
-        if (childFragmentManager.isStateSaved) {
-            //Child fragment can not receive new fragments after this point
-            viewModel.logger.log("Reject Scene State: Fragment Manager isStateSaved=true")
-            return false
-        } else if (incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState)) {
-            viewModel.logger.log("Reject Scene State: incoming scene state matches currently active scene state")
-            return false
-        } else {
-            return true
-        }
     }
 
     private fun incomingSceneStateMatchesCurrentActiveSceneState(incomingSceneState: SceneState): Boolean {
@@ -237,26 +227,6 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
             serviceLocator.cacheScene(sceneState.modalScene)
         }
     }
-
-
-    //Hold on to these temporarily - may repurpose for correctness checks when new Scene States come in
-//    private fun sceneStateChangesBaseScene(sceneState: SceneState): Boolean {
-//        val activeScene = childFragmentManager.findFragmentById(R.id.child_fragment_container)
-//        if (activeScene == null) {
-//            return true
-//        }
-//        return (activeScene is SceneFragment<*> && activeScene.viewModelId != sceneState.baseScene.viewModel.id)
-//    }
-//
-//    private fun initialStateContainsModal(): Boolean {
-//        val activeModal = childFragmentManager.findFragmentById(R.id.modal_fragment_container)
-//        return (activeModal != null)
-//    }
-//
-//    private fun sceneStateContainsModal(sceneState: SceneState): Boolean {
-//        return (sceneState.modalScene != null)
-//    }
-
 
     //Show()
 
