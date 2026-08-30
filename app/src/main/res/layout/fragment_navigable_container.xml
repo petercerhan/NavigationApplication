@@ -13,11 +13,14 @@
         android:id="@+id/container_button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="@color/green"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="24dp">
 
         <Button
             android:id="@+id/button_container_back"
