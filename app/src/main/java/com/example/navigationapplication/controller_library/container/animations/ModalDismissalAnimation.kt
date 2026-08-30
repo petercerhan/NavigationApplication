@@ -7,5 +7,6 @@ enum class ModalDismissalAnimation(
     val duration: Long,
 ) {
     UncoverDown(R.anim.fragment_slide_out_bottom, 300L),
+    FadeOut(R.anim.fragment_fade_out, 300L),
     NoAnimation(0, 0L)
 }
