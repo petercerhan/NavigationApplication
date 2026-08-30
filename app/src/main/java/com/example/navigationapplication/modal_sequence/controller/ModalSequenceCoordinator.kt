@@ -6,8 +6,6 @@ import com.example.navigationapplication.controller_library.container.animations
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
-import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
-import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.container.NavigableContainerFragment
@@ -25,7 +23,7 @@ class ModalSequenceCoordinator(
     val container: Container,
     val composer: ModalSequenceComposer,
     val delegate: ModalSequenceCoordinatorDelegate,
-): Coordinator, HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate,
+): Coordinator, HomeViewModelDelegate, ModalPageTwoViewModelDelegate, SimpleModalViewModelDelegate,
     NavigableContainerViewModelDelegate {
 
     override val containerViewModel: ContainerViewModel
@@ -46,7 +44,7 @@ class ModalSequenceCoordinator(
     //HomeViewModelDelegate
 
     override fun next(homeViewModel: HomeViewModel) {
-        val scene = composer.composePageTwoScene(this)
+        val scene = composer.composeModalPageTwoScene(this)
         container.showScene(scene, BaseSceneTransitionAnimation.SlideFromRight)
     }
 
@@ -54,14 +52,14 @@ class ModalSequenceCoordinator(
         delegate.back(this)
     }
 
-    //PageTwoViewModelDelegate
+    //ModalPageTwoViewModelDelegate
 
-    override fun next(pageTwoViewModel: PageTwoViewModel) {
+    override fun next(modalPageTwoViewModel: ModalPageTwoViewModel) {
         val scene = composer.composeSimpleModalScene(this)
         container.presentModal(scene, ModalPresentationAnimation.FadeIn)
     }
 
-    override fun back(pageTwoViewModel: PageTwoViewModel) {
+    override fun back(modalPageTwoViewModel: ModalPageTwoViewModel) {
         val scene = composer.composeHomeScene(this)
         container.showScene(scene, BaseSceneTransitionAnimation.SlideFromLeft)
     }

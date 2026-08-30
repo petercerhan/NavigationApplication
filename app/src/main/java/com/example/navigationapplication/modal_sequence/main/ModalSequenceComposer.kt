@@ -5,9 +5,9 @@ import com.example.navigationapplication.root_sequence.view.HomeFragment
 import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
 import com.example.navigationapplication.infrastructure_services.UUIDService
-import com.example.navigationapplication.root_sequence.view.PageTwoFragment
-import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
-import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
+import com.example.navigationapplication.modal_sequence.view.ModalPageTwoFragment
+import com.example.navigationapplication.modal_sequence.controller.ModalPageTwoViewModel
+import com.example.navigationapplication.modal_sequence.controller.ModalPageTwoViewModelDelegate
 import com.example.navigationapplication.modal_sequence.view.SimpleModalFragment
 import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModel
 import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModelDelegate
@@ -21,9 +21,9 @@ class ModalSequenceComposer(
         return Scene(viewModel = homeViewModel, fragmentType = HomeFragment::class,)
     }
 
-    fun composePageTwoScene(delegate: PageTwoViewModelDelegate): Scene {
-        val pageTwoViewModel = PageTwoViewModel(uuidService, delegate)
-        return Scene(viewModel = pageTwoViewModel, fragmentType = PageTwoFragment::class,)
+    fun composeModalPageTwoScene(delegate: ModalPageTwoViewModelDelegate): Scene {
+        val modalPageTwoViewModel = ModalPageTwoViewModel(uuidService, delegate)
+        return Scene(viewModel = modalPageTwoViewModel, fragmentType = ModalPageTwoFragment::class,)
     }
 
     fun composeSimpleModalScene(delegate: SimpleModalViewModelDelegate): Scene {
