@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class ContainerViewModel(
+open class ContainerViewModel(
     uuidService: UUIDService,
     private val elapsedRealtimeService: ElapsedRealtimeService,
     val logger: Logger

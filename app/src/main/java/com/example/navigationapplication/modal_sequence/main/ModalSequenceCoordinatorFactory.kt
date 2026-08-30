@@ -1,6 +1,6 @@
 package com.example.navigationapplication.modal_sequence.main
 
-import com.example.navigationapplication.controller_library.container.ContainerViewModel
+import com.example.navigationapplication.controller_library.container.NavigableContainerViewModel
 import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
@@ -14,7 +14,7 @@ object ModalSequenceCoordinatorFactory {
         delegate: ModalSequenceCoordinatorDelegate,
     ): ModalSequenceCoordinator {
         val logger = Logger(false)
-        val containerViewModel = ContainerViewModel(uuidService, elapsedRealtimeService, logger)
+        val containerViewModel = NavigableContainerViewModel(uuidService, elapsedRealtimeService, logger)
         val composer = ModalSequenceComposer(uuidService)
         return ModalSequenceCoordinator(
             containerViewModel,

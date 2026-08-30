@@ -10,7 +10,7 @@ import com.example.navigationapplication.root_sequence.controller.PageTwoViewMod
 import com.example.navigationapplication.root_sequence.controller.PageTwoViewModelDelegate
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.controller_library.Coordinator
-import com.example.navigationapplication.controller_library.container.ContainerFragment
+import com.example.navigationapplication.controller_library.container.NavigableContainerFragment
 import com.example.navigationapplication.controller_library.container.Scene
 import com.example.navigationapplication.modal_sequence.main.ModalSequenceComposer
 
@@ -31,7 +31,7 @@ class ModalSequenceCoordinator(
     override val containerScene: Scene
         get() = Scene(
             viewModel = containerViewModel,
-            fragmentType = ContainerFragment::class,
+            fragmentType = NavigableContainerFragment::class,
         )
 
     init {

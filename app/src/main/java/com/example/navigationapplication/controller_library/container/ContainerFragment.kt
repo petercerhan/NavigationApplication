@@ -22,11 +22,14 @@ import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
-class ContainerFragment : SceneFragment<ContainerViewModel>() {
+open class ContainerFragment<VM : ContainerViewModel> : SceneFragment<VM>() {
 
     override fun backButtonAction() {
         //unreachable
     }
+
+    protected open val layoutRes: Int
+        get() = R.layout.fragment_container
 
     val serviceLocatorViewModel: ServiceLocatorViewModel by viewModels()
 
@@ -44,7 +47,7 @@ class ContainerFragment : SceneFragment<ContainerViewModel>() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = inflater.inflate(R.layout.fragment_container, container, false) as FrameLayout
+        val root = inflater.inflate(layoutRes, container, false) as FrameLayout
         interactionBlocker = View(requireContext()).apply {
             id = View.generateViewId()
             layoutParams = FrameLayout.LayoutParams(
