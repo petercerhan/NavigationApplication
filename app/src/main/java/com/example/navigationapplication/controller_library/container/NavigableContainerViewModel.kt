@@ -1,9 +1,12 @@
 package com.example.navigationapplication.controller_library.container
 
-import android.util.Log
 import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
+
+interface NavigableContainerViewModelDelegate {
+    fun quit(navigableContainerViewModel: NavigableContainerViewModel)
+}
 
 class NavigableContainerViewModel(
     uuidService: UUIDService,
@@ -11,8 +14,14 @@ class NavigableContainerViewModel(
     logger: Logger,
 ) : ContainerViewModel(uuidService, elapsedRealtimeService, logger) {
 
+    private var delegate: NavigableContainerViewModelDelegate? = null
+
+    fun setDelegate(delegate: NavigableContainerViewModelDelegate) {
+        this.delegate = delegate
+    }
+
     fun quit() {
-        Log.d("Development Logger", "container subclass quit")
+        delegate?.quit(this)
     }
 
 }

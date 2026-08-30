@@ -11,6 +11,8 @@ import com.example.navigationapplication.root_sequence.controller.PageTwoViewMod
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.controller_library.Coordinator
 import com.example.navigationapplication.controller_library.container.NavigableContainerFragment
+import com.example.navigationapplication.controller_library.container.NavigableContainerViewModel
+import com.example.navigationapplication.controller_library.container.NavigableContainerViewModelDelegate
 import com.example.navigationapplication.controller_library.container.Scene
 import com.example.navigationapplication.modal_sequence.main.ModalSequenceComposer
 
@@ -23,7 +25,8 @@ class ModalSequenceCoordinator(
     val container: Container,
     val composer: ModalSequenceComposer,
     val delegate: ModalSequenceCoordinatorDelegate,
-): Coordinator, HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate {
+): Coordinator, HomeViewModelDelegate, PageTwoViewModelDelegate, SimpleModalViewModelDelegate,
+    NavigableContainerViewModelDelegate {
 
     override val containerViewModel: ContainerViewModel
         get() = container.asContainerViewModel
@@ -35,6 +38,7 @@ class ModalSequenceCoordinator(
         )
 
     init {
+        (container as? NavigableContainerViewModel)?.setDelegate(this)
         val scene = composer.composeHomeScene(this)
         container.showScene(scene, BaseSceneTransitionAnimation.NoAnimation)
     }
@@ -66,6 +70,12 @@ class ModalSequenceCoordinator(
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
         container.dismissModal(ModalDismissalAnimation.FadeOut)
+    }
+
+    //NavigableContainerViewModelDelegate
+
+    override fun quit(navigableContainerViewModel: NavigableContainerViewModel) {
+        delegate.back(this)
     }
 
 }
