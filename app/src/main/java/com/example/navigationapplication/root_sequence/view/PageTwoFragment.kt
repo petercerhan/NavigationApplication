@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.navigationapplication.R
+import com.example.navigationapplication.controller_library.NavigableFragment
 import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.root_sequence.controller.PageTwoViewModel
 
-class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
+class PageTwoFragment : SceneFragment<PageTwoViewModel>(), NavigableFragment {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,11 +22,21 @@ class PageTwoFragment : SceneFragment<PageTwoViewModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.button_next).setOnClickListener {
-            viewModel.next()
+            next()
         }
     }
 
     override fun backButtonAction() {
+        viewModel.back()
+    }
+
+    //NavigableFragment Interface
+
+    override fun next() {
+        viewModel.next()
+    }
+
+    override fun back() {
         viewModel.back()
     }
 

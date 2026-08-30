@@ -3,6 +3,7 @@ package com.example.navigationapplication.controller_library.container
 import android.os.Bundle
 import android.view.View
 import com.example.navigationapplication.R
+import com.example.navigationapplication.controller_library.NavigableFragment
 
 class NavigableContainerFragment : ContainerFragment<NavigableContainerViewModel>() {
 
@@ -12,10 +13,10 @@ class NavigableContainerFragment : ContainerFragment<NavigableContainerViewModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.button_container_next).setOnClickListener {
-            viewModel.next()
+            (getCurrentBaseScene() as? NavigableFragment)?.next()
         }
         view.findViewById<View>(R.id.button_container_back).setOnClickListener {
-            viewModel.back()
+            (getCurrentBaseScene() as? NavigableFragment)?.back()
         }
     }
 
