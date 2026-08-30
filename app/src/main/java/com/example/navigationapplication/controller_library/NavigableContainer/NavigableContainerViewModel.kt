@@ -1,5 +1,6 @@
-package com.example.navigationapplication.controller_library.container
+package com.example.navigationapplication.controller_library.NavigableContainer
 
+import com.example.navigationapplication.controller_library.container.ContainerViewModel
 import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService

@@ -1,9 +1,9 @@
-package com.example.navigationapplication.controller_library.container
+package com.example.navigationapplication.controller_library.NavigableContainer
 
 import android.os.Bundle
 import android.view.View
 import com.example.navigationapplication.R
-import com.example.navigationapplication.controller_library.NavigableFragment
+import com.example.navigationapplication.controller_library.container.ContainerFragment
 
 class NavigableContainerFragment : ContainerFragment<NavigableContainerViewModel>() {
 

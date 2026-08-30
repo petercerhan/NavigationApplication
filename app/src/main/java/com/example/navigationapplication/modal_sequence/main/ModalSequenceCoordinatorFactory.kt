@@ -1,6 +1,6 @@
 package com.example.navigationapplication.modal_sequence.main
 
-import com.example.navigationapplication.controller_library.container.NavigableContainerViewModel
+import com.example.navigationapplication.controller_library.NavigableContainer.NavigableContainerViewModel
 import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
