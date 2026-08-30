@@ -18,6 +18,9 @@ class NavigableContainerFragment : ContainerFragment<NavigableContainerViewModel
         view.findViewById<View>(R.id.button_container_back).setOnClickListener {
             (getCurrentBaseScene() as? NavigableFragment)?.back()
         }
+        view.findViewById<View>(R.id.button_container_quit).setOnClickListener {
+            viewModel.quit()
+        }
     }
 
 }

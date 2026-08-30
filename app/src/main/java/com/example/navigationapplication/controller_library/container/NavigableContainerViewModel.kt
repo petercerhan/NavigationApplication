@@ -11,12 +11,8 @@ class NavigableContainerViewModel(
     logger: Logger,
 ) : ContainerViewModel(uuidService, elapsedRealtimeService, logger) {
 
-    fun next() {
-        Log.d("Development Logger", "container subclass next")
-    }
-
-    fun back() {
-        Log.d("Development Logger", "container subclass back")
+    fun quit() {
+        Log.d("Development Logger", "container subclass quit")
     }
 
 }
