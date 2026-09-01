@@ -57,7 +57,7 @@ class ModalSequenceCoordinator(
 
     override fun next(modalPageTwoViewModel: ModalPageTwoViewModel) {
         val scene = composer.composeSimpleModalScene(this)
-        container.presentModal(scene, ModalPresentationAnimation.FadeIn)
+        container.presentModal(scene, ModalPresentationAnimation.CoverFromBottom)
     }
 
     override fun back(modalPageTwoViewModel: ModalPageTwoViewModel) {
@@ -68,18 +68,18 @@ class ModalSequenceCoordinator(
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
-        container.dismissModal(ModalDismissalAnimation.FadeOut)
+        container.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
     override fun replaceModal(simpleModalViewModel: SimpleModalViewModel) {
         val scene = composer.composeReplacementModalScene(this)
-        container.replaceModal(scene, ReplaceModalAnimation.Fade)
+        container.replaceModal(scene, ReplaceModalAnimation.SlideFromRight)
     }
 
     //ReplacementModalViewModelDelegate
 
     override fun dismiss(replacementModalViewModel: ReplacementModalViewModel) {
-        container.dismissModal(ModalDismissalAnimation.FadeOut)
+        container.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
     //NavigableContainerViewModelDelegate
