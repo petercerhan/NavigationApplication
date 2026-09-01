@@ -4,6 +4,7 @@ import com.example.navigationapplication.controller_library.container.Container
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.ReplaceModalAnimation
 import com.example.navigationapplication.root_sequence.controller.HomeViewModel
 import com.example.navigationapplication.root_sequence.controller.HomeViewModelDelegate
 import com.example.navigationapplication.controller_library.container.ContainerViewModel
@@ -24,7 +25,7 @@ class ModalSequenceCoordinator(
     val composer: ModalSequenceComposer,
     val delegate: ModalSequenceCoordinatorDelegate,
 ): Coordinator, HomeViewModelDelegate, ModalPageTwoViewModelDelegate, SimpleModalViewModelDelegate,
-    NavigableContainerViewModelDelegate {
+    ReplacementModalViewModelDelegate, NavigableContainerViewModelDelegate {
 
     override val containerViewModel: ContainerViewModel
         get() = container.asContainerViewModel
@@ -67,6 +68,17 @@ class ModalSequenceCoordinator(
     //SimpleModalViewModelDelegate
 
     override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
+        container.dismissModal(ModalDismissalAnimation.FadeOut)
+    }
+
+    override fun replaceModal(simpleModalViewModel: SimpleModalViewModel) {
+        val scene = composer.composeReplacementModalScene(this)
+        container.replaceModal(scene, ReplaceModalAnimation.Fade)
+    }
+
+    //ReplacementModalViewModelDelegate
+
+    override fun dismiss(replacementModalViewModel: ReplacementModalViewModel) {
         container.dismissModal(ModalDismissalAnimation.FadeOut)
     }
 

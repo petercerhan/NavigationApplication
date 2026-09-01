@@ -17,8 +17,7 @@ import com.example.navigationapplication.modal_sequence.controller.SimpleModalVi
 class RootCoordinator(
     val container: Container,
     val composer: RootSequenceComposer,
-): Coordinator, PageTwoViewModelDelegate, TableViewModelDelegate, HomeViewModelDelegate,
-    SimpleModalViewModelDelegate, ModalSequenceCoordinatorDelegate {
+): Coordinator, PageTwoViewModelDelegate, TableViewModelDelegate, HomeViewModelDelegate, ModalSequenceCoordinatorDelegate {
 
     private var childCoordinator: Coordinator? = null
 
@@ -71,12 +70,6 @@ class RootCoordinator(
         val scene = composer.composeTableScene(this)
         container.showScene(scene, BaseSceneTransitionAnimation.SlideFromLeft)
         childCoordinator = null
-    }
-
-    //SimpleModalViewModelDelegate
-
-    override fun dismiss(simpleModalViewModel: SimpleModalViewModel) {
-        container.dismissModal(ModalDismissalAnimation.UncoverDown)
     }
 
     //ModalSequenceCoordinatorDelegate

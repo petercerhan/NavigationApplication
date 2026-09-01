@@ -20,6 +20,7 @@ import com.example.navigationapplication.controller_library.container.animations
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.SceneFragment
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.ReplaceModalAnimation
 import kotlinx.coroutines.launch
 
 open class ContainerFragment<VM : ContainerViewModel> : SceneFragment<VM>() {
@@ -198,6 +199,9 @@ open class ContainerFragment<VM : ContainerViewModel> : SceneFragment<VM>() {
             SceneStateTransitionType.DismissModal -> {
                 dismissModal(sceneState)
             }
+            SceneStateTransitionType.ReplaceModal -> {
+                replaceModal(sceneState)
+            }
         }
 
         containerFrameworkViewModel.activeSceneState = sceneState
@@ -259,6 +263,23 @@ open class ContainerFragment<VM : ContainerViewModel> : SceneFragment<VM>() {
         val fragment = createFragmentForScene(modalScene)
         val transaction = childFragmentManager.beginTransaction()
             .setCustomAnimations(animationValues.enterAnimation, 0, 0, 0)
+            .setReorderingAllowed(true)
+            .replace(R.id.modal_fragment_container, fragment)
+
+        transaction.commit()
+    }
+
+
+    //ReplaceModal()
+
+    private fun replaceModal(sceneState: SceneState) {
+        val incomingModalScene = sceneState.modalScene ?: return
+        val animationValues = sceneState.replaceModalAnimation ?: ReplaceModalAnimation.NoAnimation
+
+        setTransactionInProgress(animationValues.duration)
+        val fragment = createFragmentForScene(incomingModalScene)
+        val transaction = childFragmentManager.beginTransaction()
+            .setCustomAnimations(animationValues.enterAnimation, animationValues.exitAnimation)
             .setReorderingAllowed(true)
             .replace(R.id.modal_fragment_container, fragment)
 

@@ -6,25 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.navigationapplication.R
 import com.example.navigationapplication.controller_library.SceneFragment
-import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModel
+import com.example.navigationapplication.modal_sequence.controller.ReplacementModalViewModel
 
-class SimpleModalFragment : SceneFragment<SimpleModalViewModel>() {
+class ReplacementModalFragment : SceneFragment<ReplacementModalViewModel>() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_simple_modal, container, false)
+        return inflater.inflate(R.layout.fragment_replacement_modal, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<View>(R.id.button_dismiss).setOnClickListener {
             viewModel.dismiss()
-        }
-        view.findViewById<View>(R.id.button_replace_modal).setOnClickListener {
-            viewModel.replaceModal()
         }
     }
 

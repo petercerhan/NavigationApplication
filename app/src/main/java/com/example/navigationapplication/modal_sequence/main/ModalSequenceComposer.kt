@@ -11,6 +11,9 @@ import com.example.navigationapplication.modal_sequence.controller.ModalPageTwoV
 import com.example.navigationapplication.modal_sequence.view.SimpleModalFragment
 import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModel
 import com.example.navigationapplication.modal_sequence.controller.SimpleModalViewModelDelegate
+import com.example.navigationapplication.modal_sequence.view.ReplacementModalFragment
+import com.example.navigationapplication.modal_sequence.controller.ReplacementModalViewModel
+import com.example.navigationapplication.modal_sequence.controller.ReplacementModalViewModelDelegate
 
 class ModalSequenceComposer(
     val uuidService: UUIDService,
@@ -29,6 +32,11 @@ class ModalSequenceComposer(
     fun composeSimpleModalScene(delegate: SimpleModalViewModelDelegate): Scene {
         val simpleModalViewModel = SimpleModalViewModel(uuidService, delegate)
         return Scene(viewModel = simpleModalViewModel, fragmentType = SimpleModalFragment::class,)
+    }
+
+    fun composeReplacementModalScene(delegate: ReplacementModalViewModelDelegate): Scene {
+        val replacementModalViewModel = ReplacementModalViewModel(uuidService, delegate)
+        return Scene(viewModel = replacementModalViewModel, fragmentType = ReplacementModalFragment::class,)
     }
 
 }

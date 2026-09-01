@@ -4,6 +4,7 @@ import com.example.navigationapplication.controller_library.ApplicationViewModel
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.ReplaceModalAnimation
 import com.example.navigationapplication.infrastructure_services.ElapsedRealtimeService
 import com.example.navigationapplication.infrastructure_services.Logger
 import com.example.navigationapplication.infrastructure_services.UUIDService
@@ -43,7 +44,7 @@ open class ContainerViewModel(
             scene,
             animation,
             null, null,
-            null
+            null, null
         )
         _sceneFlow.tryEmit(sceneState)
     }
@@ -63,6 +64,7 @@ open class ContainerViewModel(
                 null,
                 scene,
                 animation,
+                null,
                 null
             )
         _sceneFlow.tryEmit(sceneState)
@@ -81,6 +83,28 @@ open class ContainerViewModel(
                 SceneStateTransitionType.DismissModal,
                 previousState.baseScene,
                 null,
+                null,
+                null,
+                animation,
+                null
+            )
+        _sceneFlow.tryEmit(sceneState)
+    }
+
+    override fun replaceModal(scene: Scene, animation: ReplaceModalAnimation) {
+        if (containerIsLockedForExistingRequest()) return
+        val previousState = _sceneFlow.replayCache.firstOrNull() ?: return
+        if (previousState.modalScene == null) return
+
+        lockContainerForIncomingRequest(animation.duration)
+        val sceneState =
+            SceneState(
+                uuidService.newUUID(),
+                previousState,
+                SceneStateTransitionType.ReplaceModal,
+                previousState.baseScene,
+                null,
+                scene,
                 null,
                 null,
                 animation

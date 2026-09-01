@@ -3,6 +3,7 @@ package com.example.navigationapplication.controller_library.container
 import com.example.navigationapplication.controller_library.container.animations.ModalDismissalAnimation
 import com.example.navigationapplication.controller_library.container.animations.ModalPresentationAnimation
 import com.example.navigationapplication.controller_library.container.animations.BaseSceneTransitionAnimation
+import com.example.navigationapplication.controller_library.container.animations.ReplaceModalAnimation
 import java.util.UUID
 
 class SceneState(
@@ -15,4 +16,5 @@ class SceneState(
     val modalScene: Scene?,
     val modalPresentationAnimation: ModalPresentationAnimation?,
     val modalDismissalAnimation: ModalDismissalAnimation?,
+    val replaceModalAnimation: ReplaceModalAnimation?,
 )
